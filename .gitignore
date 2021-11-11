@@ -1,0 +1,15 @@
+/Mvc.ApplicationCore/bin
+/Mvc.ApplicationCore/obj
+/Mvc.ApplicationCore/*.user
+
+/Mvc.Infrastructure/bin
+/Mvc.Infrastructure/obj
+
+/Mvc.WebUi/bin
+/Mvc.WebUi/obj
+/Mvc.WebUi/*.sln
+/Mvc.WebUi/.vs
+
+/Mvc.WebUi/wwwroot/*.ico
+/Mvc.WebUi/wwwroot/lib
+
