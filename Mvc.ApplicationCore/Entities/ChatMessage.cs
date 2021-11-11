@@ -10,8 +10,8 @@ namespace Mvc.ApplicationCore.Entities
     public class ChatMessage
     {
         public int Id { get; set; }
-        public ApplicationUser FromUser { get; set; }
-        public ApplicationUser ToUser { get; set; }
+        public ApplicationUser? FromUser { get; set; }
+        public ApplicationUser? ToUser { get; set; }
         public string Message { get; set; }
         public DateTime DateCreated { get; set; }
     }

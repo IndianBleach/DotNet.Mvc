@@ -1,7 +1,16 @@
+using Microsoft.EntityFrameworkCore;
+using Mvc.Infrastructure.Data;
+using MvcApp.Infrastructure.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddDbContext<ApplicationContext>(options =>
+                options.UseSqlServer(builder.Configuration
+                .GetConnectionString("DatabaseConnectionPath")));
+
 
 var app = builder.Build();
 
@@ -23,5 +32,14 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<ApplicationContext>();
+
+    await ApplicationContextSeed.SeedDatabaseAsync(context);
+}
+
 
 app.Run();
