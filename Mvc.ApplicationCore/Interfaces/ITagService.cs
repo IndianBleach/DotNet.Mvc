@@ -1,4 +1,5 @@
 ﻿using Mvc.ApplicationCore.Entities;
+using Mvc.ApplicationCore.Entities.IdeaEntity;
 using System;
 using System.Collections.Generic;
 using System.Linq;

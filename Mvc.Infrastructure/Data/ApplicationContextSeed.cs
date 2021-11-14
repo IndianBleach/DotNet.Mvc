@@ -14,11 +14,7 @@ namespace MvcApp.Infrastructure.Data
         {
             if (dbContext.Tags.Any()) return;            
 
-            dbContext.Tags.Add(new Tag()
-            {
-                Ideas = new List<Idea>(),
-                Name = "Sport"
-            });
+            dbContext.Tags.Add(new Tag("Sport"));
 
             await dbContext.SaveChangesAsync();
         }
