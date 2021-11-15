@@ -6,14 +6,8 @@ using System.Threading.Tasks;
 
 namespace Mvc.ApplicationCore.Interfaces
 {
-    public interface IRepository<T>
+    public interface IRepository : IDisposable
     {
-        void Create(T item);
-
-        void Remove(int id);
-
-        IEnumerable<T> GetAll();
-
-        IEnumerable<T> Where(Func<T, bool> predicate);
+        void SaveChanges();
     }
 }
