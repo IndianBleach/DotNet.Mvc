@@ -10,6 +10,9 @@ namespace Mvc.ApplicationCore.Entities
 {    
     public class BaseImage : BaseEntity
     {
-        public string? Name { get; set; }
+        public string Name { get; set; }
+
+        public BaseImage(string name)
+            => Name = name;
     }
 }

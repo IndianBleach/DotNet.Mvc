@@ -11,16 +11,18 @@ namespace Mvc.WebUi.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationContext _ctx;
+        private readonly ITagService _tagService;
 
-        public HomeController(ILogger<HomeController> logger, ApplicationContext ctx)
+        public HomeController(ILogger<HomeController> logger, ApplicationContext ctx, ITagService tagService)
         {
             _logger = logger;
             _ctx = ctx;
+            _tagService = tagService;
         }
 
         public IActionResult Index()
         {
-            return Content(_ctx.Tags.Count().ToString());
+            return Json(_tagService.GetPopularTags());
         }
 
         public IActionResult Privacy()

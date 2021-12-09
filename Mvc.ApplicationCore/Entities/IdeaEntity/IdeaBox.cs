@@ -16,7 +16,6 @@ namespace Mvc.ApplicationCore.Entities.IdeaEntity
         public string Description { get; set; }
         public bool IsConfirmed { get; set; }
         public DateTime DateCreated { get; set; }
-        public ICollection<IdeaBoxLike> Likes { get; set; }
         public ICollection<CommentMessage> Comments { get; set; }
 
         public IdeaBox(
@@ -31,7 +30,6 @@ namespace Mvc.ApplicationCore.Entities.IdeaEntity
             IsConfirmed = isConfirmed;
             Description = description;
             Guid = Guid.NewGuid();
-            Likes = new List<IdeaBoxLike>();
             DateCreated = DateTime.Now;
             Comments = new List<CommentMessage>();
         }
@@ -48,7 +46,6 @@ namespace Mvc.ApplicationCore.Entities.IdeaEntity
             IsConfirmed = isConfirmed;
             Description = description;
             Guid = Guid.NewGuid();
-            Likes = new List<IdeaBoxLike>();
             DateCreated = DateTime.Now;
         }
     }

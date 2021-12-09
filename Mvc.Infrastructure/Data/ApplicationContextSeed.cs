@@ -14,7 +14,21 @@ namespace MvcApp.Infrastructure.Data
         {
             if (dbContext.Tags.Any()) return;            
 
-            dbContext.Tags.Add(new Tag("Sport"));
+            dbContext.Tags.AddRange(new Tag[]
+            {
+                new Tag("Sport"),
+                new Tag("Films"),
+                new Tag("Ecology"),
+                new Tag("Space"),
+                new Tag("Electronics"),
+                new Tag("Games"),
+                new Tag("Design"),
+                new Tag("Other"),
+                new Tag("Mashines"),
+                new Tag("Deep dive"),
+                new Tag("Health"),
+            });
+            
 
             await dbContext.SaveChangesAsync();
         }

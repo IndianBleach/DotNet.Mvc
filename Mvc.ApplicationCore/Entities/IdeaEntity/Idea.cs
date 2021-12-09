@@ -18,7 +18,6 @@ namespace Mvc.ApplicationCore.Entities.IdeaEntity
         public ICollection<IdeaMemberRole> Members { get; set; }
         public ICollection<IdeaBox> Boxes { get; set; }
         public ICollection<Tag> Tags { get; set; }
-        public ICollection<IdeaActivity> Activity { get; set; }
         public ICollection<IdeaStar> Stars { get; set; }
 
         public Idea(string title, int statusId)
@@ -29,7 +28,6 @@ namespace Mvc.ApplicationCore.Entities.IdeaEntity
             Members = new List<IdeaMemberRole>();
             Boxes = new List<IdeaBox>();
             Tags = new List<Tag>();
-            Activity = new List<IdeaActivity>();
             Stars = new List<IdeaStar>();
             Guid = Guid.NewGuid();
             DateCreated = DateTime.Now;
@@ -40,12 +38,10 @@ namespace Mvc.ApplicationCore.Entities.IdeaEntity
             string title,
             IdeaMemberRole initMember,
             IdeaStatus initStatus,
-            IdeaTopic initTopic,
-            IdeaActivity initActivity
+            IdeaTopic initTopic
             )
         {
             Members = new List<IdeaMemberRole>() { initMember };
-            Activity = new List<IdeaActivity>() { initActivity };
             Topics = new List<IdeaTopic>() { initTopic };
             Status = initStatus;
             Boxes = new List<IdeaBox>();

@@ -10,8 +10,23 @@ using System.Threading.Tasks;
 
 namespace Mvc.ApplicationCore.Identity
 {
+    public class UserRole : BaseEntity
+    { 
+        public string RoleName {  get; set; }
+        public ICollection<ApplicationUser> Users { get; set; }
+
+        public UserRole(string roleName)
+        { 
+            RoleName = roleName;
+            Users = new List<ApplicationUser>();
+        }
+    }
+
+
     public class ApplicationUser : IdentityUser
     {
+        public int UserRoleId { get; set; }
+        public UserRole UserRole {  get; set; }
         public string FirstName { get; set; }
         public string? Description { get; set; }
         public uint CompletedIdeasCount { get; set; }
@@ -19,8 +34,6 @@ namespace Mvc.ApplicationCore.Identity
         public DateTime AccountDateCreated { get; set; }
         public ICollection<UserContact> Contacts { get; set; }
         public ICollection<IdeaMemberRole> IdeaMemberRoles { get; set; }
-        public ICollection<IdeaActivity> IdeaActivity { get; set; }
-        public ICollection<IdeaBoxLike> IdeaBoxLikes { get; set; }
         public ICollection<IdeaInvitation> IdeaInvites { get; set; }
         public ICollection<IdeaStar> IdeaStars { get; set; }
         public ICollection<IdeaBox> IdeaBoxes { get; set; }
@@ -32,8 +45,13 @@ namespace Mvc.ApplicationCore.Identity
         public ICollection<ChatMessage> ChatMessagesToAuthor { get; set; }
         public ICollection<CommentMessage> Comments { get; set; }
 
-        public ApplicationUser(string firstName, string userName, string passwordHash)
+        public ApplicationUser(
+            int userRoleId,
+            string firstName,
+            string userName,
+            string passwordHash)
         {
+            UserRoleId = userRoleId;
             FirstName = firstName;
             base.UserName = userName;
             base.PasswordHash = passwordHash;
@@ -42,8 +60,6 @@ namespace Mvc.ApplicationCore.Identity
             AccountDateCreated = DateTime.Now;
             Contacts = new List<UserContact>();
             IdeaMemberRoles = new List<IdeaMemberRole>();
-            IdeaActivity = new List<IdeaActivity>();
-            IdeaBoxLikes = new List<IdeaBoxLike>();
             IdeaInvites = new List<IdeaInvitation>();
             IdeaStars = new List<IdeaStar>();
             IdeaBoxes = new List<IdeaBox>();

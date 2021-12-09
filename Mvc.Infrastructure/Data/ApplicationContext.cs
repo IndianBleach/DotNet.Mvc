@@ -13,16 +13,15 @@ namespace Mvc.Infrastructure.Data
 {
     public class ApplicationContext : DbContext
     {
+        public DbSet<UserRole> UserRoles { get; set; }
+
         public DbSet<Idea> Ideas { get; set; }
-        public DbSet<IdeaActivity> IdeaActivity { get; set; }
         public DbSet<IdeaBox> IdeaBoxes { get; set; }
-        public DbSet<IdeaBoxLike> IdeaBoxLikes { get; set; }
         public DbSet<IdeaInvitation> IdeaInvites { get; set; }
         public DbSet<IdeaMemberRole> IdeaMemberRoles { get; set; }
         public DbSet<IdeaStar> IdeaStars { get; set; }
         public DbSet<IdeaStatus> IdeaStatuses { get; set; }
         public DbSet<IdeaTopic> IdeaTopics { get; set; }
-        public DbSet<IdeaStatusImage> ImagesIdeaStatus { get; set; }
 
         public DbSet<CommentMessage> CommentMessages { get; set; }
         public DbSet<ChatMessage> ChatMessages { get; set; }

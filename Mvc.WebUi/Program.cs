@@ -14,6 +14,8 @@ builder.Services.AddDbContext<ApplicationContext>(options =>
                 options.UseSqlServer(builder.Configuration
                 .GetConnectionString("DatabaseConnectionPath")));
 
+builder.Services.AddTransient<ITagService, TagService>();
+
 
 
 
