@@ -9,6 +9,7 @@ namespace Mvc.ApplicationCore.Interfaces
 {
     public interface ITagService
     {
+        ICollection<Tag> CreateTagList(ICollection<string> tags);
         ICollection<Tag> GetPopularTags();
     }
 }

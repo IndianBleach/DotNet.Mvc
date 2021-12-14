@@ -18,12 +18,18 @@ namespace Mvc.Infrastructure.Services
             _dbContext = dbContext;
         }
 
+        public ICollection<Tag> CreateTagList(ICollection<string> choicedTags)
+        {
+            List<Tag> tags = new List<Tag>();
+            foreach (string tagName in choicedTags)
+                tags.Add(_dbContext.Tags.FirstOrDefault(x => x.Name == tagName));
+
+            return tags;
+        }
+
         public ICollection<Tag> GetPopularTags()
         {
-            return _dbContext.Tags
-                .OrderBy(x => x.Ideas.Count())
-                .Take(5)
-                .ToList();
+            throw new NotImplementedException();
         }
     }
 }

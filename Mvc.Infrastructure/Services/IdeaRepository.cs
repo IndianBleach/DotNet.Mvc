@@ -24,10 +24,7 @@ namespace Mvc.Infrastructure.Services
             _userStore = userStore;
         }
 
-        public Guid CreateIdea(CreateIdeaDto item)
-        {
-            throw new NotImplementedException();
-        }
+        
 
         public Task<CommentMessage> CreateCommentAsync(CreateCommentDto item)
         {

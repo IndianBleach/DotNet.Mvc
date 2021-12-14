@@ -45,6 +45,10 @@ namespace Mvc.ApplicationCore.Identity
         public ICollection<ChatMessage> ChatMessagesToAuthor { get; set; }
         public ICollection<CommentMessage> Comments { get; set; }
 
+        public ApplicationUser()
+        {
+        }
+
         public ApplicationUser(
             int userRoleId,
             string firstName,

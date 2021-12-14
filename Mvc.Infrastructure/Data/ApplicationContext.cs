@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Mvc.ApplicationCore.Entities;
 using Mvc.ApplicationCore.Entities.IdeaEntity;
 using Mvc.ApplicationCore.Identity;
@@ -11,9 +12,9 @@ using System.Threading.Tasks;
 
 namespace Mvc.Infrastructure.Data
 {
-    public class ApplicationContext : DbContext
+    public class ApplicationContext : IdentityDbContext<ApplicationUser>
     {
-        public DbSet<UserRole> UserRoles { get; set; }
+        //public DbSet<UserRole> UserRoles { get; set; }
 
         public DbSet<Idea> Ideas { get; set; }
         public DbSet<IdeaBox> IdeaBoxes { get; set; }

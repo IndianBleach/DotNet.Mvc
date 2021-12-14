@@ -7,6 +7,33 @@ using System.Threading.Tasks;
 
 namespace Mvc.ApplicationCore.Entities.IdeaEntity
 {
+    public class IdeaBoxGoal : BaseEntity
+    {
+        public string GoalContent { get; set; }
+        public int AuthorId { get; set; }
+        public ApplicationUser Author { get; set; }
+        public DateTime DateCreated { get; set; }
+        public int IdeaBoxId { get; set; }
+        public IdeaBox IdeaBox { get; set; }
+
+        public IdeaBoxGoal(string goalContent, ApplicationUser author, IdeaBox ideaBox)
+        {
+            DateCreated = DateTime.Now;
+            Author = author;
+            IdeaBox = ideaBox;
+            GoalContent = goalContent;
+        }
+
+        public IdeaBoxGoal(string goalContent, int authorId, int ideaBoxId)
+        {
+            GoalContent = goalContent;
+            AuthorId = authorId;
+            IdeaBoxId = ideaBoxId;
+            DateCreated = DateTime.Now;
+        }
+    }
+
+
     public class IdeaBox : BaseEntity
     {
         public Guid Guid { get; set; }
@@ -16,6 +43,7 @@ namespace Mvc.ApplicationCore.Entities.IdeaEntity
         public string Description { get; set; }
         public bool IsConfirmed { get; set; }
         public DateTime DateCreated { get; set; }
+        public ICollection<IdeaBoxGoal> Goals { get; set; }
         public ICollection<CommentMessage> Comments { get; set; }
 
         public IdeaBox(
@@ -32,6 +60,7 @@ namespace Mvc.ApplicationCore.Entities.IdeaEntity
             Guid = Guid.NewGuid();
             DateCreated = DateTime.Now;
             Comments = new List<CommentMessage>();
+            Goals = new List<IdeaBoxGoal>();
         }
 
         public IdeaBox(
@@ -47,6 +76,7 @@ namespace Mvc.ApplicationCore.Entities.IdeaEntity
             Description = description;
             Guid = Guid.NewGuid();
             DateCreated = DateTime.Now;
+            Goals = new List<IdeaBoxGoal>();
         }
     }
 }

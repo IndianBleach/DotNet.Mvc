@@ -11,9 +11,9 @@ namespace Mvc.ApplicationCore.Interfaces
 {
     public interface IIdeaRepository
     {
-        Guid CreateIdea(CreateIdeaDto item);
+        //Guid CreateIdea(CreateIdeaDto item);
         
-        Task<CommentMessage> CreateCommentAsync(CreateCommentDto item);
+        //Task<CommentMessage> CreateCommentAsync(CreateCommentDto item);
 
         IEnumerable<Idea> GetIdeasPerPage(int page, int count);
 
@@ -24,7 +24,5 @@ namespace Mvc.ApplicationCore.Interfaces
         Task<IEnumerable<Idea>> GetUserRecommends(int userId);
 
         IEnumerable<Idea> GetUserRecommends();
-
-        
     }
 }

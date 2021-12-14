@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Mvc.ApplicationCore.DTOs;
 using Mvc.ApplicationCore.Interfaces;
 using Mvc.Infrastructure.Data;
-using Mvc.Infrastructure.Services;
 using Mvc.WebUi.Models;
 using System.Diagnostics;
+using CoreInterfaces = Mvc.ApplicationCore.Interfaces;
 
 namespace Mvc.WebUi.Controllers
 {
@@ -12,22 +14,35 @@ namespace Mvc.WebUi.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationContext _ctx;
         private readonly ITagService _tagService;
+        private readonly CoreInterfaces.IAuthorizationService _authorizationService;
 
-        public HomeController(ILogger<HomeController> logger, ApplicationContext ctx, ITagService tagService)
+        public HomeController(
+            ILogger<HomeController> logger,
+            ApplicationContext ctx,
+            ITagService tagService,
+            CoreInterfaces.IAuthorizationService _authService)
         {
             _logger = logger;
             _ctx = ctx;
             _tagService = tagService;
+            _authorizationService = _authService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return Json(_tagService.GetPopularTags());
+
+            UserRegisterDto user = new UserRegisterDto("usernameTest", "passwordTest",
+                new List<string>() { "Sport", "Space" });
+
+            //await _authorizationService.RegisterAsync(user);
+
+            return Content("Register");
         }
 
+        [Authorize]
         public IActionResult Privacy()
         {
-            return View();
+            return Content("Secret WeB pAGE");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
