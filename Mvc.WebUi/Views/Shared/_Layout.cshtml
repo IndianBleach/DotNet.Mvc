@@ -73,24 +73,11 @@
             </div>
             <div style="height: 535px;" class="col-12 ps-3 p-2">
               <div
-                class="mb-2 d-flex align-items-center justify-content-between"
+                class="starIdeaSection"
               >
                 <a>
-                  <img src="./test.jpg" height="33" width="33" class="circle" />
-                  <span class="t-lg t-bold t-primary ps-1">
-                    Online Fitness APP
-                  </span>
-                </a>
-                <a class="icon-link t-muted t-semi-bold t-sm">
-                  Unstar
-                </a>
-              </div>
-              <div
-                class="mb-2 d-flex align-items-center justify-content-between"
-              >
-                <a>
-                  <img src="./test.jpg" height="33" width="33" class="circle" />
-                  <span class="t-lg t-bold t-primary ps-1">
+                  <img src="./test.jpg" />
+                  <span>
                     Online Fitness APP
                   </span>
                 </a>
@@ -152,9 +139,10 @@
                 </div>
               </div>
               <div class="pb-3 ps-4 pe-4">
-                <form>
+                <form asp-action="idea" asp-controller="create">
                   <div class="mb-2">
                     <input
+                      name="title"
                       class="radius-lg bg-dark text-white t-md t-semi-bold form-control me-0 pe-1"
                       placeholder="Title"
                       aria-label="Search"
@@ -162,6 +150,7 @@
                   </div>
                   <div class="mb-2">
                     <textarea
+                      name="description"
                       style="resize: none; height: 66px;"
                       class="radius-lg bg-dark border text-white t-md t-semi-bold form-control me-0 pe-1"
                       placeholder="Title"
@@ -169,14 +158,7 @@
                     ></textarea>
                   </div>
                   <div class="mb-2">
-                    <select
-                      class="form-select border radius-lg bg-dark t-muted t-md t-semi-bold form-control me-0 pe-1"
-                      aria-label="Default select example"
-                      multiple
-                    >
-                      <option class="t-semi-bold" value="1">One</option>
-                      <option class="t-semi-bold" value="1">One</option>
-                    </select>
+                    @await Component.InvokeAsync("TagList");
                     <span class="t-sm t-medium t-muted">Choice some taghs</span>
                   </div>
                   <div class="mb-2 mt-3 form-check">
@@ -291,7 +273,7 @@
               </form>
               <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                  <a class="me-1 nav-link active" aria-current="page" href="#">
+                  <a asp-action="index" asp-controller="home" class="top-navbar-link me-1 nav-link active" aria-current="page">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="21"
@@ -312,7 +294,7 @@
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a class="me-1 nav-link active" aria-current="page" href="#">
+                  <a asp-action="index" asp-controller="find" class="top-navbar-link me-1 nav-link active" aria-current="page">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="21"
@@ -328,8 +310,10 @@
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a
-                    class="showHideCreateIdea me-1 nav-link active"
+                  @if (User.Identity.IsAuthenticated)
+                  {
+                    <a
+                    class="showHideCreateIdea top-navbar-link me-1 nav-link active"
                     aria-current="page"
                     href="#"
                   >
@@ -350,10 +334,39 @@
                       />
                     </svg>
                   </a>
+                    }
+                    else
+                    {                                    
+                       <a
+                       disabled
+                        class="disabled showHideCreateIdea top-navbar-link-disabled me-1 nav-link active"
+                        aria-current="page"
+                        href="#"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="21"
+                          height="21"
+                          fill="currentColor"
+                          class="bi bi-patch-plus"
+                          viewBox="0 0 16 16"
+                        >
+                          <path
+                            fill-rule="evenodd"
+                            d="M8 5.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V10a.5.5 0 0 1-1 0V8.5H6a.5.5 0 0 1 0-1h1.5V6a.5.5 0 0 1 .5-.5z"
+                          />
+                          <path
+                            d="m10.273 2.513-.921-.944.715-.698.622.637.89-.011a2.89 2.89 0 0 1 2.924 2.924l-.01.89.636.622a2.89 2.89 0 0 1 0 4.134l-.637.622.011.89a2.89 2.89 0 0 1-2.924 2.924l-.89-.01-.622.636a2.89 2.89 0 0 1-4.134 0l-.622-.637-.89.011a2.89 2.89 0 0 1-2.924-2.924l.01-.89-.636-.622a2.89 2.89 0 0 1 0-4.134l.637-.622-.011-.89a2.89 2.89 0 0 1 2.924-2.924l.89.01.622-.636a2.89 2.89 0 0 1 4.134 0l-.715.698a1.89 1.89 0 0 0-2.704 0l-.92.944-1.32-.016a1.89 1.89 0 0 0-1.911 1.912l.016 1.318-.944.921a1.89 1.89 0 0 0 0 2.704l.944.92-.016 1.32a1.89 1.89 0 0 0 1.912 1.911l1.318-.016.921.944a1.89 1.89 0 0 0 2.704 0l.92-.944 1.32.016a1.89 1.89 0 0 0 1.911-1.912l-.016-1.318.944-.921a1.89 1.89 0 0 0 0-2.704l-.944-.92.016-1.32a1.89 1.89 0 0 0-1.912-1.911l-1.318.016z"
+                          />
+                        </svg>
+                      </a>
+                  }
                 </li>
                 <li class="nav-item">
-                  <a
-                    class="showHideStarred me-3 nav-link active"
+                  @if (User.Identity.IsAuthenticated)
+                  {
+                    <a
+                    class="showHideStarred top-navbar-link me-3 nav-link active"
                     aria-current="page"
                     href="#"
                   >
@@ -370,17 +383,45 @@
                       />
                     </svg>
                   </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">
-                    <img
-                      width="25"
-                      height="25"
-                      class="circle shadow"
-                      src="./test.jpg"
-                    />
+                  }
+                  else
+                  {
+                    <a
+                    disabled
+                    class="disabled showHideStarred top-navbar-link-disabled me-3 nav-link active"
+                    aria-current="page"
+                    href="#"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="21"
+                      height="21"
+                      fill="currentColor"
+                      class="bi bi-star"
+                      viewBox="0 0 16 16"
+                    >
+                      <path
+                        d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"
+                      />
+                    </svg>
                   </a>
+                  }
+
+
                 </li>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <li class="nav-item">
+                      <a class="nav-link" href="#">
+                        <img
+                          width="25"
+                          height="25"
+                          class="circle shadow"
+                          src="./test.jpg"
+                        />
+                      </a>
+                    </li>
+                }
               </ul>
             </div>
           </div>
@@ -400,6 +441,8 @@
       integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13"
       crossorigin="anonymous"
     ></script>
+
+    <script src="~/js/globalScript.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 

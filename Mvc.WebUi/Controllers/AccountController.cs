@@ -1,19 +1,22 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Mvc.ApplicationCore.DTOs;
 using Mvc.ApplicationCore.Interfaces;
+using CoreInterfaces = Mvc.ApplicationCore.Interfaces;
 
 namespace Mvc.WebUi.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly IAuthorizationService _authorizationService;
+        private readonly CoreInterfaces.IAuthorizationService _authorizationService;
         private readonly ITagService _tagService;
 
-        public AccountController(IAuthorizationService authServ, ITagService tagService)
+        public AccountController(CoreInterfaces.IAuthorizationService authServ, ITagService tagService)
         {
             _authorizationService = authServ;
             _tagService = tagService;
         }
+
 
         [HttpPost]
         public async Task<IActionResult> Logout()
@@ -22,7 +25,6 @@ namespace Mvc.WebUi.Controllers
 
             return RedirectToAction("index", "home");
         }
-
 
         [HttpPost]
         public async Task<IActionResult> Login(UserLoginDto userModel)
@@ -39,7 +41,6 @@ namespace Mvc.WebUi.Controllers
 
             return RedirectToAction("index", "home");
         }
-
 
         [HttpGet]
         public IActionResult Login()

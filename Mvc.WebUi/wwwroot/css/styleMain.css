@@ -273,14 +273,22 @@ a > img {
     border-radius: 9px !important;
 }
 
-#mainTopNavbar svg {
+.top-navbar-link svg {
     transition: color 0.1s ease-in-out;
     color: rgb(192, 192, 192) !important;
 }
 
-    #mainTopNavbar svg:hover {
+    .top-navbar-link svg:hover {
         color: rgb(252, 252, 252) !important;
     }
+
+
+.top-navbar-link-disabled svg {
+    transition: color 0.1s ease-in-out;
+    color: rgb(91 91 91) !important;
+}
+
+    
 
 #topHeaderBackground {
     z-index: 0;
@@ -289,3 +297,27 @@ a > img {
 .t-xlight {
     font-weight: 300 !important;
 }
+
+
+.starIdeaSection {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: .5rem;
+}
+
+.starIdeaSection img {
+    border-radius: 50%;
+    width: 33px;
+    height: 33px;
+}
+    .starIdeaSection span {
+        color: rgb(28, 146, 255) !important;
+        font-size: 16px !important;
+        padding-left: .25rem !important;
+        font-weight: 700 !important;
+    }
+
+
+
+

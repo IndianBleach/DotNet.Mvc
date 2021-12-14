@@ -26,6 +26,8 @@ namespace Mvc.WebUi.Controllers
             _ctx = ctx;
             _tagService = tagService;
             _authorizationService = _authService;
+
+            ViewBag.Tags = _tagService.GetAllTags();
         }
 
         [Authorize]

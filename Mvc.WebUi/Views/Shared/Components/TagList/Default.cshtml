@@ -1,0 +1,13 @@
+﻿@model IEnumerable<Mvc.ApplicationCore.DTOs.TagDto>
+
+<select
+    name="tags"
+    class="custom-scroll form-select border radius-lg bg-dark t-muted t-md t-semi-bold form-control me-0 pe-1"
+    aria-label="Default select example"
+    multiple
+    >
+    @foreach(var tag in Model)
+    {
+        <option class="pt-1 pb-1 t-semi-bold" value="@tag.Name">@tag.Name</option>
+    }                  
+</select>
