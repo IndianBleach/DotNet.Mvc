@@ -1,0 +1,208 @@
+﻿@model Mvc.ApplicationCore.DTOs.UserLoginDto;
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Login to your account";
+}
+
+<div class="container d-flex align-items-center">
+      <div class="pt-5 pe-4 col">
+        <main>
+          <div class="col-12">
+            <header>
+              <div class="col-12">
+                <div class="col-12 d-flex align-items-start">
+                  <div>
+                    <h1 class="t-shadow t-title-presentation">Roundile</h1>
+                  </div>
+                  <div class="ps-3 pt-3">
+                    <div class="mb-3">
+                      <span class="t-tag">Beta</span>
+                    </div>
+                    <div>
+                      <a class="showHideBoxGoals icon-link-btn">Support</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12 d-flex pe-4">
+                  <div class="col-6">
+                    <h3 class="t-undertitle t-shadow">
+                      Place for creators and their ideas
+                    </h3>
+                  </div>
+                  <div class="col">
+                    <img src="./backPizza.png" class="col-12" />
+                  </div>
+                </div>
+              </div>
+            </header>
+            <hr class="t-muted" style="height: 2px;" />
+            <section>
+              <div class="presentation-section mt-5 col-12 d-flex">
+                <div class="col-6">
+                  <h3 class="text-white h3 t-xbold">Create ideas</h3>
+                  <p class="mb-0 t-bold text-muted">
+                    Create unique ideas with special interests tag
+                  </p>
+                  <div class="mt-2 d-flex flex-wrap">
+                    <div class="t-tag me-1">
+                      <a class="t-primary">Sport</a>
+                    </div>
+                    <div class="t-tag me-1">
+                      <a class="t-primary">Sport</a>
+                    </div>
+                    <div class="t-tag me-1">
+                      <a class="t-primary">Sport</a>
+                    </div>
+                    <a class="t-bold t-lg t-primary">+32</a>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="ps-1 pt-3 d-flex flex-wrap">
+                    <div class="rotate-idea-card-wrap position-relative">
+                      <a href="./">
+                        <div class="shadow position-absolute rotate-idea-card">
+                          <img src="./testback.jpg" />
+                        </div>
+                      </a>
+                    </div>
+                    <div class="rotate-idea-card-wrap position-relative">
+                      <a href="./">
+                        <div class="shadow position-absolute rotate-idea-card">
+                          <img src="./testback.jpg" />
+                        </div>
+                      </a>
+                    </div>
+                    <div class="rotate-idea-card-wrap position-relative">
+                      <a href="./">
+                        <div class="shadow position-absolute rotate-idea-card">
+                          <img src="./testback.jpg" />
+                        </div>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+            <section>
+              <div class="mt-5 col-12 d-flex align-items-center">
+                <div class="col-6 d-flex justify-content-center">
+                  <div>
+                    <img
+                      class="border rounded box-shadow col-10"
+                      src="./invitePresent.jpg"
+                    />
+                  </div>
+                </div>
+                <div class="col-6 presentation-section">
+                  <h3 class="text-white h3 t-xbold">Invite people</h3>
+                  <p class="mb-0 t-bold text-muted">
+                    Invite friends to your ideas, tell about him. Use chat and
+                    more
+                  </p>
+                </div>
+              </div>
+            </section>
+            <section>
+              <div class="presentation-section mt-5 col-12 d-flex">
+                <div class="col-6">
+                  <h3 class="text-white h3 t-xbold">Create goals</h3>
+                  <p class="mb-0 t-bold text-muted">
+                    Create goals and set special status for them
+                  </p>
+                </div>
+                <div class="col-6">
+                  <div
+                    class="mt-2 justify-content-center col-6 d-flex flex-wrap"
+                  >
+                    <div class="mb-2 t-tag t-goal-success me-1">
+                      <span>Complete</span>
+                    </div>
+                    <div class="mb-2 t-tag t-goal-wait me-1">
+                      <span>Wait</span>
+                    </div>
+                    <div class="mb-2 t-tag t-goal-failed me-1">
+                      <span>Failed</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </main>
+      </div>
+      <div class="col-8 col-xl-4 pt-5">
+        <div class="">
+          <div
+            class="bg-darklight radius-md border box-shadow login-form-window"
+          >
+            <div class="col-12 ps-2 p-2">
+              <div
+                class="p-5 d-flex col-12 justify-content-center align-items-center"
+              >
+                <div class="d-flex align-items-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="44"
+                    height="44"
+                    fill="currentColor"
+                    class="t-muted bi bi-door-open"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      d="M8.5 10c-.276 0-.5-.448-.5-1s.224-1 .5-1 .5.448.5 1-.224 1-.5 1z"
+                    />
+                    <path
+                      d="M10.828.122A.5.5 0 0 1 11 .5V1h.5A1.5 1.5 0 0 1 13 2.5V15h1.5a.5.5 0 0 1 0 1h-13a.5.5 0 0 1 0-1H3V1.5a.5.5 0 0 1 .43-.495l7-1a.5.5 0 0 1 .398.117zM11.5 2H11v13h1V2.5a.5.5 0 0 0-.5-.5zM4 1.934V15h6V1.077l-6 .857z"
+                    />
+                  </svg>
+                  <p class="ps-2 mb-0 t-md t-semi-bold text-white">
+                    Login
+                  </p>
+                </div>
+              </div>
+              <div class="pb-3 ps-4 pe-4">
+                <form asp-action="login" asp-antiforgery="true">
+                  <div class="mb-2">
+                    <input
+                      asp-for="Username"
+                      class="radius-lg bg-dark text-white t-md t-semi-bold form-control me-0 pe-1"
+                      placeholder="Username"
+                      aria-label="Search"
+                    />
+                  </div>
+                  <div class="mb-2">
+                    <input
+                      asp-for="Password"
+                      type="password"
+                      class="radius-lg bg-dark text-white t-md t-semi-bold form-control me-0 pe-1"
+                      placeholder="Password"
+                      aria-label="Search"
+                    />
+                  </div>
+                  <div class="pt-3 mt-2 col-12 text-center">
+                    <div>
+                      <button type="submit" class="showHideBoxGoals icon-link-btn">Login</button>
+                    </div>
+                  </div>
+                  <div class="border-top pt-4 mt-3 col-12 text-center">
+                    <p class="mb-0 t-sm t-semi-bold t-muted">
+                      Doesn't have account?
+                    </p>
+                    <a asp-controller="account" asp-action="register" class="btn t-bold t-primary">Create new</a>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 mt-2">
+            <a class="me-2 t-sm t-bold t-muted">Future updates</a>
+            <a class="me-2 t-sm t-bold t-muted">Support</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    @section Scripts {
+        <script src="~/js/globalScript.js"></script>
+    }

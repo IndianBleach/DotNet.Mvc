@@ -1,0 +1,48 @@
+﻿.t-title-presentation {
+    font-size: 88px !important;
+    font-weight: 900 !important;
+    color: white;
+}
+
+.t-undertitle {
+    font-size: 28px !important;
+    font-weight: 600 !important;
+    color: white;
+}
+
+.t-goal-failed {
+    color: #ff3434 !important;
+    border: 1px solid #ff3434;
+}
+
+.t-goal-success {
+    color: #34aa09 !important;
+    border: 1px solid #258f00;
+}
+
+.t-goal-wait {
+    color: #eb920d !important;
+    border: 1px solid #f1aa0f;
+}
+
+.login-form-window {
+    min-height: 420px;
+}
+
+@keyframes presentSectionGrind {
+    from {
+        padding: 0px 0px;
+    }
+
+    50% {
+        padding: 0px 5px;
+    }
+
+    to {
+        padding: 0px 0px;
+    }
+}
+
+.presentation-section {
+    animation: presentSectionGrind 2.5s infinite ease-in-out;
+}

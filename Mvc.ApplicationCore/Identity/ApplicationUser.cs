@@ -25,9 +25,9 @@ namespace Mvc.ApplicationCore.Identity
 
     public class ApplicationUser : IdentityUser
     {
-        public int UserRoleId { get; set; }
-        public UserRole UserRole {  get; set; }
-        public string FirstName { get; set; }
+        //public int UserRoleId { get; set; }
+        //public UserRole UserRole {  get; set; }
+        public string? FirstName { get; set; }
         public string? Description { get; set; }
         public uint CompletedIdeasCount { get; set; }
         public uint CreatedIdeasCount { get; set; }
@@ -47,15 +47,29 @@ namespace Mvc.ApplicationCore.Identity
 
         public ApplicationUser()
         {
+            CompletedIdeasCount = 0;
+            CreatedIdeasCount = 0;
+            AccountDateCreated = DateTime.Now;
+            Contacts = new List<UserContact>();
+            IdeaMemberRoles = new List<IdeaMemberRole>();
+            IdeaInvites = new List<IdeaInvitation>();
+            IdeaStars = new List<IdeaStar>();
+            IdeaBoxes = new List<IdeaBox>();
+            IdeaTopics = new List<IdeaTopic>();
+            Skills = new List<Tag>();
+            Followers = new List<Follower>();
+            Following = new List<Follower>();
+            ChatMessagesFromAuthor = new List<ChatMessage>();
+            ChatMessagesToAuthor = new List<ChatMessage>();
+            Comments = new List<CommentMessage>();
         }
 
         public ApplicationUser(
-            int userRoleId,
             string firstName,
             string userName,
             string passwordHash)
         {
-            UserRoleId = userRoleId;
+            //UserRoleId = userRoleId;
             FirstName = firstName;
             base.UserName = userName;
             base.PasswordHash = passwordHash;

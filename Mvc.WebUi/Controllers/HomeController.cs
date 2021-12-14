@@ -28,15 +28,11 @@ namespace Mvc.WebUi.Controllers
             _authorizationService = _authService;
         }
 
+        [Authorize]
         public async Task<IActionResult> Index()
         {
 
-            UserRegisterDto user = new UserRegisterDto("usernameTest", "passwordTest",
-                new List<string>() { "Sport", "Space" });
-
-            //await _authorizationService.RegisterAsync(user);
-
-            return Content("Register");
+            return View();
         }
 
         [Authorize]

@@ -32,30 +32,40 @@ namespace Mvc.Infrastructure.Services
         }
 
 
-        public Task LoginAsync(UserLoginDto model)
-        {            
-            throw new NotImplementedException();
+        public async Task LoginAsync(UserLoginDto model)
+        {
+            var findUser = await _userManager.FindByNameAsync(model.Username);
+
+            var isValidPassword = await _userManager.CheckPasswordAsync(findUser, model.Password);
+
+            if (isValidPassword)
+            {
+                await _signInManager.SignInAsync(findUser, false);
+            }
         }
 
-        public Task LogoutAsync()
+        public async Task LogoutAsync()
         {
-            throw new NotImplementedException();
+            await _signInManager.SignOutAsync();
         }
 
         public async Task RegisterAsync(UserRegisterDto model)
         {
-            //
-
             var config = new MapperConfiguration(conf => conf.CreateMap<UserRegisterDto, ApplicationUser>()
             .ForMember("UserName", opt => opt.MapFrom(x => x.Username))
-            .ForMember("PasswordHash", opt => opt.MapFrom(x => x.Password))
             .ForMember("Skills", opt => opt.MapFrom(x => _tagService.CreateTagList(x.Tags))));
 
             var mapper = new Mapper(config);
 
             ApplicationUser createUser = mapper.Map<ApplicationUser>(model);
 
-            await _signInManager.SignInAsync(createUser, false);
+            var result = await _userManager.CreateAsync(createUser, model.Password);
+
+            if (result.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(createUser, "user");
+                await _signInManager.SignInAsync(createUser, false);
+            }            
         }
     }
 }

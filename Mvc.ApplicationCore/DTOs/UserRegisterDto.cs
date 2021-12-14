@@ -12,6 +12,10 @@ namespace Mvc.ApplicationCore.DTOs
         public string Password { get; set; }
         public List<string> Tags { get; set; }
 
+        public UserRegisterDto()
+        {
+        }
+
         public UserRegisterDto(string username, string password, List<string> tags)
         {
             Username = username;

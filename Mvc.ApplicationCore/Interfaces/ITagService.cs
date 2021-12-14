@@ -1,4 +1,5 @@
-﻿using Mvc.ApplicationCore.Entities;
+﻿using Mvc.ApplicationCore.DTOs;
+using Mvc.ApplicationCore.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace Mvc.ApplicationCore.Interfaces
 {
     public interface ITagService
     {
+        ICollection<TagDto> GetAllTags();
         ICollection<Tag> CreateTagList(ICollection<string> tags);
         ICollection<Tag> GetPopularTags();
     }
