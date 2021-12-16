@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Mvc.ApplicationCore.Entities;
+using Mvc.ApplicationCore.Entities.IdeaEntity;
 using Mvc.ApplicationCore.Identity;
 using Mvc.Infrastructure.Data;
 using System;
@@ -40,6 +41,13 @@ namespace MvcApp.Infrastructure.Data
                 new Tag("Mashines"),
                 new Tag("Deep dive"),
                 new Tag("Health"),
+            });
+
+            dbContext.IdeaStatuses.AddRange(new IdeaStatus[]
+            {
+                new IdeaStatus(IdeaStatuses.Complete, "The idea is done, wait for the next news and updates"),
+                new IdeaStatus(IdeaStatuses.InDevelopment, "The idea is in development, create and fulfill goals"),
+                new IdeaStatus(IdeaStatuses.FindMembers, "The idea is looking for participants, tell your friends about it"),
             });
                    
             await dbContext.SaveChangesAsync();

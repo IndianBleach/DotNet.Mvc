@@ -20,6 +20,15 @@ namespace Mvc.ApplicationCore.Entities.IdeaEntity
         public ICollection<Tag> Tags { get; set; }
         public ICollection<IdeaStar> Stars { get; set; }
 
+        public Idea()
+        {
+            Guid = Guid.NewGuid();
+            DateCreated = DateTime.Now;
+            DateUpdated = DateTime.Now;
+            Boxes = new List<IdeaBox>();
+            Stars = new List<IdeaStar>();
+        }
+
         public Idea(string title, int statusId)
         {
             StatusId = statusId;

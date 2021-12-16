@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Mvc.ApplicationCore.DTOs;
 using Mvc.ApplicationCore.Entities;
 using Mvc.ApplicationCore.Entities.IdeaEntity;
@@ -13,18 +14,25 @@ using System.Threading.Tasks;
 
 namespace Mvc.Infrastructure.Services
 {
-    public class IdeaRepository : IDisposable, IIdeaRepository
+    public class IdeaServiceUpd : IDisposable
     {
         private readonly ApplicationContext _dbContext;
         private readonly IUserStore<ApplicationUser> _userStore;
+        private readonly ITagService _tagService;
 
-        public IdeaRepository(ApplicationContext dbContext, IUserStore<ApplicationUser> userStore)
+        public IdeaServiceUpd(ApplicationContext dbContext, IUserStore<ApplicationUser> userStore, ITagService tagService)
         {
             _dbContext = dbContext;
             _userStore = userStore;
+            _tagService = tagService;
         }
 
-        
+        public Guid CreateIdea(CreateIdeaDto item)
+        {
+            return Guid.NewGuid();
+        }
+
+
 
         public Task<CommentMessage> CreateCommentAsync(CreateCommentDto item)
         {
@@ -128,5 +136,7 @@ namespace Mvc.Infrastructure.Services
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+
+        
     }
 }

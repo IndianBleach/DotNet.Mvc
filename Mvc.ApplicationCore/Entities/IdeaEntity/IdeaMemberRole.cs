@@ -23,6 +23,18 @@ namespace Mvc.ApplicationCore.Entities.IdeaEntity
         public int IdeaId { get; set; }
         public Idea Idea { get; set; }
 
+        public IdeaMemberRole(IdeaMemberRoles role, ApplicationUser user)
+        {
+            User = user;
+            Role = role;
+        }
+
+        public IdeaMemberRole(IdeaMemberRoles role, int userId)
+        {
+            UserId = userId;
+            Role = role;
+        }
+
         public IdeaMemberRole(
             IdeaMemberRoles role,
             int userId,

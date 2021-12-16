@@ -10,23 +10,8 @@ using System.Threading.Tasks;
 
 namespace Mvc.ApplicationCore.Identity
 {
-    public class UserRole : BaseEntity
-    { 
-        public string RoleName {  get; set; }
-        public ICollection<ApplicationUser> Users { get; set; }
-
-        public UserRole(string roleName)
-        { 
-            RoleName = roleName;
-            Users = new List<ApplicationUser>();
-        }
-    }
-
-
     public class ApplicationUser : IdentityUser
     {
-        //public int UserRoleId { get; set; }
-        //public UserRole UserRole {  get; set; }
         public string? FirstName { get; set; }
         public string? Description { get; set; }
         public uint CompletedIdeasCount { get; set; }
@@ -69,7 +54,6 @@ namespace Mvc.ApplicationCore.Identity
             string userName,
             string passwordHash)
         {
-            //UserRoleId = userRoleId;
             FirstName = firstName;
             base.UserName = userName;
             base.PasswordHash = passwordHash;

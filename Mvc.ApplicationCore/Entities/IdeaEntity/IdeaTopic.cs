@@ -10,7 +10,7 @@ namespace Mvc.ApplicationCore.Entities.IdeaEntity
     public class IdeaTopic : BaseEntity
     {
         public Guid Guid { get; set; }
-        public int AuthorId { get; set; }
+        public string AuthorId { get; set; }
         public ApplicationUser Author { get; set; }
         public int IdeaId { get; set; }
         public Idea Idea { get; set; }
@@ -18,12 +18,33 @@ namespace Mvc.ApplicationCore.Entities.IdeaEntity
         public string Description { get; set; }
         public DateTime DateCreated { get; set; }
         public ICollection<CommentMessage> Comments { get; set; }
+        public bool IsDefault { get; set; }
+
+        public IdeaTopic(string title, string description, ApplicationUser author, bool isDefault)
+        {
+            Title = title;
+            Description = description;
+            Author = author;
+            Comments = new List<CommentMessage>();
+            DateCreated = DateTime.Now;
+            Guid = Guid.NewGuid();
+            IsDefault = isDefault;
+            AuthorId = author.Id;
+        }
+
+        public IdeaTopic(string title, string description, string authorId)
+        {
+            AuthorId = authorId;
+            Comments = new List<CommentMessage>();
+            DateCreated = DateTime.Now;
+            Guid = Guid.NewGuid();
+        }
 
         public IdeaTopic(
             string title,
             string description,
             int ideaId,
-            int authorId)
+            string authorId)
         {
             Title = title;
             Description = description;

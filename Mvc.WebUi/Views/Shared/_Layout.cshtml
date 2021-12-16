@@ -140,9 +140,12 @@
               </div>
               <div class="pb-3 ps-4 pe-4">
                 <form asp-action="idea" asp-controller="create">
+                    <div>
+                        <input hidden value="@User.Identity.Name" name="idea.Author"/>
+                    </div>
                   <div class="mb-2">
                     <input
-                      name="title"
+                      name="idea.Title"
                       class="radius-lg bg-dark text-white t-md t-semi-bold form-control me-0 pe-1"
                       placeholder="Title"
                       aria-label="Search"
@@ -150,7 +153,7 @@
                   </div>
                   <div class="mb-2">
                     <textarea
-                      name="description"
+                      name="idea.Description"
                       style="resize: none; height: 66px;"
                       class="radius-lg bg-dark border text-white t-md t-semi-bold form-control me-0 pe-1"
                       placeholder="Title"
@@ -162,12 +165,7 @@
                     <span class="t-sm t-medium t-muted">Choice some taghs</span>
                   </div>
                   <div class="mb-2 mt-3 form-check">
-                    <input
-                      class="bg-dark form-check-input"
-                      type="checkbox"
-                      value=""
-                      id="flexCheckDefault"
-                    />
+                    <input  type="checkbox" name="idea.IsSecret" value="true" class="form-check-input" id="flexSwitchCheckDefault" />
                     <span>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -182,12 +180,11 @@
                         />
                       </svg>
                     </span>
-                    <label
+                    <span
                       class="text-white t-md t-semi-bold form-check-label"
-                      for="flexCheckDefault"
                     >
                       Security idea
-                    </label>
+                    </span>
                     <br />
                     <span class="t-sm t-medium t-muted">Choice some taghs</span>
                   </div>

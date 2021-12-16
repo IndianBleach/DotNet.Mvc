@@ -5,6 +5,7 @@ using Mvc.ApplicationCore.Identity;
 using Mvc.ApplicationCore.Interfaces;
 using Mvc.Infrastructure.Data;
 using Mvc.Infrastructure.Services;
+using Mvc.WebUi.Configuration;
 using MvcApp.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,7 +22,6 @@ builder.Services.AddDbContext<ApplicationContext>(options =>
                 .GetConnectionString("DatabaseConnectionPath")));
 
 
-
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(option =>
     {
@@ -29,9 +29,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     });
 
 
-builder.Services.AddTransient<ITagService, TagService>();
-
-builder.Services.AddTransient<IAuthorizationService, AuthorizationService>();
+builder.Services.AddCoreServices();
 
 
 

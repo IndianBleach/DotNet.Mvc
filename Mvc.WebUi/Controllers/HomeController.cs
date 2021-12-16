@@ -15,24 +15,28 @@ namespace Mvc.WebUi.Controllers
         private readonly ApplicationContext _ctx;
         private readonly ITagService _tagService;
         private readonly CoreInterfaces.IAuthorizationService _authorizationService;
+        private IIdeaRepository _ideaRepository;
 
         public HomeController(
             ILogger<HomeController> logger,
             ApplicationContext ctx,
             ITagService tagService,
-            CoreInterfaces.IAuthorizationService _authService)
+            CoreInterfaces.IAuthorizationService _authService,
+            IIdeaRepository ideaRepo)
         {
             _logger = logger;
             _ctx = ctx;
             _tagService = tagService;
             _authorizationService = _authService;
+            _ideaRepository = ideaRepo;
 
-            ViewBag.Tags = _tagService.GetAllTags();
+            //ViewBag.Tags = _tagService.GetAllTags();
         }
 
         [Authorize]
         public async Task<IActionResult> Index()
         {
+            var res = _ideaRepository.GetIdeasPerPage(1);
 
             return View();
         }

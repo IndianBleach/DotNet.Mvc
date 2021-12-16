@@ -14,10 +14,12 @@ namespace Mvc.Infrastructure.Services
     public class TagService : ITagService
     {
         private readonly ApplicationContext _dbContext;
+        //private IRepository<Tag> _tagRepository;
 
         public TagService(ApplicationContext dbContext)
         {
             _dbContext = dbContext;
+            //_tagRepository = tagRepository;
         }
 
         public ICollection<Tag> CreateTagList(ICollection<string> choicedTags)
@@ -29,6 +31,7 @@ namespace Mvc.Infrastructure.Services
             return tags;
         }
 
+        #region not used
         public ICollection<TagDto> GetAllTags()
         {
             var config = new MapperConfiguration(conf => conf.CreateMap<Tag, TagDto>());
@@ -44,5 +47,6 @@ namespace Mvc.Infrastructure.Services
         {
             throw new NotImplementedException();
         }
+        #endregion
     }
 }
