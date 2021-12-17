@@ -23,7 +23,7 @@ namespace Mvc.ApplicationCore.Identity
         public ICollection<IdeaStar> IdeaStars { get; set; }
         public ICollection<IdeaBox> IdeaBoxes { get; set; }
         public ICollection<IdeaTopic> IdeaTopics { get; set; }
-        public ICollection<Tag> Skills { get; set; }
+        public ICollection<Tag> Tags { get; set; }
         public ICollection<Follower> Followers { get; set; }
         public ICollection<Follower> Following { get; set; }
         public ICollection<ChatMessage> ChatMessagesFromAuthor { get; set; }
@@ -41,7 +41,7 @@ namespace Mvc.ApplicationCore.Identity
             IdeaStars = new List<IdeaStar>();
             IdeaBoxes = new List<IdeaBox>();
             IdeaTopics = new List<IdeaTopic>();
-            Skills = new List<Tag>();
+            Tags = new List<Tag>();
             Followers = new List<Follower>();
             Following = new List<Follower>();
             ChatMessagesFromAuthor = new List<ChatMessage>();
@@ -66,7 +66,7 @@ namespace Mvc.ApplicationCore.Identity
             IdeaStars = new List<IdeaStar>();
             IdeaBoxes = new List<IdeaBox>();
             IdeaTopics = new List<IdeaTopic>();
-            Skills = new List<Tag>();
+            Tags = new List<Tag>();
             Followers = new List<Follower>();
             Following = new List<Follower>();
             ChatMessagesFromAuthor = new List<ChatMessage>();

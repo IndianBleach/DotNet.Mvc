@@ -6,6 +6,19 @@ using System.Threading.Tasks;
 
 namespace Mvc.ApplicationCore.Entities.IdeaEntity
 {
+    public class IdeaAvatarImage
+    { 
+        public int Id { get; set; }
+        public string ImageName {  get; set; }
+        public ICollection<Idea> Ideas { get; set; }
+
+        public IdeaAvatarImage(string imageName)
+        {
+            ImageName = imageName;
+            Ideas = new List<Idea>();
+        }
+    }
+
     public class Idea : BaseEntity
     {
         public Guid Guid { get; set; }
@@ -19,6 +32,8 @@ namespace Mvc.ApplicationCore.Entities.IdeaEntity
         public ICollection<IdeaBox> Boxes { get; set; }
         public ICollection<Tag> Tags { get; set; }
         public ICollection<IdeaStar> Stars { get; set; }
+        public int AvatarId { get; set; }
+        public IdeaAvatarImage Avatar { get; set; }
 
         public Idea()
         {

@@ -19,6 +19,7 @@ namespace Mvc.ApplicationCore.DTOs.Idea
         public string Guid {  get; set; }
         public string Title { get; set; }
         public string Description {  get; set; }
+        public string AvatarImageName {  get; set; }
         public int TotalCommentsCount { get; set; }
         public int TotalBoxCount { get; set; }
         public ICollection<TagDto> Tags { get; set; }

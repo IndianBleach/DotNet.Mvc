@@ -4,6 +4,7 @@ using Mvc.ApplicationCore.DTOs;
 using Mvc.ApplicationCore.Interfaces;
 using Mvc.Infrastructure.Data;
 using Mvc.WebUi.Models;
+using Mvc.WebUi.ViewModels;
 using System.Diagnostics;
 using CoreInterfaces = Mvc.ApplicationCore.Interfaces;
 
@@ -36,9 +37,12 @@ namespace Mvc.WebUi.Controllers
         [Authorize]
         public async Task<IActionResult> Index()
         {
-            var res = _ideaRepository.GetIdeasPerPage(1);
+            var ideas = _ideaRepository.GetIdeasPerPage(1);
 
-            return View();
+            HomeIdeasViewModel indexVm = new();
+            indexVm.Ideas = ideas.ToList();
+
+            return View(indexVm);
         }
 
         [Authorize]

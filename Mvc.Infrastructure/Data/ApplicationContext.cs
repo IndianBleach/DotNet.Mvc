@@ -23,6 +23,7 @@ namespace Mvc.Infrastructure.Data
         public DbSet<IdeaStar> IdeaStars { get; set; }
         public DbSet<IdeaStatus> IdeaStatuses { get; set; }
         public DbSet<IdeaTopic> IdeaTopics { get; set; }
+        public DbSet<IdeaAvatarImage> IdeaAvatars { get; set; }
 
         public DbSet<CommentMessage> CommentMessages { get; set; }
         public DbSet<ChatMessage> ChatMessages { get; set; }

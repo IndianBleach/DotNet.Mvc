@@ -16,6 +16,7 @@ namespace Mvc.Infrastructure.MapperProfiles
         {
             CreateMap<Idea, HomeIdeaDto>()
                 .ForMember("Guid", opt => opt.MapFrom(x => x.Guid))
+                .ForMember("AvatarImageName", opt => opt.MapFrom(x => x.Avatar.ImageName))
                 .ForMember("Title", opt => opt.MapFrom(x => x.Title))
                 .ForMember("Description", opt => opt.MapFrom(x => x.Topics
                     .FirstOrDefault(y => y.IsDefault == true).Description))

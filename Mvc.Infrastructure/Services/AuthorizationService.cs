@@ -53,7 +53,7 @@ namespace Mvc.Infrastructure.Services
         {
             var config = new MapperConfiguration(conf => conf.CreateMap<UserRegisterDto, ApplicationUser>()
             .ForMember("UserName", opt => opt.MapFrom(x => x.Username))
-            .ForMember("Skills", opt => opt.MapFrom(x => _tagService.CreateTagList(x.Tags))));
+            .ForMember("Tags", opt => opt.MapFrom(x => _tagService.CreateTagList(x.Tags))));
 
             var mapper = new Mapper(config);
 

@@ -34,6 +34,8 @@ namespace Mvc.ApplicationCore.Entities.IdeaEntity
 
         public IdeaTopic(string title, string description, string authorId)
         {
+            Title = title;
+            Description = description;
             AuthorId = authorId;
             Comments = new List<CommentMessage>();
             DateCreated = DateTime.Now;

@@ -57,7 +57,9 @@ namespace Mvc.Infrastructure.Repositories
                 }))
                 .ForMember("Status", opt => opt.MapFrom(x => _dbContext.IdeaStatuses
                     .FirstOrDefault(y => y.Status.Equals(x.Status)))
-                ));
+                )
+                .ForMember("Avatar", opt => opt.MapFrom(x => _dbContext.IdeaAvatars
+                    .FirstOrDefault(y => y.ImageName.Equals("DEFAULT_IDEA_AVATAR.jpg")))));
 
             var mapper = new Mapper(config);
 
@@ -84,6 +86,7 @@ namespace Mvc.Infrastructure.Repositories
             var mapper = new Mapper(config);
 
             List<Idea> ideas = _dbContext.Ideas
+                .Include(x => x.Avatar)
                 .Include(x => x.Topics)
                     .ThenInclude(x => x.Comments)
                 .Include(x => x.Boxes)

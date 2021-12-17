@@ -49,7 +49,9 @@ namespace MvcApp.Infrastructure.Data
                 new IdeaStatus(IdeaStatuses.InDevelopment, "The idea is in development, create and fulfill goals"),
                 new IdeaStatus(IdeaStatuses.FindMembers, "The idea is looking for participants, tell your friends about it"),
             });
-                   
+
+            dbContext.IdeaAvatars.Add(new IdeaAvatarImage("DEFAULT_IDEA_AVATAR.jpg"));
+
             await dbContext.SaveChangesAsync();
         }
     }
