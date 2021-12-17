@@ -30,8 +30,7 @@ namespace Mvc.Infrastructure.Services
 
             return tags;
         }
-
-        #region not used
+        
         public ICollection<TagDto> GetAllTags()
         {
             var config = new MapperConfiguration(conf => conf.CreateMap<Tag, TagDto>());
@@ -43,6 +42,7 @@ namespace Mvc.Infrastructure.Services
             return tags;
         }
 
+        #region not used
         public ICollection<Tag> GetPopularTags()
         {
             throw new NotImplementedException();

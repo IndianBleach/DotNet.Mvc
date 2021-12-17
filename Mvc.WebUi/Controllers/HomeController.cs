@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Mvc.ApplicationCore.DTOs;
+using Mvc.ApplicationCore.Entities.IdeaEntity;
 using Mvc.ApplicationCore.Interfaces;
 using Mvc.Infrastructure.Data;
 using Mvc.WebUi.Models;
@@ -31,16 +32,16 @@ namespace Mvc.WebUi.Controllers
             _authorizationService = _authService;
             _ideaRepository = ideaRepo;
 
-            //ViewBag.Tags = _tagService.GetAllTags();
         }
 
         [Authorize]
         public async Task<IActionResult> Index()
         {
-            var ideas = _ideaRepository.GetIdeasPerPage(1);
-
             HomeIdeasViewModel indexVm = new();
-            indexVm.Ideas = ideas.ToList();
+            indexVm.Ideas = _ideaRepository.GetIdeasPerPage(1).ToList();
+            indexVm.Recommends = _ideaRepository.GetRecommendIdeas(User.Identity.Name).ToList();
+            indexVm.IdeasNeedMembers = _ideaRepository.GetSideIdeasByStatusFilter(IdeaStatuses.FindMembers).ToList();
+            indexVm.SearchTags = _tagService.GetAllTags().Take(5).ToList();
 
             return View(indexVm);
         }

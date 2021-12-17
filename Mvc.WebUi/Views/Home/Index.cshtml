@@ -54,18 +54,12 @@
                     </form>
                   </div>
                   <div class="col-10 mt-3 d-flex flex-wrap">
-                    <div style="height: 33px;" class="me-1">
-                      <a class="t-tag">Sport</a>
-                    </div>
-                    <div style="height: 33px;" class="me-1">
-                      <a class="t-tag">Sport</a>
-                    </div>
-                    <div style="height: 33px;" class="me-1">
-                      <a class="t-tag">Sport</a>
-                    </div>
-                    <div style="height: 33px;" class="me-1">
-                      <a class="t-tag">Sport</a>
-                    </div>
+                    @foreach(var tag in Model.SearchTags)
+                    {
+                        <div style="height: 33px;" class="me-1">
+                            <a class="t-tag">@tag.Name</a>
+                        </div>
+                    }                    
                   </div>
                 </div>
               </div>
@@ -167,63 +161,39 @@
           <div class="col-12 pt-2">
             <h3 class="t-lg t-bold t-muted">Recommend</h3>
             <div class="ps-1 col-12 text-break">
-              <div class="mt-2 col-12 d-flex align-items-center">
+              @foreach(var recommend in Model.Recommends)
+              {
+                <div class="mt-2 col-12 d-flex align-items-center">
                 <a>
                   <img
-                    src="./test.jpg"
+                    src="~/media/userAvatars/@recommend.UserAvatarImageName"
                     height="33"
                     width="33"
                     class="circle shadow"
                   />
                 </a>
                 <div class="ps-2">
-                  <a class="t-semi-bold text-white t-md">Xxxbebra</a>
+                  <a class="t-semi-bold text-white t-md">@recommend.AuthorName</a>
                   <br />
-                  <a class="t-bold t-primary t-md">Online Space</a>
+                  <a class="t-bold t-primary t-md">@recommend.IdeaTitle</a>
                 </div>
               </div>
-              <div class="mt-2 col-12 d-flex align-items-center">
-                <a>
-                  <img
-                    src="./test.jpg"
-                    height="33"
-                    width="33"
-                    class="circle shadow"
-                  />
-                </a>
-                <div class="ps-2">
-                  <a class="t-semi-bold text-white t-md">Xxxbebra</a>
-                  <br />
-                  <a class="t-bold t-primary t-md">Online Space</a>
-                </div>
-              </div>
-              <div class="mt-2 col-12 d-flex align-items-center">
-                <a>
-                  <img
-                    src="./test.jpg"
-                    height="33"
-                    width="33"
-                    class="circle shadow"
-                  />
-                </a>
-                <div class="ps-2">
-                  <a class="t-semi-bold text-white t-md">Xxxbebra</a>
-                  <br />
-                  <a class="t-bold t-primary t-md">Online Space</a>
-                </div>
-              </div>
+              }              
             </div>
           </div>
           <div class="col-12 pt-2 mt-4">
             <h3 class="t-lg t-bold t-muted">Need members</h3>
             <div style="max-width: 180px;" class="ps-1 pt-3 d-flex flex-wrap">
-              <div class="rotate-idea-card-wrap position-relative">
+              @foreach(var sideIdea in Model.IdeasNeedMembers)
+              {
+                <div class="rotate-idea-card-wrap position-relative">
                 <a href="./">
                   <div class="shadow position-absolute rotate-idea-card">
-                    <img src="./testback.jpg" />
+                    <img src="~/media/ideaAvatars/@sideIdea.AvatarImageName" />
                   </div>
                 </a>
-              </div>
+                </div>
+              }
             </div>
           </div>
           <div class="col-12 pt-2 mt-5">

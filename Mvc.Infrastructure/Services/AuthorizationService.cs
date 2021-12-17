@@ -17,18 +17,19 @@ namespace Mvc.Infrastructure.Services
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        //private readonly ApplicationContext _dbContext;
         private readonly ITagService _tagService;
-
+        private ApplicationContext _dbContext;
 
         public AuthorizationService(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            ITagService tagService)
+            ITagService tagService,
+            ApplicationContext dbContext)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _tagService = tagService;
+            _dbContext = dbContext;
         }
 
 
@@ -53,7 +54,9 @@ namespace Mvc.Infrastructure.Services
         {
             var config = new MapperConfiguration(conf => conf.CreateMap<UserRegisterDto, ApplicationUser>()
             .ForMember("UserName", opt => opt.MapFrom(x => x.Username))
-            .ForMember("Tags", opt => opt.MapFrom(x => _tagService.CreateTagList(x.Tags))));
+            .ForMember("Tags", opt => opt.MapFrom(x => _tagService.CreateTagList(x.Tags)))
+            .ForMember("Avatar", opt => opt.MapFrom(x => _dbContext.UserAvatars
+                .FirstOrDefault(x => x.ImageName.Equals("DEFAULT_USER_AVATAR.jpg")))));
 
             var mapper = new Mapper(config);
 

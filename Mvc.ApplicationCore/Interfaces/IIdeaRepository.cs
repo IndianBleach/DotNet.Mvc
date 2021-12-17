@@ -12,8 +12,10 @@ namespace Mvc.ApplicationCore.Interfaces
 {
     public interface IIdeaRepository
     {
+        IEnumerable<IdeaRecommendationDto> GetRecommendIdeas(string forUsername);
+        IEnumerable<SideIdeaDto> GetSideIdeasByStatusFilter(IdeaStatuses filterStatus);
         IEnumerable<HomeIdeaDto> GetIdeasPerPage(int page);
+        Guid CreateIdea(CreateIdeaDto item);
         void Save();
-        Guid CreateIdea(CreateIdeaDto item);        
     }
 }

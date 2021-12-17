@@ -75,6 +75,7 @@ namespace Mvc.Infrastructure.Repositories
             _dbContext.SaveChanges();
         }
 
+
         public IEnumerable<HomeIdeaDto> GetIdeasPerPage(int page)
         {
             var config = new MapperConfiguration(cfg =>
@@ -96,6 +97,71 @@ namespace Mvc.Infrastructure.Repositories
             var dtoIdeas = mapper.Map<List<Idea>, List<HomeIdeaDto>>(ideas);
 
             return dtoIdeas;
+        }
+
+
+        public IEnumerable<IdeaRecommendationDto> GetRecommendIdeas(string? forUsername)
+        {
+            List<Tag> userTags = new List<Tag>();
+            if (forUsername != null)
+            {
+                userTags.AddRange(_userManager.FindByNameAsync(forUsername).Result.Tags.ToList());
+            }
+
+            List<Idea> recommendIdeas = new List<Idea>();
+
+            int countFill = 5 - userTags.Count;
+
+            if (userTags.Count > 0)
+            {
+                for (int i = 0; i < userTags.Count; i++)
+                {
+                    recommendIdeas.AddRange(_dbContext.Ideas
+                        .Include(x => x.Members)
+                            .ThenInclude(x => x.User)
+                            .ThenInclude(x => x.Avatar)
+                        .Where(x => x.Tags
+                        .Contains(userTags.ElementAt(i))).Take(countFill + 1));
+                }
+            }
+            else
+                recommendIdeas = _dbContext.Ideas.Where(x => x.Status.Status.Equals(IdeaStatuses.FindMembers))
+                    .Include(x => x.Members)
+                        .ThenInclude(x => x.User)
+                        .ThenInclude(x => x.Avatar)
+                    .OrderBy(x => x.Topics.Count()).Take(5).ToList();
+
+
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<Idea, IdeaRecommendationDto>();
+                cfg.AddProfile<RecommendIdeaProfile>();
+            });
+
+            var mapper = new Mapper(config);
+
+            var dtos = mapper.Map<List<Idea>, List<IdeaRecommendationDto>>(recommendIdeas.Take(5).ToList());
+
+            return dtos;
+        }
+
+        public IEnumerable<SideIdeaDto> GetSideIdeasByStatusFilter(IdeaStatuses filterStatus)
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<Idea, SideIdeaDto>();
+                cfg.AddProfile<SideIdeaProfile>();
+            });
+
+            var mapper = new Mapper(config);
+
+            var ideas = _dbContext.Ideas
+                .Include(x => x.Avatar)
+                .Where(x => x.Status.Status.Equals(filterStatus))
+                .Take(5)
+                .ToList();
+
+            return mapper.Map<List<Idea>, List<SideIdeaDto>>(ideas);
         }
     }
 }

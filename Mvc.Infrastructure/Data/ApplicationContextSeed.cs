@@ -52,6 +52,8 @@ namespace MvcApp.Infrastructure.Data
 
             dbContext.IdeaAvatars.Add(new IdeaAvatarImage("DEFAULT_IDEA_AVATAR.jpg"));
 
+            dbContext.UserAvatars.Add(new UserAvatarImage("DEFAULT_USER_AVATAR.jpg"));
+
             await dbContext.SaveChangesAsync();
         }
     }

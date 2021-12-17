@@ -10,6 +10,19 @@ using System.Threading.Tasks;
 
 namespace Mvc.ApplicationCore.Identity
 {
+    public class UserAvatarImage
+    {
+        public int Id { get; set; }
+        public string ImageName { get; set; }
+        public ICollection<ApplicationUser> Users { get; set; }
+
+        public UserAvatarImage(string imageName)
+        {
+            ImageName = imageName;
+            Users = new List<ApplicationUser>();
+        }
+    }
+
     public class ApplicationUser : IdentityUser
     {
         public string? FirstName { get; set; }
@@ -29,6 +42,8 @@ namespace Mvc.ApplicationCore.Identity
         public ICollection<ChatMessage> ChatMessagesFromAuthor { get; set; }
         public ICollection<ChatMessage> ChatMessagesToAuthor { get; set; }
         public ICollection<CommentMessage> Comments { get; set; }
+        public int AvatarId { get; set; }
+        public UserAvatarImage Avatar { get; set; }
 
         public ApplicationUser()
         {
