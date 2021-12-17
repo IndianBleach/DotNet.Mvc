@@ -1,0 +1,55 @@
+﻿.ideaSectionLink {
+    color: white;
+    font-size: 15px;
+    font-weight: 500;
+    border-bottom: 1px solid #4d4d4d;
+    padding: 7px 10px 14px 10px;
+    transition: border-bottom 0.2s ease-in-out;
+}
+
+.ideaSectionLink-active {
+    border-bottom: 1px solid #ff3434 !important;
+}
+
+.ideaSectionLink:hover {
+    color: white !important;
+    border-bottom: 1px solid #a52525;
+}
+
+.ideaTopicLink {
+    transition: padding-left 0.3s ease-in-out;
+}
+
+    .ideaTopicLink:hover {
+        padding-left: 6px !important;
+    }
+
+#topicDetail {
+}
+
+.windowContentWrapper {
+    height: 350px;
+}
+
+.topicDiscussMessage {
+    display: flex;
+    width: 100%;
+}
+
+    .topicDiscussMessage img {
+        height: 22px;
+        width: 22px;
+        border-radius: 50%;
+    }
+
+    .topicDiscussMessage p {
+        margin-bottom: 10px !important;
+        padding-left: 7px;
+        font-size: 13px;
+        color: #9f9f9f !important;
+        font-weight: 500;
+    }
+
+    .topicDiscussMessage span {
+        color: white;
+    }

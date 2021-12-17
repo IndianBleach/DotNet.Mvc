@@ -14,7 +14,7 @@ namespace Mvc.WebUi.Controllers
             _tagService= tagService;
             ViewBag.Tags = _tagService.GetAllTags();
             _userRepository = userRepo;
-        }
+        }        
 
 
         [HttpGet]

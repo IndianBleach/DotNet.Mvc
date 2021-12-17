@@ -10,6 +10,7 @@ namespace Mvc.ApplicationCore.Interfaces
 {
     public interface IUserRepository
     {
+        UserDetailDto GetUserDetail(string guid);
         ICollection<SideUserDto> GetRecommendUsers(string forUsername);
         ICollection<UserDto> GetUsersPerPage(int page);
     

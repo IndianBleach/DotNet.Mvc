@@ -20,7 +20,7 @@ namespace Mvc.Infrastructure.Repositories
     public class UserRepository : IUserRepository
     {
         private ApplicationContext _dbContext;
-        private UserManager<ApplicationUser> _userManager;
+        private UserManager<ApplicationUser> _userManager;        
 
         public UserRepository(ApplicationContext dbContext, UserManager<ApplicationUser> userManager)
         {
@@ -73,6 +73,32 @@ namespace Mvc.Infrastructure.Repositories
 
             return dtos;
 
+        }
+
+        public UserDetailDto GetUserDetail(string guid)
+        {
+            ApplicationUser getUser = _dbContext.Users
+                .Include(x => x.Tags)
+                .Include(x => x.Followers)
+                .Include(x => x.Following)
+                .Include(x => x.Avatar)
+                .FirstOrDefault(x => x.Id.Equals(guid));
+
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<ApplicationUser, UserDetailDto>()
+                .ForMember("Guid", opt => opt.MapFrom(x => x.Id))
+                .ForMember("Name", opt => opt.MapFrom(x => x.UserName))
+                .ForMember("Description", opt => opt.MapFrom(x => x.Description))
+                .ForMember("Tags", opt => opt.MapFrom(x => x.Tags.Select(tag => new TagDto(tag.Name))))
+                .ForMember("AvatarImageName", opt => opt.MapFrom(x => x.Avatar.ImageName))
+                .ForMember("CountFollowing", opt => opt.MapFrom(x => x.Following.Count))
+                .ForMember("CountFollowers", opt => opt.MapFrom(x => x.Followers.Count));
+            });
+
+            var mapper = new Mapper(config);
+
+            return mapper.Map<ApplicationUser, UserDetailDto>(getUser);
         }
 
         public ICollection<UserDto> GetUsersPerPage(int page)

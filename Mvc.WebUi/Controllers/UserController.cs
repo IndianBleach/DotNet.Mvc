@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Mvc.ApplicationCore.Interfaces;
+using Mvc.WebUi.ViewModels;
 
 namespace Mvc.WebUi.Controllers
 {
@@ -11,11 +12,15 @@ namespace Mvc.WebUi.Controllers
         {
             _userRepository = userRepo;
         }
-            
 
-        public IActionResult Index()
+        [Route("user/{guid}")]
+        [HttpGet]
+        public IActionResult Index(string guid)
         {
-            return View();
+            UserProfileViewModel indexVm = new UserProfileViewModel();
+            indexVm.User = _userRepository.GetUserDetail(guid);
+
+            return View(indexVm);
         }
     }
 }
