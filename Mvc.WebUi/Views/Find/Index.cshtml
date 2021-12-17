@@ -1,4 +1,6 @@
-﻿
+﻿@using Mvc.WebUi.ViewModels;
+@model FindMembersViewModel;
+
 @{
     Layout = "_Layout";
     ViewData["Title"] = "Find members";
@@ -51,28 +53,25 @@
                     </form>
                   </div>
                   <div class="col-10 mt-3 d-flex flex-wrap">
-                    <div style="height: 33px;" class="me-1">
-                      <a class="t-tag">Sport</a>
-                    </div>
-                    <div style="height: 33px;" class="me-1">
-                      <a class="t-tag">Sport</a>
-                    </div>
-                    <div style="height: 33px;" class="me-1">
-                      <a class="t-tag">Sport</a>
-                    </div>
-                    <div style="height: 33px;" class="me-1">
-                      <a class="t-tag">Sport</a>
-                    </div>
+                    @foreach(var tag in Model.SearchTags)
+                    {
+                        <div style="height: 33px;" class="me-1">
+                            <a class="t-tag">@tag.Name</a>
+                        </div>
+                    }                    
                   </div>
                 </div>
               </div>
             </header>
             <div class="col-12 mt-1 ps-3 pe-3">
+              
               <section>
                 <div
                   class="mb-3 col-12 border-start border-top border-end radius-md"
                 >
-                  <div
+                  @foreach(var user in Model.Users)
+                  {
+                    <div
                     class="pt-3 pb-3 p-2 align-items-center border-bottom col-12 d-flex"
                   >
                     <div>
@@ -80,37 +79,27 @@
                         <img
                           height="112"
                           width="112"
-                          src="./test.jpg"
+                          src="~/media/userAvatars/@user.UserAvatarImageName"
                           class="circle box-shadow"
                         />
                       </a>
                     </div>
                     <div class="ps-3 pe-3 text-break">
-                      <a class="h3 t-xbold text-white">Xxxbebra</a>
+                      <a asp-action="@user.Guid" asp-controller="user" class="h3 t-xbold text-white">@user.UserName</a>
                       <div class="mt-2 col-12 d-flex flex-wrap">
+                        @foreach(var userTag in user.Tags)
+                        {
                         <div class="t-tag">
-                          <span class="">Sport</span>
+                          <span class="">@userTag.Name</span>
                         </div>
-                        <div class="t-tag">
-                          <span class="">Sport</span>
-                        </div>
-                        <div class="t-tag">
-                          <span class="">Sport</span>
-                        </div>
-                        <div class="t-tag">
-                          <span class="">Sport</span>
-                        </div>
-                        <div class="t-tag">
-                          <span class="">Sport</span>
-                        </div>
-                        <div class="t-tag">
-                          <span class="">Sport</span>
-                        </div>
+                        }                        
                       </div>
                     </div>
-                  </div>
+                  </div>                  
+                  }
                 </div>
               </section>
+              
 
               <div class="d-flex">
                 <div class="me-1">
@@ -138,43 +127,34 @@
           <div class="col-12 pt-2">
             <h3 class="t-lg t-bold t-muted">For your ideas</h3>
             <div class="ps-1 col-12 text-break">
-              <div class="mt-2 col-12 d-flex align-items-center">
+              @foreach(var recommendUser in Model.RecommendUsers)
+              {
+                <div class="mt-2 col-12 d-flex align-items-center">
                 <a>
                   <img
-                    src="./test.jpg"
+                    src="~/media/userAvatars/@recommendUser.AvatarImageName"
                     height="33"
                     width="33"
                     class="circle shadow"
                   />
                 </a>
                 <div class="ps-2">
-                  <a class="t-semi-bold text-white t-md">Xxxbebra</a>
+                  <a class="t-semi-bold text-white t-md">@recommendUser.UserName</a>
                 </div>
               </div>
+              }
             </div>
           </div>
           <div class="col-12 pt-2 mt-4">
             <h3 class="t-lg t-bold t-muted">You interesed</h3>
             <div style="max-width: 180px;" class="ps-1 pt-1 d-flex flex-wrap">
               <div class="col-12 d-flex flex-wrap">
-                <div class="t-tag">
-                  <span class="">Sport</span>
-                </div>
-                <div class="t-tag">
-                  <span class="">Sport</span>
-                </div>
-                <div class="t-tag">
-                  <span class="">Sport</span>
-                </div>
-                <div class="t-tag">
-                  <span class="">Sport</span>
-                </div>
-                <div class="t-tag">
-                  <span class="">Sport</span>
-                </div>
-                <div class="t-tag">
-                  <span class="">Sport</span>
-                </div>
+                @foreach(var interestTag in Model.InterestTags)
+                {
+                    <div class="t-tag">
+                        <span class="">@interestTag.Name</span>
+                    </div>
+                }                                
               </div>
             </div>
           </div>

@@ -9,12 +9,9 @@ namespace Mvc.WebUi.Configuration
     {
         public static void AddCoreServices(this IServiceCollection services)
         {
-
-            //services.AddScoped<IRepository<>, Repository<>>();
+            services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
 
             services.AddScoped(typeof(IIdeaRepository), typeof(IdeaRepository));
-
-
 
             services.AddScoped<ITagService, TagService>();
 

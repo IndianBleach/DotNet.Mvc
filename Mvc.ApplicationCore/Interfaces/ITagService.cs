@@ -12,6 +12,7 @@ namespace Mvc.ApplicationCore.Interfaces
     {
         ICollection<TagDto> GetAllTags();
         ICollection<Tag> CreateTagList(ICollection<string> tags);
-        ICollection<Tag> GetPopularTags();
+        ICollection<TagDto> GetUserTags(string userName);
+        ICollection<Tag> GetPopularTags();        
     }
 }

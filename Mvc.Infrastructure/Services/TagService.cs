@@ -4,8 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Mvc.ApplicationCore.DTOs;
 using Mvc.ApplicationCore.Entities;
+using Mvc.ApplicationCore.Identity;
 using Mvc.ApplicationCore.Interfaces;
 using Mvc.Infrastructure.Data;
 
@@ -14,12 +17,28 @@ namespace Mvc.Infrastructure.Services
     public class TagService : ITagService
     {
         private readonly ApplicationContext _dbContext;
-        //private IRepository<Tag> _tagRepository;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public TagService(ApplicationContext dbContext)
+        public TagService(ApplicationContext dbContext, UserManager<ApplicationUser> userManager)
         {
             _dbContext = dbContext;
-            //_tagRepository = tagRepository;
+            _userManager = userManager;
+        }
+
+        public ICollection<TagDto> GetUserTags(string userName)
+        {
+            var config = new MapperConfiguration(conf => conf.CreateMap<Tag, TagDto>()
+            .ForMember("Name", opt => opt.MapFrom(x => x.Name)));
+
+            var mapper = new Mapper(config);
+
+            var tags = _dbContext.Users
+                .Include(x => x.Tags)
+                .FirstOrDefault(x => x.UserName.Equals(userName)).Tags;
+
+            List<TagDto> dtos = mapper.Map<List<Tag>, List<TagDto>>(tags.ToList());
+
+            return dtos;
         }
 
         public ICollection<Tag> CreateTagList(ICollection<string> choicedTags)
@@ -46,7 +65,7 @@ namespace Mvc.Infrastructure.Services
         public ICollection<Tag> GetPopularTags()
         {
             throw new NotImplementedException();
-        }
+        }        
         #endregion
     }
 }
