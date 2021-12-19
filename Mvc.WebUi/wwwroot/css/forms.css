@@ -128,3 +128,10 @@
     border-radius: 20px;
     border: 1px solid #3b3b3b;
 }
+
+.warwin-md {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 300px;
+}

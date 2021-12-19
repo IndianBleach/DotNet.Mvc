@@ -10,14 +10,15 @@ using System.Threading.Tasks;
 namespace Mvc.ApplicationCore.Interfaces
 {
     public interface IUserRepository
-    {        
-        ICollection<HomeIdeaDto> GetUserIdeas(string guid);
-        UserDetailDto GetUserDetail(string guid);
+    {                
         ICollection<SideUserDto> GetRecommendUsers(string forUsername);
         //
+        List<HomeIdeaDto> GetUserIdeas(string guid);
+        UserDetailDto GetUserDetail(string guid);
         List<UserDto> GetUsers(int page);
         List<UserDto> GetUsers(string query, int page);
         int GetCount();
         int GetCount(string query);
+        int GetUserIdeasCount(string guid);
     }
 }

@@ -20,7 +20,7 @@ namespace Mvc.Infrastructure.Services
 
             int generatePagesCount = countPages > 2 ? 3 : 2;
 
-            if (countPages == 1) pageInfoDtos.Add(new(true, currentPage));
+            if (countPages <= 1) pageInfoDtos.Add(new(true, currentPage));
             else if (currentPage == countPages)
             {
                 if (countPages > 2)

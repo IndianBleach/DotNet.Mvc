@@ -103,7 +103,7 @@ namespace Mvc.Infrastructure.Repositories
             return mapper.Map<ApplicationUser, UserDetailDto>(getUser);
         }
 
-        public ICollection<HomeIdeaDto> GetUserIdeas(string guid)
+        public List<HomeIdeaDto> GetUserIdeas(string guid)
         {
             var config = new MapperConfiguration(cfg =>
             {
@@ -222,6 +222,16 @@ namespace Mvc.Infrastructure.Repositories
             var mapper = new Mapper(config);
 
             return mapper.Map<List<ApplicationUser>, List<UserDto>>(users);
+        }
+
+        public int GetUserIdeasCount(string guid)
+        {
+            var count = _dbContext.Users
+                .Include(x => x.IdeaMemberRoles)
+                .Where(x => x.IdeaMemberRoles.Any(e => e.User.Id.Equals(guid) && e.Role.Equals(IdeaMemberRoles.Author)))
+                .Count();
+
+            return count;
         }
         #endregion
     }
