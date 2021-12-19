@@ -28,13 +28,25 @@ namespace Mvc.Infrastructure.Repositories
             _dbContext = dbContext;
         }
 
-                         
+                  //fix nontauth       
         public IEnumerable<IdeaRecommendationDto> GetRecommendIdeas(string? forUsername)
         {
             List<Tag> userTags = new List<Tag>();
-            if (forUsername != null)
+
+            var res = _dbContext.Users
+                .Include(x => x.Tags)
+                .FirstOrDefault(x => x.UserName.Equals(forUsername));
+
+            try
             {
-                userTags.AddRange(_userManager.FindByNameAsync(forUsername).Result.Tags.ToList());
+                if (res != null)
+                {
+                    userTags.AddRange(res.Tags.ToList());
+                }
+            }
+            catch (Exception exp)
+            { 
+                //
             }
 
             List<Idea> recommendIdeas = new List<Idea>();

@@ -107,14 +107,22 @@
             <span class="t-xl t-xlight text-white">@Model.User.Name</span>
           </div>
           <div class="d-flex mt-3 align-items-center justify-content-center">
-            <div>
-              <a class="showHideBoxGoals icon-link-btn">Follow</a>
-            </div>
-            <div>
-              <button class="btn t-bold t-md t-primary">
-                Write
-              </button>
-            </div>
+            @if (Model.IsSelfProfile)
+            {
+                <span class="t-muted t-md"><em>Your profile</em></span>
+            }
+            else
+            {
+                <div>
+                  <a class="showHideBoxGoals icon-link-btn">Follow</a>
+                </div>
+                <div>
+                  <button class="btn t-bold t-md t-primary">
+                    Write
+                  </button>
+                </div>
+            }
+
           </div>
           <div class="mt-4 text-start">
               @if (Model.User.Description != null)
@@ -142,14 +150,17 @@
               }              
             </div>
           </div>
-          <div class="mt-4">
-            <div class="mb-3">
-              <h3 class="t-lg t-bold t-muted">Can user help?</h3>
-            </div>
-            <div>
-              <a class="showHideInvite icon-link-btn">Invite</a>
-            </div>
-          </div>
+         @if (!Model.IsSelfProfile)
+         {
+             <div class="mt-4">
+                <div class="mb-3">
+                  <h3 class="t-lg t-bold t-muted">Can user help?</h3>
+                </div>
+                <div>
+                  <a class="showHideInvite icon-link-btn">Invite</a>
+                </div>
+             </div>
+         }  
         </aside>
       </div>
       <div class="col-9 pt-5">
@@ -159,8 +170,10 @@
               <div class="col-12 z-1 mt-3">
                 <div class="p-3 d-flex">
                     <!---->
-                  <div class="mb-2">
-                    <a class="ideaSectionLink me-3 ideaSectionLink-active">
+                  @if (Model.IsSelfProfile)
+                  {
+                    <div class="mb-2">
+                    <a asp-action="@Model.User.Guid" asp-route-section="ideas" asp-controller="user" class="ideaSectionLink me-3 ideaSectionLink-active">
                       <span class="pe-1">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -179,7 +192,7 @@
                     </a>
                   </div>
                   <div class="mb-2">
-                    <a class="ideaSectionLink me-3">
+                    <a asp-action="@Model.User.Guid" asp-route-section="edit" asp-controller="user" class="ideaSectionLink me-3">
                       <span class="pe-1">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -197,7 +210,31 @@
                       </span>
                       Edit
                     </a>
+                  </div>                  
+                  }
+                  else
+                  {
+                  
+                    <div class="mb-2">
+                    <a class="ideaSectionLink me-3 ideaSectionLink-active">
+                      <span class="pe-1">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          fill="currentColor"
+                          class="t-muted bi bi-lightbulb"
+                          viewBox="0 0 16 16"
+                        >
+                          <path
+                            d="M2 6a6 6 0 1 1 10.174 4.31c-.203.196-.359.4-.453.619l-.762 1.769A.5.5 0 0 1 10.5 13a.5.5 0 0 1 0 1 .5.5 0 0 1 0 1l-.224.447a1 1 0 0 1-.894.553H6.618a1 1 0 0 1-.894-.553L5.5 15a.5.5 0 0 1 0-1 .5.5 0 0 1 0-1 .5.5 0 0 1-.46-.302l-.761-1.77a1.964 1.964 0 0 0-.453-.618A5.984 5.984 0 0 1 2 6zm6-5a5 5 0 0 0-3.479 8.592c.263.254.514.564.676.941L5.83 12h4.342l.632-1.467c.162-.377.413-.687.676-.941A5 5 0 0 0 8 1z"
+                          />
+                        </svg>
+                      </span>
+                      Ideas
+                    </a>
                   </div>
+                  }
                   <!---->
                 </div>
               </div>

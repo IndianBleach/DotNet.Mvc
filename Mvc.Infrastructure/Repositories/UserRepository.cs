@@ -21,10 +21,12 @@ namespace Mvc.Infrastructure.Repositories
     public class UserRepository : IUserRepository
     {
         private ApplicationContext _dbContext;
-        private UserManager<ApplicationUser> _userManager;        
+        private UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public UserRepository(ApplicationContext dbContext, UserManager<ApplicationUser> userManager)
+        public UserRepository(ApplicationContext dbContext, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
+            _signInManager = signInManager;
             _userManager = userManager;
             _dbContext = dbContext;
         }
@@ -77,6 +79,49 @@ namespace Mvc.Infrastructure.Repositories
 
         }
 
+        public async Task UpdateUserSettings(string guid, UserEditTagSettingsDto model)
+        {
+            ApplicationUser getUser = await _userManager.FindByIdAsync(guid);
+
+            //getUser.UserName = model.Us
+
+
+        }
+
+        public async Task<bool> UpdateUserSettings(string name, UserEditGeneralSettingsDto model)
+        {
+            ApplicationUser getUser = _dbContext.Users
+                .Include(x => x.Tags)
+                .FirstOrDefault(x => x.UserName.Equals(name));
+
+            if (!string.IsNullOrEmpty(model.NewUsername))
+                getUser.UserName = model.NewUsername;
+
+            if (!string.IsNullOrEmpty(model.NewDescription))
+                getUser.Description = model.NewDescription;
+
+            if (!string.IsNullOrEmpty(model.NewPassword))
+                await _userManager.ChangePasswordAsync(getUser, getUser.PasswordHash, model.NewPassword);
+
+            IdentityResult res = await _userManager.UpdateAsync(getUser);
+
+            if (res.Succeeded)
+            {
+                //await _signInManager.SignOutAsync();
+                await _signInManager.SignInAsync(getUser, false);
+            
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+            
+        }
+
+
+        #region ready
         public UserDetailDto GetUserDetail(string guid)
         {
             ApplicationUser getUser = _dbContext.Users
@@ -128,8 +173,6 @@ namespace Mvc.Infrastructure.Repositories
             return dtoIdeas;
         }
 
-
-        #region ready
         public int GetCount()
         {
             return _dbContext.Users.Count();
@@ -232,6 +275,20 @@ namespace Mvc.Infrastructure.Repositories
                 .Count();
 
             return count;
+        }
+
+        public bool CheckSelfProfile(string routeGuid, string userName)
+        {
+            return _userManager.FindByIdAsync(routeGuid).Result.UserName
+                .Equals(userName);
+        }
+
+        public async Task<string> GetUserGuid(string userName)
+        {
+            var user = await _userManager.FindByNameAsync(userName);
+            var res = await _userManager.GetUserIdAsync(user);
+
+            return res;
         }
         #endregion
     }
