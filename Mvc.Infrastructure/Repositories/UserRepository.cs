@@ -9,6 +9,7 @@ using Mvc.ApplicationCore.Entities.IdeaEntity;
 using Mvc.ApplicationCore.Identity;
 using Mvc.ApplicationCore.Interfaces;
 using Mvc.Infrastructure.Data;
+using Mvc.Infrastructure.MapperProfiles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -99,6 +100,31 @@ namespace Mvc.Infrastructure.Repositories
             var mapper = new Mapper(config);
 
             return mapper.Map<ApplicationUser, UserDetailDto>(getUser);
+        }
+
+        public ICollection<HomeIdeaDto> GetUserIdeas(string guid)
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<Idea, HomeIdeaDto>();
+                cfg.AddProfile<HomeIdeaProfile>();
+            });
+
+            var mapper = new Mapper(config);
+
+            List<Idea> ideas = _dbContext.Ideas
+                .Include(x => x.Avatar)
+                .Include(x => x.Topics)
+                    .ThenInclude(x => x.Comments)
+                .Include(x => x.Boxes)
+                .Include(x => x.Tags)
+                .Where(x => x.Members.Any(e => e.User.Id.Equals(guid) && e.Role.Equals(IdeaMemberRoles.Author)))
+                .Take(5)
+                .ToList();
+
+            var dtoIdeas = mapper.Map<List<Idea>, List<HomeIdeaDto>>(ideas);
+
+            return dtoIdeas;
         }
 
         public ICollection<UserDto> GetUsersPerPage(int page)

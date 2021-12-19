@@ -11,6 +11,8 @@ namespace Mvc.WebUi.Configuration
         {
             services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
 
+            services.AddTransient(typeof(IPageService), typeof(PageService));
+
             services.AddScoped(typeof(IIdeaRepository), typeof(IdeaRepository));
 
             services.AddScoped<ITagService, TagService>();

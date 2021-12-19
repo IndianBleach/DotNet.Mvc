@@ -28,9 +28,10 @@
                     <h1 class="z-1 t-lg t-bold text-white">Popular ideas</h1>
                   </div>
                   <div>
-                    <form class="shadow form-dark form-lg col-6">
+                    <form asp-action="index" asp-controller="home" class="shadow form-dark form-lg col-6">
                       <div class="col">
                         <input
+                            name="query"
                           class="t-semi-bold form-control me-0 pe-1"
                           type="search"
                           placeholder="Search any idea"
@@ -57,7 +58,7 @@
                     @foreach(var tag in Model.SearchTags)
                     {
                         <div style="height: 33px;" class="me-1">
-                            <a class="t-tag">@tag.Name</a>
+                            <a asp-action="index" asp-route-query="@tag.Name" class="t-tag">@tag.Name</a>
                         </div>
                     }                    
                   </div>
@@ -136,21 +137,24 @@
               }
 
               <div class="d-flex">
-                <div class="me-1">
-                  <button class="btn text-white t-md t-semi-bold border">
-                    1
-                  </button>
-                </div>
-                <div class="me-1">
-                  <button class="btn text-white t-md t-semi-bold border">
-                    2
-                  </button>
-                </div>
-                <div class="me-1">
-                  <button class="btn text-white t-md t-semi-bold border">
-                    3
-                  </button>
-                </div>
+                @foreach(var pageInfo in Model.Pages)
+                {
+                    <div class="me-1">
+                        @if (pageInfo.IsActive)
+                        {
+                            <a disabled asp-action="index" asp-route-page="@pageInfo.NumberValue" class="disabled btn text-muted t-md t-semi-bold border">
+                                @pageInfo.NumberValue
+                            </a>
+                        }
+                        else
+                        {
+                            <a asp-action="index" asp-route-page="@pageInfo.NumberValue" class=" text-white btn t-md t-semi-bold border">
+                                @pageInfo.NumberValue
+                            </a>                    
+                        }
+                    </div>
+                }
+                
               </div>
             </div>
           </div>

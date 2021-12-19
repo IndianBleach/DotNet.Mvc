@@ -16,6 +16,8 @@ namespace Mvc.ApplicationCore.Interfaces
         IEnumerable<SideIdeaDto> GetSideIdeasByStatusFilter(IdeaStatuses filterStatus);
         IEnumerable<HomeIdeaDto> GetIdeasPerPage(int page);
         Guid CreateIdea(CreateIdeaDto item);
+        IEnumerable<HomeIdeaDto> GetIdeasWithQuery(string query, int page);
+        int GetCount();
         void Save();
     }
 }

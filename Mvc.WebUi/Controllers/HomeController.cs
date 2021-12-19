@@ -14,37 +14,57 @@ namespace Mvc.WebUi.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly ApplicationContext _ctx;
+        //private readonly ApplicationContext _ctx;
         private readonly ITagService _tagService;
         private readonly CoreInterfaces.IAuthorizationService _authorizationService;
         private IIdeaRepository _ideaRepository;
+        private IPageService _pageSerivce;
+
 
         public HomeController(
             ILogger<HomeController> logger,
             ApplicationContext ctx,
             ITagService tagService,
             CoreInterfaces.IAuthorizationService _authService,
-            IIdeaRepository ideaRepo)
+            IIdeaRepository ideaRepo,
+            IPageService pageService)
         {
             _logger = logger;
-            _ctx = ctx;
+            //_ctx = ctx;
             _tagService = tagService;
             _authorizationService = _authService;
             _ideaRepository = ideaRepo;
+            _pageSerivce = pageService;
 
         }
 
-        [Authorize]
-        public async Task<IActionResult> Index()
+
+        //[Authorize]
+        public async Task<IActionResult> Index(string? query, int? page)
         {
             HomeIdeasViewModel indexVm = new();
-            indexVm.Ideas = _ideaRepository.GetIdeasPerPage(1).ToList();
+
+            if (page == null) page = 1;
+
+
+            if (string.IsNullOrEmpty(query))
+            {
+                indexVm.Ideas = _ideaRepository.GetIdeasPerPage((int)page).ToList();
+            }
+            else
+            {
+                indexVm.Ideas = _ideaRepository.GetIdeasWithQuery(query, (int)page).ToList();
+            }
+
+            indexVm.Pages = _pageSerivce.GeneratePages((int)page, _ideaRepository.GetCount(), 10);
             indexVm.Recommends = _ideaRepository.GetRecommendIdeas(User.Identity.Name).ToList();
             indexVm.IdeasNeedMembers = _ideaRepository.GetSideIdeasByStatusFilter(IdeaStatuses.FindMembers).ToList();
             indexVm.SearchTags = _tagService.GetAllTags().Take(5).ToList();
 
             return View(indexVm);
         }
+
+
 
         [Authorize]
         public IActionResult Privacy()

@@ -5,6 +5,7 @@ namespace Mvc.WebUi.ViewModels
 {
     public class HomeIdeasViewModel
     {
+        public List<PageInfoDto> Pages;
         public ICollection<IdeaRecommendationDto> Recommends { get; set; }
         public ICollection<TagDto> SearchTags { get; set; }
         public ICollection<HomeIdeaDto> Ideas { get; set; }

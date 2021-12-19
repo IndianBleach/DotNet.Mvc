@@ -75,7 +75,6 @@ namespace Mvc.Infrastructure.Repositories
             _dbContext.SaveChanges();
         }
 
-
         public IEnumerable<HomeIdeaDto> GetIdeasPerPage(int page)
         {
             var config = new MapperConfiguration(cfg =>
@@ -92,13 +91,14 @@ namespace Mvc.Infrastructure.Repositories
                     .ThenInclude(x => x.Comments)
                 .Include(x => x.Boxes)
                 .Include(x => x.Tags)
+                .Skip(10 * (page-1))
+                .Take(10)
                 .ToList();
 
             var dtoIdeas = mapper.Map<List<Idea>, List<HomeIdeaDto>>(ideas);
 
             return dtoIdeas;
         }
-
 
         public IEnumerable<IdeaRecommendationDto> GetRecommendIdeas(string? forUsername)
         {
@@ -162,6 +162,60 @@ namespace Mvc.Infrastructure.Repositories
                 .ToList();
 
             return mapper.Map<List<Idea>, List<SideIdeaDto>>(ideas);
+        }
+
+        public IEnumerable<HomeIdeaDto> GetIdeasWithQuery(string query, int page)
+        {
+            bool isTagQuery = false;
+
+            List<string> tagList = _dbContext.Tags.Select(x => x.Name).ToList();
+
+            if (tagList.Contains(query)) isTagQuery = true;
+
+            List<Idea> ideas = new List<Idea>();
+            if (isTagQuery)
+            {
+                ideas = _dbContext.Ideas
+                .Include(x => x.Avatar)
+                .Include(x => x.Topics)
+                    .ThenInclude(x => x.Comments)
+                .Include(x => x.Boxes)
+                .Include(x => x.Tags)
+                .Where(x => x.Tags
+                    .Contains(_dbContext.Tags
+                    .FirstOrDefault(x => x.Name.Equals(query))))
+                .Skip(10 * (page - 1))
+                .Take(10)
+                .ToList();
+            }
+            else
+            {
+                ideas = _dbContext.Ideas
+                .Include(x => x.Avatar)
+                .Include(x => x.Topics)
+                    .ThenInclude(x => x.Comments)
+                .Include(x => x.Boxes)
+                .Include(x => x.Tags)
+                .Where(x => x.Title.StartsWith(query))
+                .Skip(10 * (page - 1))
+                .Take(10)
+                .ToList();
+            }
+
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<Idea, HomeIdeaDto>();
+                cfg.AddProfile<HomeIdeaProfile>();
+            });
+
+            var mapper = new Mapper(config);
+
+            return mapper.Map<List<Idea>, List<HomeIdeaDto>>(ideas);
+        }
+
+        public int GetCount()
+        {
+            return _dbContext.Ideas.Count();
         }
     }
 }
