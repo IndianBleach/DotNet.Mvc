@@ -401,8 +401,6 @@
                     </svg>
                   </a>
                   }
-
-
                 </li>
                 @if (User.Identity.IsAuthenticated)
                 {
@@ -417,6 +415,11 @@
                       </a>
                     </li>
                 }
+                <li>
+                    <form asp-action="logout" asp-controller="account">
+                        <button type="submit" class="btn btn-danger">Logout</button>
+                    </form>
+                </li>
               </ul>
             </div>
           </div>

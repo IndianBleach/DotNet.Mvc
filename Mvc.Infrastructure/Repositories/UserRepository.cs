@@ -29,6 +29,7 @@ namespace Mvc.Infrastructure.Repositories
             _dbContext = dbContext;
         }
 
+                
         public ICollection<SideUserDto> GetRecommendUsers(string forUsername)
         {
             List<Tag> userTags = new List<Tag>();
@@ -127,7 +128,36 @@ namespace Mvc.Infrastructure.Repositories
             return dtoIdeas;
         }
 
-        public ICollection<UserDto> GetUsersPerPage(int page)
+
+        #region ready
+        public int GetCount()
+        {
+            return _dbContext.Users.Count();
+        }
+
+        public int GetCount(string query)
+        {
+            bool isTagQuery = false;
+
+            List<string> tagList = _dbContext.Tags.Select(x => x.Name).ToList();
+
+            if (tagList.Contains(query)) isTagQuery = true;
+
+            if (isTagQuery)
+            {
+                return _dbContext.Users
+                    .Include(x => x.Tags)
+                    .Where(x => x.Tags
+                    .Contains(_dbContext.Tags.FirstOrDefault(x => x.Name.Equals(query))))
+                    .Count();
+            }
+            else
+                return _dbContext.Users
+                    .Where(x => x.UserName.StartsWith(query))
+                    .Count();
+        }
+
+        public List<UserDto> GetUsers(int page)
         {
             var config = new MapperConfiguration(cfg =>
             {
@@ -135,7 +165,7 @@ namespace Mvc.Infrastructure.Repositories
                 .ForMember("Guid", opt => opt.MapFrom(x => x.Id))
                 .ForMember("UserName", opt => opt.MapFrom(x => x.UserName))
                 .ForMember("UserAvatarImageName", opt => opt.MapFrom(x => x.Avatar.ImageName))
-                .ForMember("Tags", opt => opt.MapFrom(x => x.Tags.Select(tag => new TagDto(tag.Name))));                
+                .ForMember("Tags", opt => opt.MapFrom(x => x.Tags.Select(tag => new TagDto(tag.Name))));
             });
 
             var mapper = new Mapper(config);
@@ -143,11 +173,56 @@ namespace Mvc.Infrastructure.Repositories
             var users = _dbContext.Users
                 .Include(x => x.Tags)
                 .Include(x => x.Avatar)
+                .Skip(10 * (page - 1))
                 .Take(10)
                 .ToList();
 
             return mapper.Map<List<ApplicationUser>, List<UserDto>>(users);
 
         }
+
+        public List<UserDto> GetUsers(string query, int page)
+        {
+            bool isTagQuery = false;
+
+            List<string> tagList = _dbContext.Tags.Select(x => x.Name).ToList();
+
+            if (tagList.Contains(query)) isTagQuery = true;
+
+            List<ApplicationUser> users = new List<ApplicationUser>();
+            if (isTagQuery)
+            {
+                users = _dbContext.Users
+                    .Include(x => x.Tags)
+                    .Include(x => x.Avatar)
+                    .Where(x => x.Tags.Contains(_dbContext.Tags.FirstOrDefault(x => x.Name.Equals(query))))
+                    .Skip(10 * (page - 1))
+                    .Take(10)
+                    .ToList();
+            }
+            else
+            {
+                users = _dbContext.Users
+                   .Include(x => x.Tags)
+                   .Include(x => x.Avatar)
+                   .Where(x => x.UserName.StartsWith(query))
+                   .Skip(10 * (page - 1))
+                   .ToList();
+            }
+
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<ApplicationUser, UserDto>()
+                .ForMember("Guid", opt => opt.MapFrom(x => x.Id))
+                .ForMember("UserName", opt => opt.MapFrom(x => x.UserName))
+                .ForMember("UserAvatarImageName", opt => opt.MapFrom(x => x.Avatar.ImageName))
+                .ForMember("Tags", opt => opt.MapFrom(x => x.Tags.Select(tag => new TagDto(tag.Name))));
+            });
+
+            var mapper = new Mapper(config);
+
+            return mapper.Map<List<ApplicationUser>, List<UserDto>>(users);
+        }
+        #endregion
     }
 }

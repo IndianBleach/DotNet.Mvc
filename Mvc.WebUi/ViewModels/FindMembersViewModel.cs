@@ -5,6 +5,7 @@ namespace Mvc.WebUi.ViewModels
 {
     public class FindMembersViewModel
     {
+        public List<PageInfoDto> Pages;
         public ICollection<SideUserDto> RecommendUsers { get; set; }
         public ICollection<TagDto> SearchTags {  get; set; }
         public ICollection<TagDto> InterestTags { get; set; }

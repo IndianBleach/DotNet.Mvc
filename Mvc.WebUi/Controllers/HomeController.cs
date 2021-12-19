@@ -39,7 +39,7 @@ namespace Mvc.WebUi.Controllers
         }
 
 
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> Index(string? query, int? page)
         {
             HomeIdeasViewModel indexVm = new();
@@ -49,14 +49,15 @@ namespace Mvc.WebUi.Controllers
 
             if (string.IsNullOrEmpty(query))
             {
-                indexVm.Ideas = _ideaRepository.GetIdeasPerPage((int)page).ToList();
+                indexVm.Ideas = _ideaRepository.GetIdeas((int)page);
+                indexVm.Pages = _pageSerivce.GeneratePages((int)page, _ideaRepository.GetCount(), 10);
             }
             else
             {
-                indexVm.Ideas = _ideaRepository.GetIdeasWithQuery(query, (int)page).ToList();
+                indexVm.Ideas = _ideaRepository.GetIdeas(query, (int)page).ToList();
+                indexVm.Pages = _pageSerivce.GeneratePages((int)page, _ideaRepository.GetCount(query), 10);
             }
-
-            indexVm.Pages = _pageSerivce.GeneratePages((int)page, _ideaRepository.GetCount(), 10);
+            
             indexVm.Recommends = _ideaRepository.GetRecommendIdeas(User.Identity.Name).ToList();
             indexVm.IdeasNeedMembers = _ideaRepository.GetSideIdeasByStatusFilter(IdeaStatuses.FindMembers).ToList();
             indexVm.SearchTags = _tagService.GetAllTags().Take(5).ToList();
@@ -64,13 +65,6 @@ namespace Mvc.WebUi.Controllers
             return View(indexVm);
         }
 
-
-
-        [Authorize]
-        public IActionResult Privacy()
-        {
-            return Content("Secret WeB pAGE");
-        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

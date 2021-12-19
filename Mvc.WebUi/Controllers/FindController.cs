@@ -8,23 +8,37 @@ namespace Mvc.WebUi.Controllers
     {
         private readonly ITagService _tagService;
         private readonly IUserRepository _userRepository;
+        private readonly IPageService _pageService;
 
-        public FindController(ITagService tagService, IUserRepository userRepo)
+        public FindController(ITagService tagService, IUserRepository userRepo, IPageService pageService)
         {
             _tagService= tagService;
             ViewBag.Tags = _tagService.GetAllTags();
             _userRepository = userRepo;
+            _pageService = pageService;
         }        
 
 
-        [HttpGet]
-        public IActionResult Index()
+        //[HttpGet]
+        public IActionResult Index(string? query, int? page)
         {
+            if (page == null) page = 1;
+
             FindMembersViewModel indexVm = new FindMembersViewModel();
 
+            if (string.IsNullOrEmpty(query))
+            {
+                indexVm.Users = _userRepository.GetUsers((int)page);
+                indexVm.Pages = _pageService.GeneratePages((int)page, _userRepository.GetCount(), 10);
+            }
+            else
+            {
+                indexVm.Users = _userRepository.GetUsers(query, (int)page);
+                indexVm.Pages = _pageService.GeneratePages((int)page, _userRepository.GetCount(query), 10);
+            }
+
             indexVm.InterestTags = _tagService.GetUserTags(User.Identity.Name);
-            indexVm.SearchTags = _tagService.GetAllTags();
-            indexVm.Users = _userRepository.GetUsersPerPage(1);
+            indexVm.SearchTags = _tagService.GetAllTags();            
             indexVm.RecommendUsers = _userRepository.GetRecommendUsers(User.Identity.Name);
 
             return View(indexVm);

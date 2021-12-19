@@ -23,7 +23,6 @@ namespace Mvc.Infrastructure.Services
             if (countPages == 1) pageInfoDtos.Add(new(true, currentPage));
             else if (currentPage == countPages)
             {
-                //1-2a
                 if (countPages > 2)
                 {
                     pageInfoDtos.Add(new(false, currentPage - 2));
