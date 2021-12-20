@@ -23,12 +23,14 @@ namespace Mvc.Infrastructure.Repositories
         private ApplicationContext _dbContext;
         private UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private ITagService _tagService;
 
-        public UserRepository(ApplicationContext dbContext, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public UserRepository(ITagService tagService, ApplicationContext dbContext, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _dbContext = dbContext;
+            _tagService = tagService;
         }
 
                 
@@ -79,11 +81,29 @@ namespace Mvc.Infrastructure.Repositories
 
         }
 
-        public async Task UpdateUserSettings(string guid, UserEditTagSettingsDto model)
+        public async Task<bool> UpdateUserSettings(string name, UserEditTagSettingsDto model)
         {
-            ApplicationUser getUser = await _userManager.FindByIdAsync(guid);
+            ApplicationUser getUser = _dbContext.Users
+                .Include(x => x.Tags)
+                .FirstOrDefault(x => x.UserName.Equals(name));
 
-            //getUser.UserName = model.Us
+            if (model.NewTags.Count > 0)
+            {
+                getUser.Tags = _tagService.CreateTagList(model.NewTags);
+            }
+
+            IdentityResult res = await _userManager.UpdateAsync(getUser);
+
+            if (res.Succeeded)
+            {
+                await _signInManager.SignInAsync(getUser, false);
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
 
 
         }
@@ -100,14 +120,13 @@ namespace Mvc.Infrastructure.Repositories
             if (!string.IsNullOrEmpty(model.NewDescription))
                 getUser.Description = model.NewDescription;
 
-            if (!string.IsNullOrEmpty(model.NewPassword))
-                await _userManager.ChangePasswordAsync(getUser, getUser.PasswordHash, model.NewPassword);
+            if (!string.IsNullOrEmpty(model.NewPassword) && !string.IsNullOrEmpty(model.OldPassword))
+                await _userManager.ChangePasswordAsync(getUser, model.OldPassword, model.NewPassword);
 
             IdentityResult res = await _userManager.UpdateAsync(getUser);
 
             if (res.Succeeded)
             {
-                //await _signInManager.SignOutAsync();
                 await _signInManager.SignInAsync(getUser, false);
             
                 return true;
@@ -116,8 +135,6 @@ namespace Mvc.Infrastructure.Repositories
             {
                 return false;
             }
-
-            
         }
 
 

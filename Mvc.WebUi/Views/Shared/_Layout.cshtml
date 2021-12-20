@@ -405,12 +405,12 @@
                 @if (User.Identity.IsAuthenticated)
                 {
                     <li class="nav-item">
-                      <a class="nav-link" href="#">
+                      <a asp-action="me" asp-controller="user" class="nav-link">
                         <img
                           width="25"
                           height="25"
                           class="circle shadow"
-                          src="media/userAvatars/test.jpg"
+                          src="~/media/userAvatars/@User.Claims.Where(x => x.Type.Equals("AvatarImageName")).Select(x => x.Value).SingleOrDefault()"
                         />
                       </a>
                     </li>

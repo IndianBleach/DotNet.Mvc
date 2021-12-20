@@ -8,6 +8,7 @@ using Mvc.Infrastructure.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -64,8 +65,11 @@ namespace Mvc.Infrastructure.Services
 
             var result = await _userManager.CreateAsync(createUser, model.Password);
 
+            Claim cl = new Claim("AvatarImageName", "DEFAULT_USER_AVATAR.jpg");
+
             if (result.Succeeded)
             {
+                await _userManager.AddClaimAsync(createUser, cl);
                 await _userManager.AddToRoleAsync(createUser, "user");
                 await _signInManager.SignInAsync(createUser, false);
             }            

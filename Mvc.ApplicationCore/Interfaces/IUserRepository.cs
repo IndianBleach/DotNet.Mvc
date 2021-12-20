@@ -14,7 +14,7 @@ namespace Mvc.ApplicationCore.Interfaces
         ICollection<SideUserDto> GetRecommendUsers(string forUsername);
         //
         Task<string> GetUserGuid(string userName);
-        Task UpdateUserSettings(string guid, UserEditTagSettingsDto model);
+        Task<bool> UpdateUserSettings(string guid, UserEditTagSettingsDto model);
         Task<bool> UpdateUserSettings(string guid, UserEditGeneralSettingsDto model);
         bool CheckSelfProfile(string routeGuid, string userName);
         List<HomeIdeaDto> GetUserIdeas(string guid);
