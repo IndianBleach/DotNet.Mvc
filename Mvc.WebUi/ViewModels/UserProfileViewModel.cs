@@ -10,5 +10,6 @@ namespace Mvc.WebUi.ViewModels
         public List<PageInfoDto> Pages { get; set; }
         public List<HomeIdeaDto> UserIdeas { get; set; }
         public UserDetailDto User { get; set; }
+        public ICollection<string> IdeasToInvite { get; set; }
     }
 }

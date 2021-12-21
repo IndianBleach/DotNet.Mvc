@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Mvc.ApplicationCore.DTOs.JsonResult;
 using Mvc.ApplicationCore.DTOs.User;
 using Mvc.ApplicationCore.Interfaces;
 using Mvc.WebUi.ViewModels;
@@ -18,6 +19,18 @@ namespace Mvc.WebUi.Controllers
             _pageService = pageService;
             _tagService = tagService;
         }
+
+        public async Task<JsonResult> Invite(InviteUserDto model)
+        {
+            var guid = await _userRepository.GetUserGuid(User.Identity.Name);
+
+            var res = await _userRepository.InviteUserToIdea(guid, model);
+
+            return Json(res);
+        }
+
+        
+
 
         [Route("user/me")]
         [HttpGet]
@@ -41,7 +54,7 @@ namespace Mvc.WebUi.Controllers
         [Route("user/{guid}")]
         [HttpGet]
         [Authorize]
-        public IActionResult Index(string guid, int? page)
+        public async Task<IActionResult> Index(string guid, int? page)
         {
             if (page == null) page = 1;
 
@@ -50,6 +63,7 @@ namespace Mvc.WebUi.Controllers
             indexVm.UserIdeas = _userRepository.GetUserIdeas(guid);
             indexVm.Pages = _pageService.GeneratePages((int)page, _userRepository.GetUserIdeasCount(guid), 5);
             indexVm.IsSelfProfile = _userRepository.CheckSelfProfile(guid, User.Identity.Name);
+            indexVm.IdeasToInvite = await _userRepository.GetIdeasToInvite(User.Identity.Name);
 
             return View(indexVm);
         }

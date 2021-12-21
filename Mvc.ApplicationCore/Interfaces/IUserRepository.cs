@@ -1,5 +1,6 @@
 ﻿using Mvc.ApplicationCore.DTOs;
 using Mvc.ApplicationCore.DTOs.Idea;
+using Mvc.ApplicationCore.DTOs.JsonResult;
 using Mvc.ApplicationCore.DTOs.User;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,10 @@ namespace Mvc.ApplicationCore.Interfaces
     {                
         ICollection<SideUserDto> GetRecommendUsers(string forUsername);
         //
+        List<UserParticipationDto> GetUserParticipations(string userGuid);
+        //
+        Task<List<string>> GetIdeasToInvite(string forUsername);
+        Task<bool> InviteUserToIdea(string invitedFromUserGuid, InviteUserDto model);
         Task<string> GetUserGuid(string userName);
         Task<bool> UpdateUserSettings(string guid, UserEditTagSettingsDto model);
         Task<bool> UpdateUserSettings(string guid, UserEditGeneralSettingsDto model);

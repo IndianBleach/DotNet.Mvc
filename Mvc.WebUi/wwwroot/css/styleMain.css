@@ -249,8 +249,7 @@ a > img {
 
 .overhide-window-xsm {
     width: 444px;
-    min-height: 226px;
-    max-height: 426px;
+    min-height: 226px;    
     border-radius: 10px;
 }
 

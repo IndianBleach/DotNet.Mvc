@@ -13,6 +13,7 @@
             $("#topicWindow").addClass("d-none");
             $("#goalWindow").addClass("d-none");
             $("#joinWindow").addClass("d-none");
+            $("#windowParticipation").addClass("d-none");
         }
     });
 
@@ -29,11 +30,12 @@
             $("#topicWindow").addClass("d-none");
             $("#joinWindow").addClass("d-none");
             $("#goalWindow").addClass("d-none");
+            $("#windowParticipation").addClass("d-none");
             $("#settingsModdersWindow").addClass("d-none");
             $("#settingsGeneralWindow").addClass("d-none");
             $("#hideBackgroundWrapper").addClass("d-none");
             $("#settingsRemoveIdeaWindow").addClass("d-none");
-            $("#settingsCreateTopicWindow").addClass("d-none");
+            $("#settingsCreateTopicWindow").addClass("d-none");            
             $("body").removeClass("overflow-hidden");
         }
     });

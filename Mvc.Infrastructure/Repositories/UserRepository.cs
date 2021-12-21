@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Mvc.ApplicationCore.DTOs;
 using Mvc.ApplicationCore.DTOs.Idea;
+using Mvc.ApplicationCore.DTOs.JsonResult;
 using Mvc.ApplicationCore.DTOs.User;
 using Mvc.ApplicationCore.Entities;
 using Mvc.ApplicationCore.Entities.IdeaEntity;
@@ -81,6 +82,23 @@ namespace Mvc.Infrastructure.Repositories
 
         }
 
+        public async Task<bool> InviteUserToIdea(string inviteFromUserGuid, InviteUserDto model)
+        {
+            var getUser = await _userManager.FindByIdAsync(inviteFromUserGuid);
+
+            var getIdea = _dbContext.Ideas.FirstOrDefault(x => x.Title.Equals(model.InvitedToIdeaName));
+
+            var invite = new IdeaInvitation(model.Description, getUser, getIdea, InviteTypes.Invite);
+
+            _dbContext.IdeaInvites.Add(invite);
+
+            return true;
+        }
+
+
+
+
+        #region ready
         public async Task<bool> UpdateUserSettings(string name, UserEditTagSettingsDto model)
         {
             ApplicationUser getUser = _dbContext.Users
@@ -107,7 +125,7 @@ namespace Mvc.Infrastructure.Repositories
 
 
         }
-
+        
         public async Task<bool> UpdateUserSettings(string name, UserEditGeneralSettingsDto model)
         {
             ApplicationUser getUser = _dbContext.Users
@@ -128,7 +146,7 @@ namespace Mvc.Infrastructure.Repositories
             if (res.Succeeded)
             {
                 await _signInManager.SignInAsync(getUser, false);
-            
+
                 return true;
             }
             else
@@ -137,8 +155,6 @@ namespace Mvc.Infrastructure.Repositories
             }
         }
 
-
-        #region ready
         public UserDetailDto GetUserDetail(string guid)
         {
             ApplicationUser getUser = _dbContext.Users
@@ -306,6 +322,44 @@ namespace Mvc.Infrastructure.Repositories
             var res = await _userManager.GetUserIdAsync(user);
 
             return res;
+        }
+
+        public async Task<List<string>> GetIdeasToInvite(string forUsername)
+        {
+            var user = await _userManager.FindByNameAsync(forUsername);
+
+            var ideas = _dbContext.Ideas
+                .Include(x => x.Members)
+                .Where(x => x.Members.Any(e => e.User.Equals(user) &&
+                    e.Role.Equals(IdeaMemberRoles.Author)))
+                .Select(x => x.Title);
+
+            return ideas.ToList();
+        }
+
+        public List<UserParticipationDto> GetUserParticipations(string userName)
+        {
+            var test = 1;
+
+            var roles = _dbContext.IdeaMemberRoles
+                .Include(x => x.Idea)
+                .Include(x => x.User)
+                .Where(x => x.User.UserName.Equals(userName))
+                .ToList();
+
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<IdeaMemberRole, UserParticipationDto>()
+                .ForMember("IdeaName", opt => opt.MapFrom(x => x.Idea.Title))
+                .ForMember("RoleName", opt => opt.MapFrom(x => x.Role.ToString()))
+                .ForMember("IdeaGuid", opt => opt.MapFrom(x => x.Idea.Guid));
+            });
+
+            var mapper = new Mapper(config);
+
+            var resp = mapper.Map<List<IdeaMemberRole>, List<UserParticipationDto>>(roles);
+
+            return resp;
         }
         #endregion
     }

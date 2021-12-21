@@ -135,3 +135,39 @@
     align-items: center;
     height: 300px;
 }
+
+
+#notifyMessage {
+    opacity: 0;
+    transition: opacity 1s ease;
+    border: 1px solid rgb(34, 34, 34);
+    display: flex;
+    padding: 10px 8px 10px 15px;
+    font-size: 14px;
+    font-weight: 500;
+    align-items: center;
+    border-radius: 10px;
+    background-color: rgb(8, 8, 8) !important;
+}
+
+.notifyActive {
+    opacity: 1 !important;
+}
+
+
+
+.note-participation {
+    margin-bottom: .5rem;
+    text-align: center;
+}
+
+.note-participation span {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1c92ff;
+}
+
+    .note-participation p {
+        font-size: 12px !important;
+        color: #9f9f9f !important;
+    }
