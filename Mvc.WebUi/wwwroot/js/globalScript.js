@@ -11,14 +11,14 @@
     });
 
 
-    
-
+        
     $(".showHideJoin").on("click", (e) => {
         e.preventDefault();
         $("#joinWindow").toggleClass("d-none");
         $("#hideBackgroundWrapper").toggleClass("d-none");
         $("body").toggleClass("overflow-hidden");
     });
+
 
     $(".showHideCreateIdea").on("click", (e) => {
         e.preventDefault();
@@ -64,9 +64,7 @@
     });
     // ****
 
-    // LOAD PARTICIPATION
-    
-
+    // PARTICIPATION
     $(".showParticipation").on("click", (e) => {
         e.preventDefault();
 
@@ -84,19 +82,42 @@
             $("body").toggleClass("overflow-hidden");
         })       
     });
-
     $(".hideParticipation").on("click", () => {
         $(".note-participation").remove();
         $("#windowParticipation").addClass("d-none");
         $("#hideBackgroundWrapper").addClass("d-none");
         $("body").toggleClass("overflow-hidden");
     })
+    // ****
 
-    //show close
+    // FOLLOW
+    $("#userFollowForm").on("submit", (e) => {
+        e.preventDefault();
+
+        let followGuid = e.target.getElementsByTagName("input").item(0).value;
+        let isUnfollow = e.target.dataset.unfollow == "true";
+
+        if (isUnfollow == true) {
+            $.post("/user/unfollow", { followGuid }, (boolResponse) => {
+                if (boolResponse == true) {
+                    e.target.dataset.unfollow = false;
+                    $("#userFollowForm button").removeClass("t-muted").text("Follow");
+                }
+            })
+        }
+        else {
+            $.post("/user/follow", { followGuid }, (boolResponse) => {
+                if (boolResponse == true) {
+                    e.target.dataset.unfollow = true;
+                    $("#userFollowForm button").addClass("t-muted").text("Unfollow");
+                }
+            })
+        }
+    })
+
 
 
     // ****
-
 
 
 

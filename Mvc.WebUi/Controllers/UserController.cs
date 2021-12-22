@@ -20,6 +20,9 @@ namespace Mvc.WebUi.Controllers
             _tagService = tagService;
         }
 
+
+
+        #region Ready
         public async Task<JsonResult> Invite(InviteUserDto model)
         {
             var guid = await _userRepository.GetUserGuid(User.Identity.Name);
@@ -29,45 +32,27 @@ namespace Mvc.WebUi.Controllers
             return Json(res);
         }
 
-        
-
-
-        [Route("user/me")]
-        [HttpGet]
-        [Authorize]
-        public async Task<IActionResult> Me(int? page)
+        public async Task<JsonResult> Unfollow(string followGuid)
         {
-            if (page == null) page = 1;
+            var userGuid = await _userRepository.GetUserGuid(User.Identity.Name);
 
-            string userGuid = await _userRepository.GetUserGuid(User.Identity.Name);
+            var res = await _userRepository.UserUnfollowAsync(userGuid, followGuid);
 
-            UserProfileViewModel indexVm = new UserProfileViewModel();
-            indexVm.User = _userRepository.GetUserDetail(userGuid);
-            indexVm.UserIdeas = _userRepository.GetUserIdeas(userGuid);
-            indexVm.Pages = _pageService.GeneratePages((int)page, _userRepository.GetUserIdeasCount(userGuid), 5);
-            indexVm.IsSelfProfile = true;
+            _userRepository.Save();
 
-            return View("Index", indexVm);
+            return Json(res);
         }
 
+        public async Task<JsonResult> Follow(string followGuid)
+        { 
+            var userGuid = await _userRepository.GetUserGuid(User.Identity.Name);
 
-        [Route("user/{guid}")]
-        [HttpGet]
-        [Authorize]
-        public async Task<IActionResult> Index(string guid, int? page)
-        {
-            if (page == null) page = 1;
+            var res = await _userRepository.UserFollowOnAsync(userGuid, followGuid);
 
-            UserProfileViewModel indexVm = new UserProfileViewModel();
-            indexVm.User = _userRepository.GetUserDetail(guid);
-            indexVm.UserIdeas = _userRepository.GetUserIdeas(guid);
-            indexVm.Pages = _pageService.GeneratePages((int)page, _userRepository.GetUserIdeasCount(guid), 5);
-            indexVm.IsSelfProfile = _userRepository.CheckSelfProfile(guid, User.Identity.Name);
-            indexVm.IdeasToInvite = await _userRepository.GetIdeasToInvite(User.Identity.Name);
+            _userRepository.Save();
 
-            return View(indexVm);
+            return Json(res);
         }
-
 
         [Route("user/edit")]
         [HttpGet]
@@ -81,7 +66,7 @@ namespace Mvc.WebUi.Controllers
             var guid = await _userRepository.GetUserGuid(userId);
 
             indexVm.TagList = _tagService.GetAllTags().ToList();
-            indexVm.User = _userRepository.GetUserDetail(guid);            
+            indexVm.User = _userRepository.GetUserDetail(guid);
 
             return View(indexVm);
         }
@@ -102,7 +87,6 @@ namespace Mvc.WebUi.Controllers
             return Content("Something missing");
         }
 
-
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> UpdateTagSettings(UserEditTagSettingsDto model)
@@ -116,6 +100,51 @@ namespace Mvc.WebUi.Controllers
 
             return Content("Something missing");
         }
+        #endregion
+
+        [Route("user/me")]
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> Me(int? page)
+        {
+            if (page == null) page = 1;
+
+            string userGuid = await _userRepository.GetUserGuid(User.Identity.Name);
+
+            UserProfileViewModel indexVm = new UserProfileViewModel();
+            indexVm.User = _userRepository.GetUserDetail(userGuid);
+            indexVm.UserIdeas = _userRepository.GetUserIdeas(userGuid);
+            indexVm.Pages = _pageService.GeneratePages((int)page, _userRepository.GetUserIdeasCount(userGuid), 5);
+            indexVm.IsSelfProfile = true;
+            indexVm.IsFollowed = false;
+
+            return View("Index", indexVm);
+        }
+
+
+        [Route("user/{guid}")]
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> Index(string guid, int? page)
+        {
+            if (page == null) page = 1;
+
+            string userGuid = await _userRepository.GetUserGuid(User.Identity.Name);
+
+            UserProfileViewModel indexVm = new UserProfileViewModel();
+            indexVm.User = _userRepository.GetUserDetail(guid);
+            indexVm.UserIdeas = _userRepository.GetUserIdeas(guid);
+            indexVm.Pages = _pageService.GeneratePages((int)page, _userRepository.GetUserIdeasCount(guid), 5);
+            indexVm.IsSelfProfile = _userRepository.CheckSelfProfile(guid, User.Identity.Name);
+            indexVm.IdeasToInvite = await _userRepository.GetIdeasToInvite(User.Identity.Name);
+            indexVm.IsFollowed = await _userRepository.CheckUserFollowedAsync(userGuid, guid);
+
+
+            return View(indexVm);
+        }
+
+
+        
 
         
     }

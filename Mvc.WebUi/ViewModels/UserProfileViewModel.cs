@@ -6,6 +6,7 @@ namespace Mvc.WebUi.ViewModels
 {
     public class UserProfileViewModel
     {
+        public bool IsFollowed { get; set; }
         public bool IsSelfProfile { get; set; }
         public List<PageInfoDto> Pages { get; set; }
         public List<HomeIdeaDto> UserIdeas { get; set; }

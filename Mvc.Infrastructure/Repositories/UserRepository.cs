@@ -339,8 +339,6 @@ namespace Mvc.Infrastructure.Repositories
 
         public List<UserParticipationDto> GetUserParticipations(string userName)
         {
-            var test = 1;
-
             var roles = _dbContext.IdeaMemberRoles
                 .Include(x => x.Idea)
                 .Include(x => x.User)
@@ -360,6 +358,48 @@ namespace Mvc.Infrastructure.Repositories
             var resp = mapper.Map<List<IdeaMemberRole>, List<UserParticipationDto>>(roles);
 
             return resp;
+        }
+
+        public async Task<bool> UserUnfollowAsync(string userGuid, string followGuid)
+        {
+            var getFollow = await _dbContext.Follows
+                .FirstOrDefaultAsync(x => x.AuthorId.Equals(userGuid) &&
+                    x.FollowingId.Equals(followGuid));
+
+            _dbContext.Follows.Remove(getFollow);
+
+            return true;
+        }
+        
+        public async Task<bool> UserFollowOnAsync(string userGuid, string followGuid)
+        {
+            var user = await _userManager.FindByIdAsync(userGuid);
+
+            var follow = await _userManager.FindByIdAsync(followGuid);
+
+
+            if (user != null && follow != null)
+            {
+                var follower = new Follower(user, follow);
+
+                await _dbContext.AddAsync(follower);
+
+                return true;
+            }
+            else return false;
+        }
+
+        public async Task<bool> CheckUserFollowedAsync(string userGuid, string followGuid)
+        {
+            bool res = await _dbContext.Follows
+                .AnyAsync(x => x.AuthorId.Equals(userGuid) && x.FollowingId.Equals(followGuid));
+
+            return res;
+        }
+
+        public void Save()
+        {
+            _dbContext.SaveChanges();
         }
         #endregion
     }

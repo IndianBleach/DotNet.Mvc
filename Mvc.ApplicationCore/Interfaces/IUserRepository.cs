@@ -14,6 +14,11 @@ namespace Mvc.ApplicationCore.Interfaces
     {                
         ICollection<SideUserDto> GetRecommendUsers(string forUsername);
         //
+        void Save();
+        Task<bool> CheckUserFollowedAsync(string userGuid, string followGuid);
+        Task<bool> UserFollowOnAsync(string userGuid, string followGuid);
+        Task<bool> UserUnfollowAsync(string userGuid, string unfollowGuid);
+        //
         List<UserParticipationDto> GetUserParticipations(string userGuid);
         //
         Task<List<string>> GetIdeasToInvite(string forUsername);
