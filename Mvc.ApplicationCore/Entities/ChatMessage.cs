@@ -9,16 +9,17 @@ namespace Mvc.ApplicationCore.Entities
 {
     public class ChatMessage : BaseEntity
     {
-        public int FromUserId { get; set; }
+        public string FromUserId { get; set; }
         public ApplicationUser FromUser { get; set; }
-        public int ToUserId {  get; set; }
+        public string ToUserId {  get; set; }
         public ApplicationUser ToUser { get; set; }
         public string Message { get; set; }
         public DateTime DateCreated { get; set; }
+        public bool IsActive { get; set; }
 
         public ChatMessage(
-            int fromUserId,
-            int toUserId,
+            string fromUserId,
+            string toUserId,
             string message)
         {   
             FromUserId = fromUserId;

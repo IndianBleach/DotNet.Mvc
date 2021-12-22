@@ -8,10 +8,8 @@
             $("#hideBackgroundWrapper").addClass("d-none");
             $("body").removeClass("overflow-hidden");
         }
-    });
+    });    
 
-
-        
     $(".showHideJoin").on("click", (e) => {
         e.preventDefault();
         $("#joinWindow").toggleClass("d-none");
@@ -57,7 +55,7 @@
             $("#hideBackgroundWrapper").toggleClass("d-none");
             $("body").toggleClass("overflow-hidden");
         })
-    })
+    });
     $("#hideNotifyMessage").on("click", (e) => {
         e.preventDefault();
         $("#notifyMessage").addClass("d-none");
@@ -75,19 +73,19 @@
                 $("#participationLoad").append(
                     `<div class='note-participation'><a href='idea/${elem.ideaGuid}'><span>${elem.ideaName}</span><br /><p>Role:<span class='t-sm text-white t-semi-bold'>${elem.roleName}</span></p></a></div>`
                 );
-            })            
+            })
 
             $("#windowParticipation").toggleClass("d-none");
             $("#hideBackgroundWrapper").toggleClass("d-none");
             $("body").toggleClass("overflow-hidden");
-        })       
+        })
     });
     $(".hideParticipation").on("click", () => {
         $(".note-participation").remove();
         $("#windowParticipation").addClass("d-none");
         $("#hideBackgroundWrapper").addClass("d-none");
         $("body").toggleClass("overflow-hidden");
-    })
+    });
     // ****
 
     // FOLLOW
@@ -113,12 +111,49 @@
                 }
             })
         }
-    })
-
-
-
+    });
     // ****
 
+    // NEW CHAT
+    $(".showNewChatWindow").on("click", (e) => {
+
+        $.post("/chat/newchats", {}, (resp) => {
+
+            resp.forEach(item => {
+                $("#newChatLoad form").append(`<div class='note-newchat'><a>${item.userName}</a><button class='newUniqueChatBtn border icon-link' data-user='${item.userGuid}'>Write</button></div>`)
+            })
+
+            $("#newChatWindow").toggleClass("d-none");
+            $("#hideBackgroundWrapper").toggleClass("d-none");
+            $("body").toggleClass("overflow-hidden");
+
+            // request
+            $(".newUniqueChatBtn").on("click", (e) => {
+                e.preventDefault();
+                let user = e.target.dataset.user;
+
+                $.post("/chat/new", { user }, (resp) => {
+                    $("#allChatsContainer").append(`<section><button class="p-0 btn chatUserLink" data-chatUser="${resp.userGuid}"><div class="sectionUserChat"><img src="./media/userAvatars/${resp.avatarImageName}"/><div class="ps-2"><p>${resp.userName}</p><div class="text-truncate text-start"><span>${resp.lastMessage}</span></div></div></div></button></section>`)
+
+                    // close
+                    $(".note-newchat").remove();
+                    $("#newChatWindow").toggleClass("d-none");
+                    $("#hideBackgroundWrapper").toggleClass("d-none");
+                    $("body").toggleClass("overflow-hidden");
+                })
+            });
+            //
+        })
+    });
+
+    $(".hideNewChatWindow").on("click", () => {
+        $(".note-newchat").remove();
+        $("#newChatWindow").toggleClass("d-none");
+        $("#hideBackgroundWrapper").toggleClass("d-none");
+        $("body").toggleClass("overflow-hidden");
+    });
+
+    
 
 
 });

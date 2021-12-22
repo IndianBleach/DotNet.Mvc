@@ -1,4 +1,5 @@
 ﻿using Mvc.ApplicationCore.DTOs;
+using Mvc.ApplicationCore.DTOs.Chat;
 using Mvc.ApplicationCore.DTOs.Idea;
 using Mvc.ApplicationCore.DTOs.JsonResult;
 using Mvc.ApplicationCore.DTOs.User;
@@ -13,6 +14,10 @@ namespace Mvc.ApplicationCore.Interfaces
     public interface IUserRepository
     {                
         ICollection<SideUserDto> GetRecommendUsers(string forUsername);
+        //
+        Task<ChatUserDto> CreateChatWithUser(string userGuid, string chatUserGuid);
+        Task<List<NewChatDto>> GetNewChatUsersAsync(string guid);
+        Task<List<ChatUserDto>> GetUserChats(string userGuid);
         //
         void Save();
         Task<bool> CheckUserFollowedAsync(string userGuid, string followGuid);

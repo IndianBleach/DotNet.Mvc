@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Mvc.ApplicationCore.DTOs;
+using Mvc.ApplicationCore.DTOs.Chat;
 using Mvc.ApplicationCore.DTOs.Idea;
 using Mvc.ApplicationCore.DTOs.JsonResult;
 using Mvc.ApplicationCore.DTOs.User;
@@ -400,6 +401,83 @@ namespace Mvc.Infrastructure.Repositories
         public void Save()
         {
             _dbContext.SaveChanges();
+        }
+
+        public async Task<List<ChatUserDto>> GetUserChats(string userGuid)
+        {
+            var chats = await _dbContext.ChatMessages
+                .Include(x => x.ToUser)
+                .ThenInclude(x => x.Avatar)
+                .Where(x => x.FromUser.Id.Equals(userGuid))
+                .ToListAsync();
+
+
+            var users = chats.Select(x => x.ToUserId).Distinct();
+
+            List<ChatMessage> filter = new List<ChatMessage>();
+
+            foreach (var user in users)
+            {
+                filter.Add(chats.OrderByDescending(x => x.DateCreated)
+                    .FirstOrDefault(x => x.ToUserId.Equals(user)));
+            }
+
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<ChatMessage, ChatUserDto>()
+                .ForMember("UserGuid", opt => opt.MapFrom(x => x.FromUserId))
+                .ForMember("UserName", opt => opt.MapFrom(x => x.ToUser.UserName))
+                .ForMember("AvatarImageName", opt => opt.MapFrom(x => x.ToUser.Avatar.ImageName))
+                .ForMember("LastMessage", opt => opt.MapFrom(x => x.Message));
+            });
+
+            var mapper = new Mapper(config);
+
+            var resp = mapper.Map<List<ChatMessage>, List<ChatUserDto>>(filter);
+
+            return resp;
+        }
+
+        public async Task<List<NewChatDto>> GetNewChatUsersAsync(string guid)
+        {
+            List<Follower> following = await _dbContext.Follows
+                .Include(x => x.Following)
+                .Where(x => x.AuthorId.Equals(guid))
+                .ToListAsync();
+
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<Follower, NewChatDto>()
+                .ForMember("UserGuid", opt => opt.MapFrom(x => x.FollowingId))
+                .ForMember("UserName", opt => opt.MapFrom(x => x.Following.UserName));
+            });
+
+            var mapper = new Mapper(config);
+
+            var resp = mapper.Map<List<Follower>, List<NewChatDto>>(following);
+
+            return resp;
+        }
+
+        public async Task<ChatUserDto> CreateChatWithUser(string userGuid, string chatUserGuid)
+        {
+            ChatMessage chatMessage = new ChatMessage(userGuid, chatUserGuid, "Hello!");
+
+            ApplicationUser toUser = _dbContext.Users
+                .Include(x => x.Avatar)
+                .FirstOrDefault(x => x.Id.Equals(chatUserGuid));
+
+            _dbContext.ChatMessages.Add(chatMessage);
+
+            ChatUserDto resultDto = new ChatUserDto()
+            {
+                AvatarImageName = toUser.Avatar.ImageName,
+                LastMessage = "Hello!",
+                UserGuid = toUser.Id,
+                UserName = toUser.UserName
+            };
+
+            return resultDto;
         }
         #endregion
     }
