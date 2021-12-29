@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Mvc.ApplicationCore.DTOs.Chat
 {
-    public class NewChatDto
+    public class MessageDto
     {
-        public string AvatarImageName {  get; set; }
-        public string UserName { get; set; }
-        public string UserGuid { get; set; }
+        public string AuthorGuid { get; set; }
+        public string Message {  get; set; }
+        public DateTime DateCreated { get; set; }
     }
 }

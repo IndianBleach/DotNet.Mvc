@@ -15,6 +15,9 @@ namespace Mvc.Infrastructure.Data
     public class ApplicationContext : IdentityDbContext<ApplicationUser>
     {
         //public DbSet<UserRole> UserRoles { get; set; }
+        public DbSet<Chat> Chats { get; set; }
+        public DbSet<ChatUser> ChatUsers { get; set; }
+        public DbSet<ChatMessage> ChatMessages { get; set; }
 
         public DbSet<Idea> Ideas { get; set; }
         public DbSet<IdeaBox> IdeaBoxes { get; set; }
@@ -27,7 +30,7 @@ namespace Mvc.Infrastructure.Data
 
         public DbSet<UserAvatarImage> UserAvatars { get; set; }
         public DbSet<CommentMessage> CommentMessages { get; set; }
-        public DbSet<ChatMessage> ChatMessages { get; set; }
+        //public DbSet<ChatMessage> ChatMessages { get; set; }
         public DbSet<Tag> Tags { get; set; }
         public DbSet<Follower> Follows { get; set; }
         public DbSet<UserContact> UserContacts { get; set; }

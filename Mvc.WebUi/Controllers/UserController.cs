@@ -114,6 +114,7 @@ namespace Mvc.WebUi.Controllers
             UserProfileViewModel indexVm = new UserProfileViewModel();
             indexVm.User = _userRepository.GetUserDetail(userGuid);
             indexVm.UserIdeas = _userRepository.GetUserIdeas(userGuid);
+            indexVm.IdeasToInvite = new List<string>();
             indexVm.Pages = _pageService.GeneratePages((int)page, _userRepository.GetUserIdeasCount(userGuid), 5);
             indexVm.IsSelfProfile = true;
             indexVm.IsFollowed = false;

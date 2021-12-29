@@ -14,10 +14,11 @@ namespace Mvc.ApplicationCore.Interfaces
     public interface IUserRepository
     {                
         ICollection<SideUserDto> GetRecommendUsers(string forUsername);
-        //
-        Task<ChatUserDto> CreateChatWithUser(string userGuid, string chatUserGuid);
-        Task<List<NewChatDto>> GetNewChatUsersAsync(string guid);
+        Task<List<MessageDetailDto>> GetChatMessages(string chatGuid, string currentUserName);
+        Task<List<IdeaToInviteDto>> GetUserIdeasToInvite(string guid);
+        Task<CreatedChatDto> CreateChat(string authorGuid, string message, string toUserGuid);
         Task<List<ChatUserDto>> GetUserChats(string userGuid);
+        Task<List<NewChatDto>> GetNewChatUsersAsync(string guid);
         //
         void Save();
         Task<bool> CheckUserFollowedAsync(string userGuid, string followGuid);

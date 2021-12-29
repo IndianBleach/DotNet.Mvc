@@ -40,11 +40,12 @@ namespace Mvc.ApplicationCore.Identity
         public ICollection<Tag> Tags { get; set; }
         public ICollection<Follower> Followers { get; set; }
         public ICollection<Follower> Following { get; set; }
-        public ICollection<ChatMessage> ChatMessagesFromAuthor { get; set; }
-        public ICollection<ChatMessage> ChatMessagesToAuthor { get; set; }
+        //public ICollection<Chat> ChatMessagesFromAuthor { get; set; }
+        //public ICollection<Chat> ChatMessagesToAuthor { get; set; }
         public ICollection<CommentMessage> Comments { get; set; }
         public int AvatarId { get; set; }
         public UserAvatarImage Avatar { get; set; }
+        public ICollection<ChatUser> Chats { get; set; }
 
         public ApplicationUser()
         {
@@ -60,9 +61,10 @@ namespace Mvc.ApplicationCore.Identity
             Tags = new List<Tag>();
             Followers = new List<Follower>();
             Following = new List<Follower>();
-            ChatMessagesFromAuthor = new List<ChatMessage>();
-            ChatMessagesToAuthor = new List<ChatMessage>();
+            //ChatMessagesFromAuthor = new List<Chat>();
+            //ChatMessagesToAuthor = new List<Chat>();
             Comments = new List<CommentMessage>();
+            Chats = new List<ChatUser>();
         }
 
         public ApplicationUser(
@@ -85,9 +87,10 @@ namespace Mvc.ApplicationCore.Identity
             Tags = new List<Tag>();
             Followers = new List<Follower>();
             Following = new List<Follower>();
-            ChatMessagesFromAuthor = new List<ChatMessage>();
-            ChatMessagesToAuthor = new List<ChatMessage>();
+            //ChatMessagesFromAuthor = new List<Chat>();
+            //ChatMessagesToAuthor = new List<Chat>();
             Comments = new List<CommentMessage>();
+            Chats = new List<ChatUser>();
         }
     }
 }

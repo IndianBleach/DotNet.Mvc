@@ -403,6 +403,7 @@ namespace Mvc.Infrastructure.Repositories
             _dbContext.SaveChanges();
         }
 
+        /*
         public async Task<List<ChatUserDto>> GetUserChats(string userGuid)
         {
             var chats = await _dbContext.ChatMessages
@@ -437,11 +438,12 @@ namespace Mvc.Infrastructure.Repositories
 
             return resp;
         }
-
+        */
         public async Task<List<NewChatDto>> GetNewChatUsersAsync(string guid)
         {
             List<Follower> following = await _dbContext.Follows
                 .Include(x => x.Following)
+                .ThenInclude(x => x.Avatar)
                 .Where(x => x.AuthorId.Equals(guid))
                 .ToListAsync();
 
@@ -449,7 +451,8 @@ namespace Mvc.Infrastructure.Repositories
             {
                 cfg.CreateMap<Follower, NewChatDto>()
                 .ForMember("UserGuid", opt => opt.MapFrom(x => x.FollowingId))
-                .ForMember("UserName", opt => opt.MapFrom(x => x.Following.UserName));
+                .ForMember("UserName", opt => opt.MapFrom(x => x.Following.UserName))
+                .ForMember("AvatarImageName", opt => opt.MapFrom(x => x.Following.Avatar.ImageName));
             });
 
             var mapper = new Mapper(config);
@@ -459,6 +462,7 @@ namespace Mvc.Infrastructure.Repositories
             return resp;
         }
 
+        /*
         public async Task<ChatUserDto> CreateChatWithUser(string userGuid, string chatUserGuid)
         {
             ChatMessage chatMessage = new ChatMessage(userGuid, chatUserGuid, "Hello!");
@@ -478,6 +482,133 @@ namespace Mvc.Infrastructure.Repositories
             };
 
             return resultDto;
+        }
+        */
+
+        public async Task<List<IdeaToInviteDto>> GetUserIdeasToInvite(string guid)
+        {
+            var res = await _dbContext.Ideas
+                .Include(x => x.Members)
+                .Where(x => x.Members.Any(x => x.UserId.Equals(guid)
+                    && x.Role.Equals(IdeaMemberRoles.Author)))
+                .ToListAsync();
+
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<Idea, IdeaToInviteDto>()
+                .ForMember("Guid", opt => opt.MapFrom(x => x.Id))
+                .ForMember("Name", opt => opt.MapFrom(x => x.Title));
+            });
+
+            var mapper = new Mapper(config);
+
+            var resp = mapper.Map<List<Idea>, List<IdeaToInviteDto>>(res);
+
+            return resp;
+        }
+
+        public async Task<CreatedChatDto> CreateChat(string authorGuid, string message, string toUserGuid)
+        {
+            ApplicationUser messageAuthor = _dbContext.Users
+                .Include(x => x.Avatar)
+                .FirstOrDefault(x => x.Id.Equals(authorGuid));
+
+            ApplicationUser toUser = _dbContext.Users
+                .Include(x => x.Avatar)
+                .FirstOrDefault(x => x.Id.Equals(toUserGuid));
+
+            Chat createChat = new Chat();
+
+            ChatMessage createMessage = new ChatMessage(messageAuthor, message, createChat);
+
+            ChatUser chatUser = new ChatUser(messageAuthor, createChat);
+            ChatUser chatUserSec = new ChatUser(toUser, createChat);
+
+            createChat.Messages.Add(createMessage);
+            createChat.Users.Add(chatUser);
+            createChat.Users.Add(chatUserSec);
+
+            _dbContext.Chats.Add(createChat);
+
+            _dbContext.SaveChanges();
+
+            CreatedChatDto dto = new();
+            dto.Guid = createChat.Guid.ToString();
+            dto.Messages = new List<MessageDetailDto>()
+            {
+                new MessageDetailDto()
+                {
+                    AuthorName = messageAuthor.UserName,
+                    AvatarImageName = messageAuthor.Avatar.ImageName,
+                    DateCreated = createMessage.DateCreated.ToShortDateString(),
+                    IsAuthorMessage = true,
+                    Message = message
+                }
+            };
+            dto.UserGuid = toUserGuid;
+            dto.UserName = toUser.UserName;
+            dto.AvatarImageName = toUser.Avatar.ImageName;
+
+            return dto;
+        }
+
+        public async Task<List<ChatUserDto>> GetUserChats(string userGuid)
+        {
+            var exc = _dbContext.Chats
+                .Include(x => x.Messages)
+                .Include(x => x.Users)
+                .ThenInclude(x => x.User)
+                .ThenInclude(x => x.Avatar)
+                .Where(x => x.Users
+                    .Any(y => y.UserId == userGuid))
+                .ToList();
+
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<Chat, ChatUserDto>()
+                .ForMember("ChatGuid", opt => opt.MapFrom(x => x.Guid))
+                .ForMember("UserName", opt => opt.MapFrom(x => x.Users
+                    .Where(x => x.User.Id != userGuid).SingleOrDefault().User.UserName))
+                .ForMember("AvatarImageName", opt => opt.MapFrom(x => x.Users
+                    .Where(x => x.UserId != userGuid).First().User.Avatar.ImageName))
+                .ForMember("LastMessage", opt => opt.MapFrom(x => x.Messages
+                    .OrderBy(x => x.DateCreated)
+                    .First()
+                    .Text));
+            });
+
+            var mapper = new Mapper(config);
+
+            var resp = mapper.Map<List<Chat>, List<ChatUserDto>>(exc);
+
+            return resp;
+
+        }
+
+        public async Task<List<MessageDetailDto>> GetChatMessages(string chatGuid, string currentUsername)
+        {
+            var getChat = _dbContext.Chats
+                .Include(x => x.Messages)
+                .ThenInclude(x => x.Author)
+                .ThenInclude(x => x.Avatar)
+                .FirstOrDefault(x => x.Guid.ToString() == (chatGuid));
+
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<ChatMessage, MessageDetailDto>()
+                .ForMember("AuthorName", opt => opt.MapFrom(x => x.Author.UserName))
+                .ForMember("AvatarImageName", opt => opt.MapFrom(x => x.Author.Avatar.ImageName))
+                .ForMember("Message", opt => opt.MapFrom(x => x.Text))
+                .ForMember("DateCreated", opt => opt.MapFrom(x => x.DateCreated.ToShortDateString()))
+                .ForMember("IsAuthorMessage", opt => opt.MapFrom(x => x.Author.UserName.Equals(currentUsername)));                
+            });
+
+            var mapper = new Mapper(config);
+
+            var resp = mapper.Map<List<ChatMessage>, List<MessageDetailDto>>(getChat.Messages.ToList());
+
+            return resp;
+
         }
         #endregion
     }

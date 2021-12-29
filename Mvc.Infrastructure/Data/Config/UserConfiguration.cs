@@ -19,11 +19,7 @@ namespace MvcApp.Infrastructure.Data.Configuration
             builder.HasMany(x => x.Followers).WithOne(x => x.Author)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasMany(x => x.ChatMessagesToAuthor).WithOne(x => x.ToUser)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            builder.HasMany(x => x.ChatMessagesFromAuthor).WithOne(x => x.FromUser)
-                .OnDelete(DeleteBehavior.Cascade);
+            
         }
     }
 }
