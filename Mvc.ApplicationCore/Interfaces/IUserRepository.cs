@@ -12,7 +12,10 @@ using System.Threading.Tasks;
 namespace Mvc.ApplicationCore.Interfaces
 {
     public interface IUserRepository
-    {                
+    {
+        Task<ChatDetailDto> GetChatDetail(string chatGuid, string currentUsername);
+        Task<bool> SendChatMessage(string chatGuid, string message, string authorGuid);
+        //
         ICollection<SideUserDto> GetRecommendUsers(string forUsername);
         Task<List<MessageDetailDto>> GetChatMessages(string chatGuid, string currentUserName);
         Task<List<IdeaToInviteDto>> GetUserIdeasToInvite(string guid);

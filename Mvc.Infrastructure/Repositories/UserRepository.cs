@@ -585,13 +585,51 @@ namespace Mvc.Infrastructure.Repositories
 
         }
 
+        public async Task<ChatDetailDto> GetChatDetail(string chatGuid, string currentUsername)
+        {
+            ApplicationUser currentUser = await _userManager.FindByNameAsync(currentUsername);
+
+            var getChat = _dbContext.Chats
+                .Include(x => x.Messages)
+                .ThenInclude(x => x.Author)
+                .ThenInclude(x => x.Avatar)
+                .FirstOrDefault(x => x.Guid.ToString() == (chatGuid));
+
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<ChatMessage, MessageDetailDto>()
+                .ForMember("AuthorName", opt => opt.MapFrom(x => x.Author.UserName))
+                .ForMember("AvatarImageName", opt => opt.MapFrom(x => x.Author.Avatar.ImageName))
+                .ForMember("Message", opt => opt.MapFrom(x => x.Text))
+                .ForMember("DateCreated", opt => opt.MapFrom(x => x.DateCreated.ToShortDateString()))
+                .ForMember("IsAuthorMessage", opt => opt.MapFrom(x => x.Author.UserName.Equals(currentUsername)));
+            });
+
+            var mapper = new Mapper(config);
+            var resp = mapper.Map<List<ChatMessage>, List<MessageDetailDto>>(getChat.Messages.ToList());
+
+            ChatDetailDto chatDto = new ChatDetailDto()
+            {
+                AuthorInfo = new ChatAuthorInfoDto()
+                {
+                    AvatarImageName = currentUser.Avatar.ImageName,
+                    Guid = currentUser.Id,
+                    UserName = currentUser.UserName
+                },
+                Messages = resp
+            };
+
+            return chatDto;
+        }
+
+
         public async Task<List<MessageDetailDto>> GetChatMessages(string chatGuid, string currentUsername)
         {
             var getChat = _dbContext.Chats
                 .Include(x => x.Messages)
                 .ThenInclude(x => x.Author)
                 .ThenInclude(x => x.Avatar)
-                .FirstOrDefault(x => x.Guid.ToString() == (chatGuid));
+                .FirstOrDefault(x => x.Guid.ToString() == (chatGuid));            
 
             var config = new MapperConfiguration(cfg =>
             {
@@ -609,6 +647,21 @@ namespace Mvc.Infrastructure.Repositories
 
             return resp;
 
+        }
+
+        public async Task<bool> SendChatMessage(string chatGuid, string message, string authorGuid)
+        {
+            var getChat = _dbContext.Chats
+                .Include(x => x.Messages)
+                .FirstOrDefault(x => x.Guid.ToString().Equals(chatGuid));
+
+            ChatMessage createMessage = new ChatMessage(authorGuid, message);
+
+            getChat.Messages.Add(createMessage);
+
+            await _dbContext.SaveChangesAsync();
+
+            return true;
         }
         #endregion
     }

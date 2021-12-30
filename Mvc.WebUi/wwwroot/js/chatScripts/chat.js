@@ -48,9 +48,23 @@
 
                     if (chatGuid != 0 & chatGuid != null & chatGuid != "undefined") {
 
+                        /*
                         $.get("chat/detail", { chatGuid }, (resp) => {
                             loadExistChat(avatar, userName, userGuid, chatGuid, resp);
                         })
+                        */
+                        $.get("chat/getDetail", { chatGuid }, (resp) => {
+                            console.log(resp);
+
+                            loadExistChat(avatar, userName, userGuid, chatGuid, resp.messages);
+
+                            let authorAvatarSrc = "/media/userAvatars/" + resp.authorInfo.avatarImageName;
+                            let authorUserName = resp.authorInfo.userName;
+                            let authorGuid = resp.authorInfo.guid;
+
+                            setAuthorSessionData(authorUserName, authorAvatarSrc, authorGuid);
+                        })
+
                     }
                     else {
                         loadNewChat(avatar, userName, userGuid);
@@ -106,14 +120,16 @@
         sessionStorage.setItem("chatWith", userGuid);
         sessionStorage.setItem("chatGuid", chatGuid);
 
-        console.log(messages);
+        // set session AUTHOR data
+        sessionStorage.setItem("authorAvatar", avatar);
+        sessionStorage.setItem("authorUserName", username);
 
         messages.forEach(x => {
             if (x.isAuthorMessage) {
                 $("#existChatContainer").append(`<div class="messageWrapper myMessage"><div><a href="/user/${x.authorName}"><img src="/media/userAvatars/${x.avatarImageName}" /></a><p>${x.message}</p></div></div>`)
             }
             else {
-                $("#existChatContainer").append(`<div class="messageWrapper"><div><a href="/user/${x.authorName}"><img src="/media/userAvatars/${x.avatarImageName} /></a><p>${x.message}</p></div></div>`)
+                $("#existChatContainer").append(`<div class="messageWrapper"><div><a href="/user/${x.authorName}"><img src="/media/userAvatars/${x.avatarImageName}" /></a><p>${x.message}</p></div></div>`)
             }
         })
 
@@ -136,7 +152,19 @@
         if (chatGuid != 0) {
 
             // send message to exist
-            console.log("Send Message To exist chat");
+            $.post("chat/sendMessage", { chatGuid, message }, (resp) => {
+
+                $("#newMessageInput").val("");
+
+                if (resp) {
+
+                    let avatarSrc = sessionStorage.getItem("authorAvatar");
+                    let userName = sessionStorage.getItem("authorUserName");
+
+                    $("#existChatContainer").append(`<div class="messageWrapper myMessage"><div><a href="/user/${userName}"><img src="${avatarSrc}" /></a><p>${message}</p></div></div>`);
+
+                }
+            })
 
         }
         else {
@@ -151,7 +179,13 @@
         }
     })
 
-    
+
+    const setAuthorSessionData = (userName, avatarSrc, guid) => {
+        sessionStorage.setItem("authorUserName", userName);
+        sessionStorage.setItem("authorGuid", guid);
+        sessionStorage.setItem("authorAvatarSrc", avatarSrc);
+    }
+
 
     
 
@@ -169,14 +203,25 @@
 
         if (chatGuid != 0 & chatGuid != null & chatGuid != "undefined") {
 
+            /*
             $.get("chat/detail", { chatGuid }, (resp) => {
-                loadExistChat(avatar, userName, userGuid, chatGuid, resp);                
+                loadExistChat(avatar, userName, userGuid, chatGuid, resp);
             })
+            */
+            $.get("chat/getDetail", { chatGuid }, (resp) => {
+                console.log(resp);
+
+                loadExistChat(avatar, userName, userGuid, chatGuid, resp.messages);
+
+                let authorAvatarSrc = "/media/userAvatars/" + resp.authorInfo.avatarImageName;
+                let authorUserName = resp.authorInfo.userName;
+                let authorGuid = resp.authorInfo.guid;
+
+                setAuthorSessionData(authorUserName, authorAvatarSrc, authorGuid);
+            })
+
         }
         else {
-
-            console.log("fake");
-            // load new FAKE chat
             loadNewChat(avatar, userName, userGuid);
         }
     });

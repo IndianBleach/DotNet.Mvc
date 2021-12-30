@@ -38,7 +38,15 @@ namespace Mvc.WebUi.Controllers
             return View(indexVm);
         }
 
+        [Authorize]
+        public async Task<JsonResult> SendMessage(string chatGuid, string message)
+        {
+            var authorGuid = await _userRepository.GetUserGuid(User.Identity.Name);
 
+            var res = await _userRepository.SendChatMessage(chatGuid, message, authorGuid);
+
+            return Json(res);
+        }
 
 
         [Authorize]
@@ -48,6 +56,14 @@ namespace Mvc.WebUi.Controllers
             string authorGuid = await _userRepository.GetUserGuid(User.Identity.Name);
 
             var res = await _userRepository.CreateChat(authorGuid, message, toUserGuid);
+
+            return Json(res);
+        }
+
+
+        public async Task<JsonResult> GetDetail(string chatGuid)
+        {
+            var res = await _userRepository.GetChatDetail(chatGuid, User.Identity.Name);
 
             return Json(res);
         }
