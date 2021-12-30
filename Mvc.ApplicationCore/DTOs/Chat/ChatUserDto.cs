@@ -8,6 +8,7 @@ namespace Mvc.ApplicationCore.DTOs.Chat
 {
     public class ChatUserDto
     {
+        public string MemberGuid { get; set; }
         public string ChatGuid { get; set; }
         public string UserName { get; set; }
         public string AvatarImageName { get; set; }

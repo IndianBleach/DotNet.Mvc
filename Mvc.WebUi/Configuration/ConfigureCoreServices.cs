@@ -9,6 +9,13 @@ namespace Mvc.WebUi.Configuration
     {
         public static void AddCoreServices(this IServiceCollection services)
         {
+
+            services.AddSignalR(x => {
+                x.EnableDetailedErrors = true;
+            });
+
+            //
+
             services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
 
             services.AddTransient(typeof(IPageService), typeof(PageService));

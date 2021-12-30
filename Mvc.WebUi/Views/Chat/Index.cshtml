@@ -103,7 +103,7 @@
               @foreach(var chat in Model.UserChats)
               {
               <section>
-                <form class="chatSection" data-chat="@chat.ChatGuid" data-user="">
+                <form class="chatSection" data-chat="@chat.ChatGuid" data-user="@chat.MemberGuid">
                     <button class="btn p-0 chatUserLink">
                       <div
                         class="sectionUserChat"
@@ -313,5 +313,6 @@
     </div>
 
     @section Scripts {
+        <script type="text/javascript" src=~/js/signalr/dist/browser/signalr.min.js></script>
         <script type="text/javascript" src="~/js/chatScripts/chat.js"></script>
     }

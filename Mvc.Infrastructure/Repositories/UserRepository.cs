@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using Mvc.ApplicationCore.ChatHub;
 using Mvc.ApplicationCore.DTOs;
 using Mvc.ApplicationCore.DTOs.Chat;
 using Mvc.ApplicationCore.DTOs.Idea;
@@ -26,9 +28,13 @@ namespace Mvc.Infrastructure.Repositories
         private UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private ITagService _tagService;
+        private IHubContext<ChatHub> _chatContext;
 
-        public UserRepository(ITagService tagService, ApplicationContext dbContext, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+
+        public UserRepository(ITagService tagService, ApplicationContext dbContext, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
+             IHubContext<ChatHub> chat)
         {
+            _chatContext = chat;
             _signInManager = signInManager;
             _userManager = userManager;
             _dbContext = dbContext;
@@ -566,6 +572,7 @@ namespace Mvc.Infrastructure.Repositories
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<Chat, ChatUserDto>()
+                .ForMember("MemberGuid", opt => opt.MapFrom(x => x.Users.FirstOrDefault(e => e.User.Id != userGuid).User.Id))
                 .ForMember("ChatGuid", opt => opt.MapFrom(x => x.Guid))
                 .ForMember("UserName", opt => opt.MapFrom(x => x.Users
                     .Where(x => x.User.Id != userGuid).SingleOrDefault().User.UserName))
@@ -649,8 +656,10 @@ namespace Mvc.Infrastructure.Repositories
 
         }
 
-        public async Task<bool> SendChatMessage(string chatGuid, string message, string authorGuid)
+        public async Task<bool> SendChatMessage(string chatGuid, string message, string authorGuid, string toUserGuid)
         {
+            //ApplicationUser getUser = await _userManager.FindByIdAsync(authorGuid);            
+
             var getChat = _dbContext.Chats
                 .Include(x => x.Messages)
                 .FirstOrDefault(x => x.Guid.ToString().Equals(chatGuid));
@@ -660,6 +669,13 @@ namespace Mvc.Infrastructure.Repositories
             getChat.Messages.Add(createMessage);
 
             await _dbContext.SaveChangesAsync();
+
+            RecieveMessageDto recieveMessage = new RecieveMessageDto()
+            {
+                Text = createMessage.Text,                
+            };
+
+            await _chatContext.Clients.Group(chatGuid).SendAsync("RecieveMessage", recieveMessage);
 
             return true;
         }

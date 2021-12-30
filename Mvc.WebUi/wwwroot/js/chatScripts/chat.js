@@ -1,9 +1,26 @@
 ﻿$(document).ready(() => {
 
+    // CONNECTION SETTINGS
+    let connection = new signalR.HubConnectionBuilder()
+        .withUrl("/chatHub")
+        .build();
 
-      
+    let _connectionId = '';
 
-    // NEW CHAT
+    connection.start()
+        .then(() => {
+            console.log("Connect open");
+            connection.invoke("getConnectionId")
+                .then(connect => {
+                    _connectionId = connect;
+                });
+        })
+        .catch(() => {
+            console.log("Connect failed");
+        });
+    //END OF CONNECTION SETTINGS
+
+    // SHOW NEW-CHAT WINDOW
     $(".showNewChatWindow").on("click", (e) => {
         $.post("/chat/newchats", {}, (resp) => {
             
@@ -48,11 +65,6 @@
 
                     if (chatGuid != 0 & chatGuid != null & chatGuid != "undefined") {
 
-                        /*
-                        $.get("chat/detail", { chatGuid }, (resp) => {
-                            loadExistChat(avatar, userName, userGuid, chatGuid, resp);
-                        })
-                        */
                         $.get("chat/getDetail", { chatGuid }, (resp) => {
                             console.log(resp);
 
@@ -75,15 +87,15 @@
         })
     });
 
+    // HIDE NEW-CHAT WINDOW
     $(".hideNewChatWindow").on("click", () => {
         $(".note-newchat").remove();
         $("#newChatWindow").toggleClass("d-none");
         $("#hideBackgroundWrapper").toggleClass("d-none");
         $("body").toggleClass("overflow-hidden");
     });
-    // ****
-
-
+    
+    // CHAT LOAD: New
     const loadNewChat = (avatar, username, userGuid) => {
 
         $("#existChatContainer").addClass("d-none");
@@ -102,8 +114,8 @@
         //$("#existChatContainer").removeClass("d-none");
     };
 
+    // CHAT LOAD: Exist
     const loadExistChat = (avatar, username, userGuid, chatGuid, messages) => {
-
         //remove prev
         $(".messageWrapper").remove();
 
@@ -137,17 +149,21 @@
         $("#existChatContainer").removeClass("d-none");
     };
 
+    // AFTER SENDED MESSAGE
     const setFakeChatToExist = (chatGuid, userGuid) => {
         $(".chatSection[data-chat=0]")[0].setAttribute("data-chat", chatGuid);
         sessionStorage.setItem("chatGuid", chatGuid);
         sessionStorage.setItem("chatWith", userGuid);
     };
 
+    // NEW MESSAGE HANDLER
     $("#newMessageForm").on("submit", (e) => {
         e.preventDefault();
 
         let message = e.target.getElementsByTagName("input")[0].value;
         let chatGuid = sessionStorage.getItem("chatGuid");
+
+        sessionStorage.setItem("isMyMessage", true);
 
         if (chatGuid != 0) {
 
@@ -161,7 +177,7 @@
                     let avatarSrc = sessionStorage.getItem("authorAvatar");
                     let userName = sessionStorage.getItem("authorUserName");
 
-                    $("#existChatContainer").append(`<div class="messageWrapper myMessage"><div><a href="/user/${userName}"><img src="${avatarSrc}" /></a><p>${message}</p></div></div>`);
+                    //$("#existChatContainer").append(`<div class="messageWrapper myMessage"><div><a href="/user/${userName}"><img src="${avatarSrc}" /></a><p>${message}</p></div></div>`);
 
                 }
             })
@@ -179,17 +195,18 @@
         }
     })
 
-
+    // SESSION: Author
     const setAuthorSessionData = (userName, avatarSrc, guid) => {
         sessionStorage.setItem("authorUserName", userName);
         sessionStorage.setItem("authorGuid", guid);
         sessionStorage.setItem("authorAvatarSrc", avatarSrc);
-    }
+    }    
 
-
-    
-
-
+    // SESSION: Member
+    const setChatMemberSessionData = (userGuid, userAvatar) => {
+        sessionStorage.setItem("chatUserGuid", userGuid);
+        sessionStorage.setItem("chatUserAvatar", userAvatar);
+    };
 
     // set OLD listener
     $(".chatSection").on("submit", (e) => {
@@ -201,15 +218,10 @@
         let avatar = e.target.getElementsByTagName("img")[0].src;
         let userName = e.target.getElementsByTagName("p")[0].textContent;
 
-        if (chatGuid != 0 & chatGuid != null & chatGuid != "undefined") {
+        setChatMemberSessionData(userGuid, avatar);
 
-            /*
-            $.get("chat/detail", { chatGuid }, (resp) => {
-                loadExistChat(avatar, userName, userGuid, chatGuid, resp);
-            })
-            */
-            $.get("chat/getDetail", { chatGuid }, (resp) => {
-                console.log(resp);
+        if (chatGuid != 0 & chatGuid != null & chatGuid != "undefined") {
+            $.get("chat/getDetail", { chatGuid }, (resp) => {                
 
                 loadExistChat(avatar, userName, userGuid, chatGuid, resp.messages);
 
@@ -217,7 +229,11 @@
                 let authorUserName = resp.authorInfo.userName;
                 let authorGuid = resp.authorInfo.guid;
 
+                console.log(authorGuid);
                 setAuthorSessionData(authorUserName, authorAvatarSrc, authorGuid);
+                
+                // JOIN
+                joinChat(chatGuid);
             })
 
         }
@@ -226,5 +242,28 @@
         }
     });
 
-    
+    // SEND MESSAGE
+    connection.on("RecieveMessage", (message) => {
+        let avatar = sessionStorage.getItem("chatUserAvatar");
+        let userGuid = sessionStorage.getItem("chatUserGuid");        
+
+        let isMy = sessionStorage.getItem("isMyMessage");
+        if (isMy) {
+            $("#existChatContainer").append(`<div class="messageWrapper myMessage"><div><a href="/user/${userGuid}"><img src="${avatar}" /></a><p>${message.text}</p></div></div>`)
+        }
+        else {
+            $("#existChatContainer").append(`<div class="messageWrapper"><div><a href="/user/${userGuid}"><img src="${avatar}" /></a><p>${message.text}</p></div></div>`)
+        }
+
+        sessionStorage.removeItem("isMyMessage");
+    });
+   
+    // JOIN ROOM
+    const joinChat = (chatGuid) => {
+
+        let url = "chat/join/" + _connectionId + "/" + chatGuid;
+        $.post(url, null, (resp) => {
+            console.log("Join chat stabile", resp);
+        })
+    };    
 });

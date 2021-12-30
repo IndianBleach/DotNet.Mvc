@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Mvc.ApplicationCore.ChatHub;
 using Mvc.ApplicationCore.Identity;
 using Mvc.ApplicationCore.Interfaces;
 using Mvc.Infrastructure.Data;
@@ -31,8 +32,6 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
 builder.Services.AddCoreServices();
 
-
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -49,6 +48,11 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseEndpoints(endpoint =>
+{
+    endpoint.MapHub<ChatHub>("/chatHub");
+});
 
 app.MapControllerRoute(
     name: "default",

@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using Mvc.ApplicationCore.ChatHub;
 using Mvc.ApplicationCore.DTOs.Chat;
 using Mvc.ApplicationCore.Entities;
 using Mvc.ApplicationCore.Identity;
@@ -15,12 +17,12 @@ namespace Mvc.WebUi.Controllers
         private readonly IUserRepository _userRepository;
         private UserManager<ApplicationUser> _userManager;
         private ApplicationContext _dbContext;
+        private IHubContext<ChatHub> _chatContext;
         
 
-
-
-        public ChatController(IUserRepository userRepo, UserManager<ApplicationUser> userMan, ApplicationContext ctx)
+        public ChatController(IUserRepository userRepo, UserManager<ApplicationUser> userMan, ApplicationContext ctx, IHubContext<ChatHub> chat)
         {
+            _chatContext = chat;
             _userRepository = userRepo;
             _userManager = userMan;
             _dbContext = ctx;
@@ -43,9 +45,18 @@ namespace Mvc.WebUi.Controllers
         {
             var authorGuid = await _userRepository.GetUserGuid(User.Identity.Name);
 
-            var res = await _userRepository.SendChatMessage(chatGuid, message, authorGuid);
+            var res = await _userRepository.SendChatMessage(chatGuid, message, authorGuid, User.Identity.Name);
 
             return Json(res);
+        }
+
+        [Authorize]
+        [Route("chat/join/{connectionId}/{chatGuid}")]
+        public async Task<IActionResult> Join(string connectionId, string chatGuid)
+        {
+            await _chatContext.Groups.AddToGroupAsync(connectionId, chatGuid);
+
+            return Ok();
         }
 
 
@@ -55,7 +66,7 @@ namespace Mvc.WebUi.Controllers
             
             string authorGuid = await _userRepository.GetUserGuid(User.Identity.Name);
 
-            var res = await _userRepository.CreateChat(authorGuid, message, toUserGuid);
+            var res = await _userRepository.CreateChat(authorGuid, message, toUserGuid);            
 
             return Json(res);
         }
@@ -68,7 +79,7 @@ namespace Mvc.WebUi.Controllers
             return Json(res);
         }
 
-
+        /*
         [Authorize]
         public async Task<JsonResult> Detail(string chatGuid)
         {
@@ -76,7 +87,7 @@ namespace Mvc.WebUi.Controllers
 
             return Json(res);
         }
-
+        */
 
         public async Task<JsonResult> NewChats()
         {
