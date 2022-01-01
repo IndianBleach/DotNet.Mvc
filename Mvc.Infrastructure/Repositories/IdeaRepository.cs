@@ -28,7 +28,11 @@ namespace Mvc.Infrastructure.Repositories
             _dbContext = dbContext;
         }
 
-                  //fix nontauth       
+        
+        
+        
+        
+        //fix nontauth       
         public IEnumerable<IdeaRecommendationDto> GetRecommendIdeas(string? forUsername)
         {
             List<Tag> userTags = new List<Tag>();
@@ -252,6 +256,89 @@ namespace Mvc.Infrastructure.Repositories
         public void Save()
         {
             _dbContext.SaveChanges();
+        }
+
+        //
+        public IdeaMemberRoleDto GetIdeaMemberRole(string ideaGuid, string userGuid)
+        {
+            var res = _dbContext.IdeaMemberRoles
+                .Include(x => x.Idea)
+                .Include(x => x.User)
+                .FirstOrDefault(x => x.Idea.Guid.ToString() == ideaGuid &&
+                    x.User.Id.Equals(userGuid));
+
+            if (res != null)
+            {
+                return res.Role switch
+                {
+                    IdeaMemberRoles.Author => IdeaMemberRoleDto.Author,
+                    IdeaMemberRoles.Investor => IdeaMemberRoleDto.Investor,
+                    IdeaMemberRoles.Modder => IdeaMemberRoleDto.Modder,
+                    IdeaMemberRoles.Default => IdeaMemberRoleDto.Member,
+                    _ => IdeaMemberRoleDto.Viewer,
+                };
+            }
+            else return IdeaMemberRoleDto.Viewer;
+        }
+
+        public List<IdeaTopicDto> GetIdeaTopics(string ideaGuid)
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<IdeaTopic, IdeaTopicDto>()
+                .ForMember("Guid", opt => opt.MapFrom(x => x.Guid))
+                .ForMember("Title", opt => opt.MapFrom(x => x.Title))
+                .ForMember("AuthorAvatarImageName", opt => opt.MapFrom(x => x.Author.Avatar.ImageName))
+                .ForMember("AuthorGuid", opt => opt.MapFrom(x => x.Author.Id))
+                .ForMember("Description", opt => opt.MapFrom(x => x.Description))
+                .ForMember("CommentsCount", opt => opt.MapFrom(x => x.Comments.Count()));                
+            });
+
+            var mapper = new Mapper(config);
+
+            var topics = _dbContext.IdeaTopics
+                .Include(x => x.Idea)
+                .Include(x => x.Author)
+                .ThenInclude(x => x.Avatar)
+                .Include(x => x.Comments)
+                .Where(x => x.Idea.Guid.Equals(ideaGuid))
+                .ToList();
+
+            List<IdeaTopicDto> res = mapper.Map<List<IdeaTopic>, List<IdeaTopicDto>>(topics);
+
+            return res;
+        }
+
+        public IdeaDetailDto GetIdeaDetail(string ideaGuid)
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<Idea, IdeaDetailDto>()
+                .ForMember("AvatarImageName", opt => opt.MapFrom(x => x.Avatar.ImageName))
+                .ForMember("Title", opt => opt.MapFrom(x => x.Title))
+                .ForMember("Status", opt => opt.MapFrom(x =>
+                    new IdeaStatusDto(x.Status.Status.ToString(), x.Status.Description)))
+                .ForMember("Modders", opt => opt.MapFrom(x => x.Members.Where(x => x.Role.Equals(IdeaMemberRoles.Modder) || 
+                    x.Role.Equals(IdeaMemberRoles.Author))
+                    .Select(x => new IdeaModderDto(x.User.Avatar.ImageName, x.User.Id))))
+                .ForMember("Tags", opt => opt.MapFrom(x => x.Tags.Select(tag => new TagDto(tag.Name))));                
+            });
+
+            var mapper = new Mapper(config);
+
+            Idea getIdea = _dbContext.Ideas
+                .Include(x => x.Avatar)
+                .Include(x => x.Status)
+                .Include(x => x.Tags)
+                .Include(x => x.Members)
+                .ThenInclude(x => x.User)
+                .ThenInclude(x => x.Avatar)
+                .FirstOrDefault(x => x.Guid.ToString() == ideaGuid);
+
+            IdeaDetailDto dto = mapper.Map<Idea, IdeaDetailDto>(getIdea);
+
+            return dto;
+
         }
         #endregion
     }

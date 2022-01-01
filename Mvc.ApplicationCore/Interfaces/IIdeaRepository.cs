@@ -12,6 +12,10 @@ namespace Mvc.ApplicationCore.Interfaces
 {
     public interface IIdeaRepository
     {
+        IdeaMemberRoleDto GetIdeaMemberRole(string ideaGuid, string userGuid);
+        List<IdeaTopicDto> GetIdeaTopics(string ideaGuid);
+        IdeaDetailDto GetIdeaDetail(string ideaGuid);
+        //
         IEnumerable<IdeaRecommendationDto> GetRecommendIdeas(string forUsername);
         IEnumerable<SideIdeaDto> GetSideIdeasByStatusFilter(IdeaStatuses filterStatus);        
         Guid CreateIdea(CreateIdeaDto item);
