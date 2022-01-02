@@ -1,4 +1,13 @@
 ﻿$(document).ready(() => {
+
+    const sendNotifyMessage = (text, isSuccess) => {
+        if (isSuccess == true) {
+            $("#notifyMessageText").text(text);
+            $("#notifyMessage").addClass("notifyActive");
+        }
+    };
+
+
     $("#hideBackgroundWrapper").mouseup(function (e) {
         var container = $("#checkOutContainer");
         if (container.has(e.target).length === 0) {
@@ -61,19 +70,63 @@
         $("body").toggleClass("overflow-hidden");
     });
 
+    // settings modders
+    $("#showSettingsModders").on("click", (e) => {
+        e.preventDefault();
+
+        $("#settingsModdersWindow").removeClass("d-none");
+        $("#hideBackgroundWrapper").removeClass("d-none");
+        $("body").addClass("overflow-hidden");
+
+        $.get("/load/ideaRoles", (resp) => {
+            console.log(resp);
+
+            //FReACH APPEND
+        })
+    })
+
+    /*
     $(".showHideSettingsModders").on("click", (e) => {
         e.preventDefault();
         $("#settingsModdersWindow").toggleClass("d-none");
         $("#hideBackgroundWrapper").toggleClass("d-none");
         $("body").toggleClass("overflow-hidden");
     });
+    */
 
+    
+
+    // create topic
+    $("#formCreateTopic").on("submit", (e) => {
+        e.preventDefault();
+
+        let inputs = e.target.getElementsByTagName("input");
+        let ideaGuid = inputs[0].value;
+        let title = inputs[1].value;
+        let description = e.target.getElementsByTagName("textarea")[0].value;
+
+        $.post("/idea/createTopic", { title, description, ideaGuid }, response => {
+            if (response == true) {
+                $("#settingsCreateTopicWindow").toggleClass("d-none");
+                $("#hideBackgroundWrapper").toggleClass("d-none");
+                $("body").toggleClass("overflow-hidden");
+                sendNotifyMessage("Topic created!", true);
+            }
+            else {
+                $("#settingsCreateTopicWindow").toggleClass("d-none");
+                $("#hideBackgroundWrapper").toggleClass("d-none");
+                $("body").toggleClass("overflow-hidden");
+                sendNotifyMessage("Something failed", true);
+            }
+        });
+    });
     $(".showHideCreateTopic").on("click", (e) => {
         e.preventDefault();
         $("#settingsCreateTopicWindow").toggleClass("d-none");
         $("#hideBackgroundWrapper").toggleClass("d-none");
         $("body").toggleClass("overflow-hidden");
     });
+    // ----
 
     $(".showHideRemoveIdea").on("click", (e) => {
         e.preventDefault();

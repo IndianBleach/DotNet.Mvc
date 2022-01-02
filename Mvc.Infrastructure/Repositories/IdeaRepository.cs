@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Mvc.ApplicationCore.DTOs;
 using Mvc.ApplicationCore.DTOs.Idea;
+using Mvc.ApplicationCore.DTOs.Load;
 using Mvc.ApplicationCore.Entities;
 using Mvc.ApplicationCore.Entities.IdeaEntity;
 using Mvc.ApplicationCore.Identity;
@@ -314,6 +315,7 @@ namespace Mvc.Infrastructure.Repositories
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<Idea, IdeaDetailDto>()
+                .ForMember("Guid", opt => opt.MapFrom(x => x.Guid.ToString()))
                 .ForMember("AvatarImageName", opt => opt.MapFrom(x => x.Avatar.ImageName))
                 .ForMember("Title", opt => opt.MapFrom(x => x.Title))
                 .ForMember("Status", opt => opt.MapFrom(x =>
@@ -339,6 +341,45 @@ namespace Mvc.Infrastructure.Repositories
 
             return dto;
 
+        }
+
+        public async Task<bool> CreateTopic(string title, string description, string authorGuid, string ideaGuid)
+        {
+            var createTopic = new IdeaTopic(title, description, authorGuid);
+
+            var idea = await _dbContext.Ideas
+                .Include(x => x.Topics)
+                .FirstOrDefaultAsync(x => x.Guid.ToString() == ideaGuid);
+
+            idea.Topics.Add(createTopic);
+
+            return true;
+        }
+
+        public async Task<List<IdeaRoleDto>> GetIdeaRolesAsync(string ideaGuid)
+        {
+            var roles = _dbContext.IdeaMemberRoles
+                .Include(x => x.Idea)
+                .Include(x => x.User)
+                .ThenInclude(x => x.Avatar)
+                .Where(x => x.Idea.Guid.ToString() == ideaGuid &&
+                    x.Role != IdeaMemberRoles.Author);
+
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<IdeaMemberRole, IdeaRoleDto>()
+                .ForMember("UserAvatarImage", opt => opt.MapFrom(x => x.User.Avatar.ImageName))
+                .ForMember("UserName", opt => opt.MapFrom(x => x.User.UserName))
+                .ForMember("UserGuid", opt => opt.MapFrom(x => x.User.Id))
+                .ForMember("IdeaGuid", opt => opt.MapFrom(x => x.Idea.Guid))
+                .ForMember("IsModder", opt => opt.MapFrom(x => x.Role.Equals(IdeaMemberRoles.Modder)));                
+            });
+
+            var mapper = new Mapper(config);
+
+            var res = mapper.Map<List<IdeaMemberRole>, List<IdeaRoleDto>>(roles.ToList());
+
+            return res;
         }
         #endregion
     }

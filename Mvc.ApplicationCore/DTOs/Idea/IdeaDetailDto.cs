@@ -33,6 +33,7 @@ namespace Mvc.ApplicationCore.DTOs.Idea
 
     public class IdeaDetailDto
     {
+        public string Guid { get; set; }
         public string AvatarImageName { get; set; }
         public string Title { get; set; }
         public IdeaStatusDto Status { get; set; }

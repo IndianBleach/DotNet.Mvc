@@ -1,5 +1,6 @@
 ﻿using Mvc.ApplicationCore.DTOs;
 using Mvc.ApplicationCore.DTOs.Idea;
+using Mvc.ApplicationCore.DTOs.Load;
 using Mvc.ApplicationCore.Entities;
 using Mvc.ApplicationCore.Entities.IdeaEntity;
 using System;
@@ -12,6 +13,10 @@ namespace Mvc.ApplicationCore.Interfaces
 {
     public interface IIdeaRepository
     {
+
+        Task<List<IdeaRoleDto>> GetIdeaRolesAsync(string ideaGuid);
+        Task<bool> CreateTopic(string title, string description, string authorGuid, string ideaGuid);
+        //
         IdeaMemberRoleDto GetIdeaMemberRole(string ideaGuid, string userGuid);
         List<IdeaTopicDto> GetIdeaTopics(string ideaGuid);
         IdeaDetailDto GetIdeaDetail(string ideaGuid);

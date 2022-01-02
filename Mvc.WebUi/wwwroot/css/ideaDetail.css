@@ -53,3 +53,55 @@
     .topicDiscussMessage span {
         color: white;
     }
+
+
+.modder-note {
+    margin-bottom: 0.5rem !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    display: flex !important;
+}
+
+    .modder-note img {
+        height: 33px;
+        width: 33px;
+        border-radius: 50%;
+    }
+
+    .modder-note span {
+        font-size: 14px !important;
+        font-weight: 600 !important;
+        padding-left: 0.25rem !important;
+        color: white;
+    }
+
+    .modder-note a {
+        color: #9f9f9f !important;
+        font-weight: 600 !important;
+        font-size: 12px !important;
+        margin-right: 0.25rem !important;
+    }
+
+.window-btn {
+    margin-right: 5px;
+    transition: background 0.3s ease;
+    background: rgba(0, 0, 0, 0.66);
+    border-radius: 32px;
+    padding: 8px 16px;
+    border: none !important;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.modder-note-buttons {
+    align-items: center !important;
+    display: flex !important;
+}
+
+    .modder-note-buttons div {
+        padding-left: 2.5em;
+        display: block;
+        min-height: 1.5rem;
+        padding-left: 1.5em;
+        margin-bottom: 0.125rem;
+    }

@@ -17,6 +17,18 @@ namespace Mvc.WebUi.Controllers
             _userRepository = userRepository;
         }
 
+        [Authorize]
+        [HttpPost]
+        [Route("idea/createTopic")]
+        public async Task<JsonResult> NewTopic(string title, string description, string ideaGuid)
+        {
+            string authorGuid = await _userRepository.GetUserGuid(User.Identity.Name);
+            bool res = await _ideaRepository.CreateTopic(title, description, authorGuid, ideaGuid);
+
+            return Json(res);
+        }
+
+
         
         [Route("idea/{ideaGuid}")]
         public async Task<IActionResult> Index(string ideaGuid)

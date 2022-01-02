@@ -34,7 +34,7 @@
                         rgba(0, 0, 0, 0.34),
                         rgba(0, 0, 0, 0.34)
                       ),
-                      url(image.png);
+                      url(#);
                     border-radius: 6px;
                     transform: rotate(12.24deg);
                   "
@@ -335,7 +335,8 @@
             >
               <span class="t-md text-white t-bold">Settings</span>
               <button
-                class="showHideSettingsModders btn btn-sm text-white t-sm t-semi-bold"
+                id="hideSettingsModders"
+                class="btn btn-sm text-white t-sm t-semi-bold"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -354,43 +355,54 @@
             <div
               class="p-5 d-flex col-12 justify-content-center align-items-center"
             >
-              <div class="d-flex">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="44"
-                  height="44"
-                  fill="currentColor"
-                  class="t-muted bi bi-people"
-                  viewBox="0 0 16 16"
-                >
-                  <path
-                    d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1h8zm-7.978-1A.261.261 0 0 1 7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002a.274.274 0 0 1-.014.002H7.022zM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM6.936 9.28a5.88 5.88 0 0 0-1.23-.247A7.35 7.35 0 0 0 5 9c-4 0-5 3-5 4 0 .667.333 1 1 1h4.216A2.238 2.238 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816zM4.92 10A5.493 5.493 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275zM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0zm3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"
+              <div class="">
+                <div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="44"
+                    height="44"
+                    fill="currentColor"
+                    class="t-muted bi bi-people"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1h8zm-7.978-1A.261.261 0 0 1 7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002a.274.274 0 0 1-.014.002H7.022zM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM6.936 9.28a5.88 5.88 0 0 0-1.23-.247A7.35 7.35 0 0 0 5 9c-4 0-5 3-5 4 0 .667.333 1 1 1h4.216A2.238 2.238 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816zM4.92 10A5.493 5.493 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275zM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0zm3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"
+                    />
+                  </svg>
+                  <img
+                    src="~/media/ideaAvatars/@Model.Idea.AvatarImageName"
+                    height="44"
+                    width="77"
+                    class="ms-1 radius-md shadow"
                   />
-                </svg>
-                <p class="ps-2 t-md t-semi-bold text-white">
-                  Modders & members
-                  <br />
-                  <span class="t-muted t-sm t-medium">Cick and modders</span>
+                </div>
+                <p
+                  style="width: 140px;"
+                  class="text-center mt-2 ps-2 t-md t-semi-bold text-white"
+                >
+                  Moderator settings for this idea
                 </p>
               </div>
             </div>
-            <div style="height: 535px;" class="col-12 p-3 pt-0">
-              <div
-                class="mb-2 d-flex align-items-center justify-content-between"
-              >
+            <div
+              id="settingsModdersLoad"
+              style="height: 335px; overflow-y: scroll;"
+              class="custom-scroll col-12 p-3 pt-0"
+            >
+              <div class="modder-note">
                 <a>
-                  <img src=".#jpg" height="33" width="33" class="circle" />
-                  <span class="t-md t-semi-bold text-white ps-1">
+                  <img src="#" />
+                  <span>
                     чЧBBbebra
                   </span>
                 </a>
-                <div class="d-flex">
-                  <a class="icon-link me-1 t-muted t-semi-bold t-sm">
-                    To modders
-                  </a>
-                  <a class="icon-link text-muted t-semi-bold t-sm">
+                <div class="modder-note-buttons">
+                  <button class="window-btn t-primary">
                     Cick
-                  </a>
+                  </button>
+                  <button class="window-btn t-muted">
+                    Cick
+                  </button>
                 </div>
               </div>
             </div>
@@ -426,8 +438,9 @@
               <div
                 class="p-5 d-flex col-12 justify-content-center align-items-center"
               >
-                <div class="d-flex">
-                  <svg
+                <div class="">
+                  <div class="d-flex justify-content-center">
+                    <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="44"
                     height="44"
@@ -446,34 +459,35 @@
                       d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1z"
                     />
                   </svg>
-                  <p class="ps-2 t-md t-semi-bold text-white">
-                    Add new topic
-                    <br />
-                    <span class="t-muted t-sm t-medium"
-                      >Update idea information</span
-                    >
-                  </p>
+                  <img src="~/media/userAvatars/@User.Claims.Where(x => x.Type.Equals("AvatarImageName")).Select(x => x.Value).SingleOrDefault()" height="44" width="44" class="circle shadow"/>
+                  </div>
+                  <p style="width:150px;" class="text-center pt-3 ps-2 t-md t-semi-bold text-white">
+                    Describe the idea using topics                   
+                  </p>                  
                 </div>
               </div>
               <div class="pb-3 ps-4 pe-4">
-                <form>
+                <form id="formCreateTopic">
+                    <input name="ideaGuid" hidden value="@Model.Idea.Guid"/>
                   <div class="mb-2">
                     <input
+                        name="title"
                       class="form-control radius-lg bg-dark border text-white t-md t-semi-bold form-control me-0 pe-1"
-                      placeholder="Title"
+                      placeholder="title"
                     />
                   </div>
                   <div class="mb-2">
                     <textarea
+                      name="description"
                       style="resize: none; height: 66px;"
                       class="radius-lg bg-dark border text-white t-md t-semi-bold form-control me-0 pe-1"
-                      placeholder="Description"
+                      placeholder="description"
                       aria-label="Search"
                     ></textarea>
                   </div>
 
                   <div class="border-top pt-3 mt-4 col-12 text-center">
-                    <button class="btn t-bold t-primary">Create topic</button>
+                    <button type="submit" class="btn t-bold t-primary">Create topic</button>
                   </div>
                 </form>
               </div>
@@ -701,7 +715,8 @@
                       <li><hr class="p-0 m-0 dropdown-divider t-light" /></li>
                       <li>
                         <a
-                          class="showHideSettingsModders dropdown-item t-light"
+                            id="showSettingsModders"
+                          class="dropdown-item t-light"
                           href="#"
                           >Modders & Members</a
                         >
@@ -866,3 +881,7 @@
         </div>
       </div>
     </div>
+
+    @section Scripts {
+        <script type="text/javascript" src="~/js/idea/idea.js"></script>
+    }
