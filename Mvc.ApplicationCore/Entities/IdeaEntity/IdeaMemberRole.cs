@@ -18,10 +18,11 @@ namespace Mvc.ApplicationCore.Entities.IdeaEntity
     public class IdeaMemberRole : BaseEntity
     {
         public IdeaMemberRoles Role { get; set; }
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         public ApplicationUser User { get; set; }
         public int IdeaId { get; set; }
         public Idea Idea { get; set; }
+
 
         public IdeaMemberRole(IdeaMemberRoles role, ApplicationUser user)
         {
@@ -29,7 +30,7 @@ namespace Mvc.ApplicationCore.Entities.IdeaEntity
             Role = role;
         }
 
-        public IdeaMemberRole(IdeaMemberRoles role, int userId)
+        public IdeaMemberRole(IdeaMemberRoles role, string userId)
         {
             UserId = userId;
             Role = role;
@@ -37,7 +38,7 @@ namespace Mvc.ApplicationCore.Entities.IdeaEntity
 
         public IdeaMemberRole(
             IdeaMemberRoles role,
-            int userId,
+            string userId,
             int ideaId)
         {
             Role = role;

@@ -1,0 +1,280 @@
+﻿@using Mvc.WebUi.ViewModels;
+@model UserInvitesViewModel;
+
+@{
+}
+
+<div class="container d-flex">
+      <!---->
+      <div
+        id="preCheckOutIdea"
+        class="z-100 position-fixed container d-flex justify-content-center"
+      >
+        <div
+          class="z-100 col-12 d-flex justify-content-center"
+          id="checkOutIdea"
+        >
+          
+        </div>
+      </div>
+      <!---->
+      <div class="pe-3 pt-4 col">
+        <aside>
+          <div class="text-center mt-3">
+            <img
+              src="~/media/userAvatars/@Model.User.AvatarImageName"
+              height="199"
+              width="199"
+              class="circle border box-shadow"
+            />
+          </div>
+          <div class="mt-3 mb-2 text-center">
+            <span class="t-xl t-xlight text-white">@Model.User.Name</span>
+          </div>
+          <div class="d-flex mt-3 align-items-center justify-content-center">
+            @if (Model.IsSelfProfile)
+            {
+                <span class="t-muted t-md"><em>Your profile</em></span>
+            }
+            else
+            {
+                @if (Model.IsFollowed)
+                {
+                    <div>
+                      <form id="userFollowForm" data-unfollow="true">
+                          <input hidden class="d-none" value="@Model.User.Guid"/>
+                          <button type="submit"  class="showHideBoxGoals t-muted icon-link-btn">Unfollow</button>
+                      </form>
+                    </div>
+                } 
+                else
+                {
+                    <div>
+                      <form id="userFollowForm" data-unfollow="false">
+                          <input hidden class="d-none" value="@Model.User.Guid"/>
+                          <button type="submit" class="showHideBoxGoals icon-link-btn">Follow</button>
+                      </form>
+                    </div>                    
+                }
+                <div>
+                  <button class="btn t-bold t-md t-primary">
+                    Write
+                  </button>
+                </div>
+            }
+
+          </div>
+          <div class="mt-4 text-start text-break">
+              @if (Model.User.Description != null)
+              { 
+                <p class="t-md t-muted">
+                    @Model.User.Description
+                </p>
+                }
+                else
+                {
+                    <p class="t-md t-muted">
+                        Roundile beginner
+                    </p>
+                }
+
+          </div>
+          <div class="mt-4">
+            <h3 class="t-lg t-bold t-muted">Interests</h3>
+            <div class="mt-2 d-flex flex-wrap">
+              @foreach(var tag in Model.User.Tags)
+              {
+                <div class="t-tag me-1">
+                    <a class="t-primary">@tag.Name</a>
+                </div>
+              }              
+            </div>
+          </div>
+         @if (!Model.IsSelfProfile)
+         {
+             <div class="mt-4">
+                <div class="mb-3">
+                  <h3 class="t-lg t-bold t-muted">Can user help?</h3>
+                </div>
+                <div>
+                  <a class="showHideInvite icon-link-btn">Invite</a>
+                </div>
+             </div>
+         }  
+        </aside>
+      </div>
+      <div class="col-9 pt-5">
+        <main>
+          <div class="col-12">
+            <header>
+              <div class="col-12 z-1 mt-3">
+                <div class="p-3 d-flex">
+                    <!---->
+                  @if (Model.IsSelfProfile)
+                  {
+                    <div class="mb-2">
+                    <a asp-action="@Model.User.Guid" asp-route-section="ideas" asp-controller="user" class="ideaSectionLink me-3 ideaSectionLink-active">
+                      <span class="pe-1">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          fill="currentColor"
+                          class="t-muted bi bi-lightbulb"
+                          viewBox="0 0 16 16"
+                        >
+                          <path
+                            d="M2 6a6 6 0 1 1 10.174 4.31c-.203.196-.359.4-.453.619l-.762 1.769A.5.5 0 0 1 10.5 13a.5.5 0 0 1 0 1 .5.5 0 0 1 0 1l-.224.447a1 1 0 0 1-.894.553H6.618a1 1 0 0 1-.894-.553L5.5 15a.5.5 0 0 1 0-1 .5.5 0 0 1 0-1 .5.5 0 0 1-.46-.302l-.761-1.77a1.964 1.964 0 0 0-.453-.618A5.984 5.984 0 0 1 2 6zm6-5a5 5 0 0 0-3.479 8.592c.263.254.514.564.676.941L5.83 12h4.342l.632-1.467c.162-.377.413-.687.676-.941A5 5 0 0 0 8 1z"
+                          />
+                        </svg>
+                      </span>
+                      Ideas
+                    </a>
+                  </div>
+                  <div class="mb-2">
+                    <a asp-action="invites" asp-controller="user" class="ideaSectionLink me-3">
+                      <span class="pe-1">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          fill="currentColor"
+                          class="t-muted bi bi-reply-all"
+                          viewBox="0 0 16 16"
+                        >
+                          <path
+                            d="M8.098 5.013a.144.144 0 0 1 .202.134V6.3a.5.5 0 0 0 .5.5c.667 0 2.013.005 3.3.822.984.624 1.99 1.76 2.595 3.876-1.02-.983-2.185-1.516-3.205-1.799a8.74 8.74 0 0 0-1.921-.306 7.404 7.404 0 0 0-.798.008h-.013l-.005.001h-.001L8.8 9.9l-.05-.498a.5.5 0 0 0-.45.498v1.153c0 .108-.11.176-.202.134L4.114 8.254a.502.502 0 0 0-.042-.028.147.147 0 0 1 0-.252.497.497 0 0 0 .042-.028l3.984-2.933zM9.3 10.386c.068 0 .143.003.223.006.434.02 1.034.086 1.7.271 1.326.368 2.896 1.202 3.94 3.08a.5.5 0 0 0 .933-.305c-.464-3.71-1.886-5.662-3.46-6.66-1.245-.79-2.527-.942-3.336-.971v-.66a1.144 1.144 0 0 0-1.767-.96l-3.994 2.94a1.147 1.147 0 0 0 0 1.946l3.994 2.94a1.144 1.144 0 0 0 1.767-.96v-.667z"
+                          />
+                          <path
+                            d="M5.232 4.293a.5.5 0 0 0-.7-.106L.54 7.127a1.147 1.147 0 0 0 0 1.946l3.994 2.94a.5.5 0 1 0 .593-.805L1.114 8.254a.503.503 0 0 0-.042-.028.147.147 0 0 1 0-.252.5.5 0 0 0 .042-.028l4.012-2.954a.5.5 0 0 0 .106-.699z"
+                          />
+                        </svg>
+                      </span>
+                      Invites
+                    </a>
+                  </div>
+                  <div class="mb-2">
+                    <a asp-action="edit" asp-controller="user" class="ideaSectionLink me-3">
+                      <span class="pe-1">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          fill="currentColor"
+                          class="t-muted bi bi-sliders"
+                          viewBox="0 0 16 16"
+                        >
+                          <path
+                            fill-rule="evenodd"
+                            d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3h9.05zM4.5 7a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM2.05 8a2.5 2.5 0 0 1 4.9 0H16v1H6.95a2.5 2.5 0 0 1-4.9 0H0V8h2.05zm9.45 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm-2.45 1a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0v-1h9.05z"
+                          />
+                        </svg>
+                      </span>
+                      Edit
+                    </a>
+                  </div>                  
+                  }
+                  else
+                  {
+                  
+                    <div class="mb-2">
+                    <a class="ideaSectionLink me-3 ideaSectionLink-active">
+                      <span class="pe-1">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          fill="currentColor"
+                          class="t-muted bi bi-lightbulb"
+                          viewBox="0 0 16 16"
+                        >
+                          <path
+                            d="M2 6a6 6 0 1 1 10.174 4.31c-.203.196-.359.4-.453.619l-.762 1.769A.5.5 0 0 1 10.5 13a.5.5 0 0 1 0 1 .5.5 0 0 1 0 1l-.224.447a1 1 0 0 1-.894.553H6.618a1 1 0 0 1-.894-.553L5.5 15a.5.5 0 0 1 0-1 .5.5 0 0 1 0-1 .5.5 0 0 1-.46-.302l-.761-1.77a1.964 1.964 0 0 0-.453-.618A5.984 5.984 0 0 1 2 6zm6-5a5 5 0 0 0-3.479 8.592c.263.254.514.564.676.941L5.83 12h4.342l.632-1.467c.162-.377.413-.687.676-.941A5 5 0 0 0 8 1z"
+                          />
+                        </svg>
+                      </span>
+                      Ideas
+                    </a>
+                  </div>
+                  }
+                  <!---->
+                </div>
+              </div>
+            </header>
+            <div class="col-12 mt-1 ps-3 pe-3">
+              @if (Model.UserInvites.Count() > 0)
+              {
+                @foreach(var invite in Model.UserInvites)
+                {
+                    <section class="inviteSection" data-invite="@invite.InviteGuid">
+                    <div
+                      class="p-3 d-flex align-items-center col-12 mb-3 border radius-md"
+                    >
+                      <div class="col-8 d-flex">
+                        <img
+                          src="~/media/userAvatars/@invite.FromUserAvatar"
+                          width="33"
+                          height="33"
+                          class="shadow circle"
+                        />
+                        <div class="ps-2">
+                          <span class="t-md t-semi-bold text-white">
+                            @invite.FromUserName
+                            <span class="t-semi-bold text-muted">invite you </span>
+                          </span>
+                          <p class="mb-0 t-semi-bold t-md t-muted">
+                            @invite.Description
+                          </p>
+                        </div>
+                      </div>
+                      <div class="col-4 d-flex justify-content-center">
+                        <div>
+                          <a asp-action="@invite.IdeaGuid" asp-controller="idea" class="t-bold t-lg text-white">@invite.IdeaName</a>
+                          <div class="d-flex align-items-center t-muted t-sm">
+                            <button data-invite="@invite.InviteGuid" class="p-0 me-2 inviteRejectBtn btn t-bold t-md t-muted">
+                              Reject
+                            </button>
+                            or
+                            <button data-invite="@invite.InviteGuid" class="p-0 ms-2 inviteAcceptBtn btn t-bold t-md t-primary">
+                              Accept
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </section>  
+                }
+              }
+              else
+              {
+                  <div class="warwin-md border mb-3 bg-dark col-12 radius-md">
+                <div class="text-center">
+                  <div class="mb-3">
+                    <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="44"
+                          height="44"
+                          fill="currentColor"
+                          class="t-muted bi bi-reply-all"
+                          viewBox="0 0 16 16"
+                        >
+                          <path
+                            d="M8.098 5.013a.144.144 0 0 1 .202.134V6.3a.5.5 0 0 0 .5.5c.667 0 2.013.005 3.3.822.984.624 1.99 1.76 2.595 3.876-1.02-.983-2.185-1.516-3.205-1.799a8.74 8.74 0 0 0-1.921-.306 7.404 7.404 0 0 0-.798.008h-.013l-.005.001h-.001L8.8 9.9l-.05-.498a.5.5 0 0 0-.45.498v1.153c0 .108-.11.176-.202.134L4.114 8.254a.502.502 0 0 0-.042-.028.147.147 0 0 1 0-.252.497.497 0 0 0 .042-.028l3.984-2.933zM9.3 10.386c.068 0 .143.003.223.006.434.02 1.034.086 1.7.271 1.326.368 2.896 1.202 3.94 3.08a.5.5 0 0 0 .933-.305c-.464-3.71-1.886-5.662-3.46-6.66-1.245-.79-2.527-.942-3.336-.971v-.66a1.144 1.144 0 0 0-1.767-.96l-3.994 2.94a1.147 1.147 0 0 0 0 1.946l3.994 2.94a1.144 1.144 0 0 0 1.767-.96v-.667z"
+                          />
+                          <path
+                            d="M5.232 4.293a.5.5 0 0 0-.7-.106L.54 7.127a1.147 1.147 0 0 0 0 1.946l3.994 2.94a.5.5 0 1 0 .593-.805L1.114 8.254a.503.503 0 0 0-.042-.028.147.147 0 0 1 0-.252.5.5 0 0 0 .042-.028l4.012-2.954a.5.5 0 0 0 .106-.699z"
+                          />
+                        </svg>
+                  </div>
+                  <p class="text-white t-xl t-bold">You have 0 invites</p>
+                </div>
+              </div>  
+              }              
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+    @section Scripts {
+            <script src="~/js/userScripts/inviteScript.js"></script>
+    }

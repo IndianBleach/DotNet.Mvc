@@ -33,7 +33,8 @@ namespace Mvc.ApplicationCore.Identity
         public DateTime AccountDateCreated { get; set; }
         public ICollection<UserContact> Contacts { get; set; }
         public ICollection<IdeaMemberRole> IdeaMemberRoles { get; set; }
-        public ICollection<IdeaInvitation> IdeaInvites { get; set; }
+        public ICollection<IdeaInvitation> AuthorInvites { get; set; }
+        public ICollection<IdeaInvitation> Invites { get; set; }
         public ICollection<IdeaStar> IdeaStars { get; set; }
         public ICollection<IdeaBox> IdeaBoxes { get; set; }
         public ICollection<IdeaTopic> IdeaTopics { get; set; }
@@ -54,7 +55,8 @@ namespace Mvc.ApplicationCore.Identity
             AccountDateCreated = DateTime.Now;
             Contacts = new List<UserContact>();
             IdeaMemberRoles = new List<IdeaMemberRole>();
-            IdeaInvites = new List<IdeaInvitation>();
+            AuthorInvites = new List<IdeaInvitation>();
+            Invites = new List<IdeaInvitation>();
             IdeaStars = new List<IdeaStar>();
             IdeaBoxes = new List<IdeaBox>();
             IdeaTopics = new List<IdeaTopic>();
@@ -80,7 +82,8 @@ namespace Mvc.ApplicationCore.Identity
             AccountDateCreated = DateTime.Now;
             Contacts = new List<UserContact>();
             IdeaMemberRoles = new List<IdeaMemberRole>();
-            IdeaInvites = new List<IdeaInvitation>();
+            AuthorInvites = new List<IdeaInvitation>();
+            Invites = new List<IdeaInvitation>();
             IdeaStars = new List<IdeaStar>();
             IdeaBoxes = new List<IdeaBox>();
             IdeaTopics = new List<IdeaTopic>();

@@ -19,7 +19,12 @@ namespace MvcApp.Infrastructure.Data.Configuration
             builder.HasMany(x => x.Followers).WithOne(x => x.Author)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            
+            builder.HasMany(x => x.AuthorInvites).WithOne(x => x.Author)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(x => x.Invites).WithOne(x => x.InvitedUser)
+                .OnDelete(DeleteBehavior.NoAction);
+
         }
     }
 }

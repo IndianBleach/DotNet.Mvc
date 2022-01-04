@@ -13,6 +13,10 @@ namespace Mvc.ApplicationCore.Interfaces
 {
     public interface IUserRepository
     {
+        Task<string> UserAcceptInvite(string inviteGuid);
+        Task<string> UserRejectInvite(string inviteGuid);
+        Task<List<InviteDetailDto>> GetUserInvites(string userGuid);
+        //
         Task<ChatDetailDto> GetChatDetail(string chatGuid, string currentUsername);
         Task<bool> SendChatMessage(string chatGuid, string message, string authorGuid, string currentUsername);
         //

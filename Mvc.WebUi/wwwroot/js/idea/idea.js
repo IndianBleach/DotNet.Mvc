@@ -1,4 +1,4 @@
-﻿$(document).ready(() => {
+﻿$(document).ready(() => {   
 
     const sendNotifyMessage = (text, isSuccess) => {
         if (isSuccess == true) {
@@ -6,7 +6,6 @@
             $("#notifyMessage").addClass("notifyActive");
         }
     };
-
 
     $("#hideBackgroundWrapper").mouseup(function (e) {
         var container = $("#checkOutContainer");

@@ -1,4 +1,12 @@
 ﻿$(document).ready(() => {
+
+    const sendNotifyMessage = (text, isSuccess) => {
+        if (isSuccess == true) {
+            $("#notifyMessageText").text(text);
+            $("#notifyMessage").addClass("notifyActive");
+        }
+    };
+
     $("#hideBackgroundWrapper").mouseup(function (e) {
         var container = $("#checkOutContainer");
         if (container.has(e.target).length === 0) {

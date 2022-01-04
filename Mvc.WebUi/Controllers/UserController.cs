@@ -29,6 +29,8 @@ namespace Mvc.WebUi.Controllers
 
             var res = await _userRepository.InviteUserToIdea(guid, model);
 
+            _userRepository.Save();
+
             return Json(res);
         }
 
@@ -144,8 +146,48 @@ namespace Mvc.WebUi.Controllers
             return View(indexVm);
         }
 
+        [Authorize]
+        [HttpPost]
+        [Route("user/invite-reject")]
+        public async Task<JsonResult> RejectInvite(string inviteGuid)
+        {
+            var res = await _userRepository.UserRejectInvite(inviteGuid);
 
-        
+            _userRepository.Save();
+
+            return Json(res);
+        }
+
+
+        [Authorize]
+        [HttpPost]
+        [Route("user/invite-accept")]
+        public async Task<JsonResult> AccpetInvite(string inviteGuid)
+        {
+            var res = await _userRepository.UserAcceptInvite(inviteGuid);
+
+            _userRepository.Save();
+
+            return Json(res);
+        }
+
+
+        [Route("user/invites")]
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> Invites()
+        {
+            string guid = await _userRepository.GetUserGuid(User.Identity.Name);
+
+            UserInvitesViewModel indexVm = new UserInvitesViewModel();
+            indexVm.User = _userRepository.GetUserDetail(guid);
+            indexVm.IsSelfProfile = true;
+            indexVm.IsFollowed = false;
+            indexVm.UserInvites = await _userRepository.GetUserInvites(guid);
+            indexVm.IdeasToInvite = new List<string>();
+
+            return View(indexVm);
+        }
 
         
     }

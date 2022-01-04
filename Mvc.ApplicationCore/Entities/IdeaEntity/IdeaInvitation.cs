@@ -16,20 +16,26 @@ namespace Mvc.ApplicationCore.Entities.IdeaEntity
     public class IdeaInvitation
     {
         public int Id { get; set; }
+        public Guid Guid { get; set; }
         public string Content { get; set; }
-        public int AuthorId { get; set; }
+        public string AuthorId { get; set; }
         public ApplicationUser Author { get; set; }
         public int RelateIdeaId { get; set; }
         public Idea RelateIdea { get; set; }
+        public string InvitedUserId { get; set; }
+        public ApplicationUser InvitedUser { get; set; }
         public InviteTypes InviteType { get; set; }
         public DateTime DateCreated { get; set; }
 
         public IdeaInvitation(
             string content,
-            int authorId,
+            string authorId,
             int relateIdeaId,
-            InviteTypes inviteType)
+            InviteTypes inviteType,
+            string invitedUserId)
         {
+            Guid = Guid.NewGuid();
+            InvitedUserId = invitedUserId;
             Content = content;
             AuthorId = authorId;
             RelateIdeaId = relateIdeaId;
@@ -41,8 +47,11 @@ namespace Mvc.ApplicationCore.Entities.IdeaEntity
             string descriptionContent,
             ApplicationUser author,
             Idea relateIdea,
-            InviteTypes inviteType)
+            InviteTypes inviteType,
+            ApplicationUser invitedUser)
         {
+            Guid = Guid.NewGuid();
+            InvitedUser = invitedUser;
             Content = descriptionContent;
             Author = author;
             RelateIdea = relateIdea;

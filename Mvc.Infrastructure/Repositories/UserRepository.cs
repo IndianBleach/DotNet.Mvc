@@ -91,11 +91,13 @@ namespace Mvc.Infrastructure.Repositories
 
         public async Task<bool> InviteUserToIdea(string inviteFromUserGuid, InviteUserDto model)
         {
-            var getUser = await _userManager.FindByIdAsync(inviteFromUserGuid);
+            var fromUser = await _userManager.FindByIdAsync(inviteFromUserGuid);
+
+            var InvitedUser = await _userManager.FindByIdAsync(model.InvitedUserGuid);
 
             var getIdea = _dbContext.Ideas.FirstOrDefault(x => x.Title.Equals(model.InvitedToIdeaName));
 
-            var invite = new IdeaInvitation(model.Description, getUser, getIdea, InviteTypes.Invite);
+            var invite = new IdeaInvitation(model.Description, fromUser, getIdea, InviteTypes.Invite, InvitedUser);
 
             _dbContext.IdeaInvites.Add(invite);
 
@@ -678,6 +680,67 @@ namespace Mvc.Infrastructure.Repositories
             await _chatContext.Clients.Group(chatGuid).SendAsync("RecieveMessage", recieveMessage);
 
             return true;
+        }
+
+        public async Task<List<InviteDetailDto>> GetUserInvites(string userGuid)
+        {
+            ApplicationUser getAuthor = await _userManager.FindByIdAsync(userGuid);
+
+            var res = _dbContext.IdeaInvites
+                .Include(x => x.Author)
+                .ThenInclude(x => x.Avatar)
+                .Include(x => x.InvitedUser)
+                .ThenInclude(x => x.Avatar)
+                .Include(x => x.RelateIdea)
+                .Where(x => x.InvitedUser == getAuthor)
+                .ToList();
+
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<IdeaInvitation, InviteDetailDto>()
+                .ForMember("InviteGuid", opt => opt.MapFrom(x => x.Guid))
+                .ForMember("FromUserGuid", opt => opt.MapFrom(x => x.Author.Id))
+                .ForMember("FromUserAvatar", opt => opt.MapFrom(x => x.Author.Avatar.ImageName))
+                .ForMember("FromUserName", opt => opt.MapFrom(x => x.Author.UserName))
+                .ForMember("IdeaGuid", opt => opt.MapFrom(x => x.RelateIdea.Guid))
+                .ForMember("IdeaName", opt => opt.MapFrom(x => x.RelateIdea.Title))
+                .ForMember("Description", opt => opt.MapFrom(x => x.Content));
+            });
+
+            var mapper = new Mapper(config);
+
+            var resp = mapper.Map<List<IdeaInvitation>, List<InviteDetailDto>>(res);
+
+            return resp;
+        }
+
+        public async Task<string> UserAcceptInvite(string inviteGuid)
+        {
+            var getInvite = await _dbContext.IdeaInvites
+                .Include(x => x.RelateIdea)
+                .Include(x => x.InvitedUser)
+                .FirstOrDefaultAsync(x => x.Guid.ToString() == inviteGuid);
+
+            var createRole = new IdeaMemberRole(
+                    IdeaMemberRoles.Default,
+                    getInvite.InvitedUserId,
+                    getInvite.RelateIdeaId);
+
+            _dbContext.IdeaMemberRoles.Add(createRole);
+
+            _dbContext.IdeaInvites.Remove(getInvite);
+
+            return getInvite.Guid.ToString();
+        }
+
+        public async Task<string> UserRejectInvite(string inviteGuid)
+        {
+            var getInvite = await _dbContext.IdeaInvites
+                .FirstOrDefaultAsync(x => x.Guid.ToString() == inviteGuid);
+            
+            _dbContext.IdeaInvites.Remove(getInvite);
+
+            return getInvite.Guid.ToString();
         }
         #endregion
     }
