@@ -17,6 +17,7 @@ namespace Mvc.ApplicationCore.Entities.IdeaEntity
 
     public class IdeaMemberRole : BaseEntity
     {
+        public Guid Guid {  get; set; }
         public IdeaMemberRoles Role { get; set; }
         public string UserId { get; set; }
         public ApplicationUser User { get; set; }
@@ -26,12 +27,14 @@ namespace Mvc.ApplicationCore.Entities.IdeaEntity
 
         public IdeaMemberRole(IdeaMemberRoles role, ApplicationUser user)
         {
+            Guid = Guid.NewGuid();
             User = user;
             Role = role;
         }
 
         public IdeaMemberRole(IdeaMemberRoles role, string userId)
         {
+            Guid = Guid.NewGuid();
             UserId = userId;
             Role = role;
         }
@@ -41,6 +44,7 @@ namespace Mvc.ApplicationCore.Entities.IdeaEntity
             string userId,
             int ideaId)
         {
+            Guid = Guid.NewGuid();
             Role = role;
             UserId = userId;
             IdeaId = ideaId;

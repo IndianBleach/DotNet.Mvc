@@ -13,7 +13,10 @@ namespace Mvc.ApplicationCore.Interfaces
 {
     public interface IIdeaRepository
     {
-
+        Task<string> CickMember(string roleGuid);
+        Task<bool> AddModder(string roleGuid);
+        Task<bool> RemoveModder(string roleGuid);
+        //
         Task<List<IdeaRoleDto>> GetIdeaRolesAsync(string ideaGuid);
         Task<bool> CreateTopic(string title, string description, string authorGuid, string ideaGuid);
         //

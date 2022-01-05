@@ -389,22 +389,6 @@
               style="height: 335px; overflow-y: scroll;"
               class="custom-scroll col-12 p-3 pt-0"
             >
-              <div class="modder-note">
-                <a>
-                  <img src="#" />
-                  <span>
-                    чЧBBbebra
-                  </span>
-                </a>
-                <div class="modder-note-buttons">
-                  <button class="window-btn t-primary">
-                    Cick
-                  </button>
-                  <button class="window-btn t-muted">
-                    Cick
-                  </button>
-                </div>
-              </div>
             </div>
           </div>
           <!---->
@@ -715,6 +699,7 @@
                       <li><hr class="p-0 m-0 dropdown-divider t-light" /></li>
                       <li>
                         <a
+                            data-idea="@Model.Idea.Guid"
                             id="showSettingsModders"
                           class="dropdown-item t-light"
                           href="#"
@@ -757,7 +742,7 @@
                           width="44"
                       /></a>
                     </div>
-                    <a class="ideaTopicLink showHideTopic" href="$">
+                    <a class="ideaTopicLink col showHideTopic" href="$">
                       <div class="ps-3 col">
                         <div class="col-8">
                           <h3 class="h3 text-white t-xbold">@topic.Title</h3>

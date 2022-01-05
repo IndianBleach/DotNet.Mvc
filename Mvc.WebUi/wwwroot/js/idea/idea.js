@@ -69,6 +69,14 @@
         $("body").toggleClass("overflow-hidden");
     });
 
+    $("#hideSettingsModders").on("click", (e) => {
+        e.preventDefault();
+
+        $("#settingsModdersWindow").addClass("d-none");
+        $("#hideBackgroundWrapper").addClass("d-none");
+        $("body").removeClass("overflow-hidden");
+    })
+
     // settings modders
     $("#showSettingsModders").on("click", (e) => {
         e.preventDefault();
@@ -77,23 +85,68 @@
         $("#hideBackgroundWrapper").removeClass("d-none");
         $("body").addClass("overflow-hidden");
 
-        $.get("/load/ideaRoles", (resp) => {
-            console.log(resp);
+        let ideaGuid = e.target.dataset.idea;
 
-            //FReACH APPEND
-        })
-    })
+        $.get("/load/ideaRoles", { ideaGuid }, (resp) => {
+            resp.forEach(item => {
+                if (item.isModder) {
+                    $("#settingsModdersLoad").append(`<div class="modder-note"><a href="/user/${item.userGuid}"><img src="/media/userAvatars/${item.userAvatarImage}"/><span>${item.userName}</span></a><div class="modder-note-buttons"><button data-role="${item.roleGuid}" class="settingsRemoveModderBtn window-btn t-primary">To Member</button><button data-role="${item.roleGuid}" class="settingsCickMemberBtn window-btn t-muted">Cick</button></div></div>`);
+                }
+                else if (item.isModder == false) {
+                    $("#settingsModdersLoad").append(`<div class="modder-note"><a href="/user/${item.userGuid}"><img src="/media/userAvatars/${item.userAvatarImage}"/><span>${item.userName}</span></a><div class="modder-note-buttons"><button data-role="${item.roleGuid}" class="settingsAddModderBtn window-btn t-primary">To Modder</button><button data-role="${item.roleGuid}" class="settingsCickMemberBtn window-btn t-muted">Cick</button></div></div>`);
+                }
+            });
 
-    /*
-    $(".showHideSettingsModders").on("click", (e) => {
-        e.preventDefault();
-        $("#settingsModdersWindow").toggleClass("d-none");
-        $("#hideBackgroundWrapper").toggleClass("d-none");
-        $("body").toggleClass("overflow-hidden");
+            // set listeners
+            $(".settingsAddModderBtn").on("click", e => {
+                e.preventDefault();
+
+                let roleGuid = e.target.dataset.role;
+
+                $.post("/idea/addModder", { roleGuid }, resp => {
+                    sendNotifyMessage("Modder added!", true);
+
+                    $("#settingsModdersWindow").addClass("d-none");
+                    $("#hideBackgroundWrapper").addClass("d-none");
+                    $("body").removeClass("overflow-hidden");
+
+                    $(".modder-note").remove();
+                });
+            });
+
+            $(".settingsRemoveModderBtn").on("click", e => {
+                e.preventDefault();
+
+                let roleGuid = e.target.dataset.role;
+
+                $.post("/idea/removeModder", { roleGuid }, resp => {
+                    sendNotifyMessage("Modder remove!", true);
+
+                    $("#settingsModdersWindow").addClass("d-none");
+                    $("#hideBackgroundWrapper").addClass("d-none");
+                    $("body").removeClass("overflow-hidden");
+
+                    $(".modder-note").remove();
+                });
+            });
+
+            $(".settingsCickMemberBtn").on("click", (e) => {
+                e.preventDefault();
+
+                let roleGuid = e.target.dataset.role;
+
+                $.post("cickMember", { roleGuid }, (resp) => {
+                    sendNotifyMessage(`${resp} cicked!`, true);
+
+                    $("#settingsModdersWindow").addClass("d-none");
+                    $("#hideBackgroundWrapper").addClass("d-none");
+                    $("body").removeClass("overflow-hidden");
+
+                    $(".modder-note").remove();
+                });
+            });
+        });
     });
-    */
-
-    
 
     // create topic
     $("#formCreateTopic").on("submit", (e) => {
@@ -105,18 +158,9 @@
         let description = e.target.getElementsByTagName("textarea")[0].value;
 
         $.post("/idea/createTopic", { title, description, ideaGuid }, response => {
-            if (response == true) {
-                $("#settingsCreateTopicWindow").toggleClass("d-none");
-                $("#hideBackgroundWrapper").toggleClass("d-none");
-                $("body").toggleClass("overflow-hidden");
-                sendNotifyMessage("Topic created!", true);
-            }
-            else {
-                $("#settingsCreateTopicWindow").toggleClass("d-none");
-                $("#hideBackgroundWrapper").toggleClass("d-none");
-                $("body").toggleClass("overflow-hidden");
-                sendNotifyMessage("Something failed", true);
-            }
+            $("#settingsCreateTopicWindow").toggleClass("d-none");
+            $("#hideBackgroundWrapper").toggleClass("d-none");
+            $("body").toggleClass("overflow-hidden");
         });
     });
     $(".showHideCreateTopic").on("click", (e) => {

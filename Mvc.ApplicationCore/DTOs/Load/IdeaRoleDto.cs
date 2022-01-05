@@ -8,6 +8,7 @@ namespace Mvc.ApplicationCore.DTOs.Load
 {
     public class IdeaRoleDto
     {
+        public string RoleGuid { get; set; }
         public string UserAvatarImage { get; set; }
         public string UserName {  get; set; }
         public string UserGuid { get; set; }

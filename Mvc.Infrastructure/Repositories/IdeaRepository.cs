@@ -302,7 +302,7 @@ namespace Mvc.Infrastructure.Repositories
                 .Include(x => x.Author)
                 .ThenInclude(x => x.Avatar)
                 .Include(x => x.Comments)
-                .Where(x => x.Idea.Guid.Equals(ideaGuid))
+                .Where(x => x.Idea.Guid.ToString() == ideaGuid)
                 .ToList();
 
             List<IdeaTopicDto> res = mapper.Map<List<IdeaTopic>, List<IdeaTopicDto>>(topics);
@@ -345,13 +345,14 @@ namespace Mvc.Infrastructure.Repositories
 
         public async Task<bool> CreateTopic(string title, string description, string authorGuid, string ideaGuid)
         {
-            var createTopic = new IdeaTopic(title, description, authorGuid);
-
             var idea = await _dbContext.Ideas
-                .Include(x => x.Topics)
                 .FirstOrDefaultAsync(x => x.Guid.ToString() == ideaGuid);
 
-            idea.Topics.Add(createTopic);
+            var createTopic = new IdeaTopic(title, description, idea.Id, authorGuid);
+
+            _dbContext.IdeaTopics.Add(createTopic);
+
+            _dbContext.SaveChanges();
 
             return true;
         }
@@ -363,11 +364,13 @@ namespace Mvc.Infrastructure.Repositories
                 .Include(x => x.User)
                 .ThenInclude(x => x.Avatar)
                 .Where(x => x.Idea.Guid.ToString() == ideaGuid &&
-                    x.Role != IdeaMemberRoles.Author);
+                    x.Role != IdeaMemberRoles.Author)
+                .ToList();
 
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<IdeaMemberRole, IdeaRoleDto>()
+                .ForMember("RoleGuid", opt => opt.MapFrom(x => x.Guid))
                 .ForMember("UserAvatarImage", opt => opt.MapFrom(x => x.User.Avatar.ImageName))
                 .ForMember("UserName", opt => opt.MapFrom(x => x.User.UserName))
                 .ForMember("UserGuid", opt => opt.MapFrom(x => x.User.Id))
@@ -377,9 +380,44 @@ namespace Mvc.Infrastructure.Repositories
 
             var mapper = new Mapper(config);
 
-            var res = mapper.Map<List<IdeaMemberRole>, List<IdeaRoleDto>>(roles.ToList());
+            var res = mapper.Map<List<IdeaMemberRole>, List<IdeaRoleDto>>(roles);
 
             return res;
+        }
+
+        public async Task<bool> AddModder(string roleGuid)
+        {
+            var getRole = await _dbContext.IdeaMemberRoles
+                .FirstOrDefaultAsync(x => x.Guid.ToString() == roleGuid);
+
+            getRole.Role = IdeaMemberRoles.Modder;
+
+            _dbContext.IdeaMemberRoles.Update(getRole);
+
+            return true;
+        }
+
+        public async Task<bool> RemoveModder(string roleGuid)
+        {
+            var getRole = await _dbContext.IdeaMemberRoles
+                .FirstOrDefaultAsync(x => x.Guid.ToString() == roleGuid);
+
+            getRole.Role = IdeaMemberRoles.Default;
+
+            _dbContext.IdeaMemberRoles.Update(getRole);
+
+            return true;
+        }
+
+        public async Task<string> CickMember(string roleGuid)
+        {
+            var getRole = await _dbContext.IdeaMemberRoles
+                .Include(x => x.User)
+                .FirstOrDefaultAsync(x => x.Guid.ToString() == roleGuid);
+
+            _dbContext.IdeaMemberRoles.Remove(getRole);
+
+            return getRole.User.UserName;
         }
         #endregion
     }
