@@ -13,6 +13,9 @@ namespace Mvc.ApplicationCore.Interfaces
 {
     public interface IIdeaRepository
     {
+        Task<TopicCommentDto> CreateTopicComment(string topicGuid, string authorGuid, string message);
+        Task<TopicDetailDto> GetTopicDetail(string topicGuid);
+        //
         Task<string> CickMember(string roleGuid);
         Task<bool> AddModder(string roleGuid);
         Task<bool> RemoveModder(string roleGuid);

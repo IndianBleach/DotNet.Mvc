@@ -10,13 +10,17 @@ namespace Mvc.ApplicationCore.Entities
     public class CommentMessage : BaseEntity
     {
         public string Message { get; set; }
-        public int AuthorId { get; set; }
+        public string AuthorId { get; set; }
         public ApplicationUser Author { get; set; }        
-        public DateTime DateCreated { get; set; }        
+        public DateTime DateCreated { get; set; }
+
+        public CommentMessage()
+        {
+        }
 
         public CommentMessage(
             string message,
-            int authorId)
+            string authorId)
         {
             Message = message;
             AuthorId = authorId;

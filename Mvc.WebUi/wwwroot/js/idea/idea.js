@@ -69,6 +69,63 @@
         $("body").toggleClass("overflow-hidden");
     });
 
+
+    // topic new comment async
+    $("#topicCommentForm").on("submit", (e) => {
+        e.preventDefault();
+
+        let topicGuid = e.target.dataset.topic;
+        let message = e.target.getElementsByTagName("input")[0].value;
+
+        $.post("/idea/topics/createcomment", { topicGuid, message }, (resp) => {
+            $("#topicDetailComments").append(`<div class="topicDiscussMessage"><a href="/user/${resp.authorGuid}"><img src="/media/userAvatars/${resp.authorAvatarImage}"/></a><p><span class="pe-1">${resp.authorName}</span>${resp.comment}<br><span class="date-publ-span t-sm text-muted">${resp.dateCreated}</span></p></div>`);
+
+            $("#topicCommentForm input").val("");
+        });
+
+    })
+
+    // hideTopicBtn
+    $(".hideTopicBtn").on("click", (e) => {
+        e.preventDefault();
+
+        $("#topicDetailTitle").text("");
+        $("#topicDetailDescription").text("");
+        //$("")
+
+        $("#topicWindow").addClass("d-none");
+        $("#hideBackgroundWrapper").addClass("d-none");
+        $("body").removeClass("overflow-hidden");
+    })
+
+    // async show topic
+    showTopicBtn = (topicGuid) => {
+        $.get("/idea/topicdetail", { topicGuid }, resp => {
+            if (resp) {
+
+                console.log(resp);
+
+                $("#topicDetailTitle").text(resp.title);
+                $("#topicDetailDescription").text(resp.description);
+                $("#topicDetailAuthorAvatar").attr("src", "/media/userAvatars/" + resp.authorAvatarImage);
+                $("#topicDetailPublish").text(resp.datePublished);
+                resp.comments.forEach(item => {
+                    $("#topicDetailComments").append(`<div class="topicDiscussMessage"><a href="/user/${item.authorGuid}"><img src="/media/userAvatars/${item.authorAvatarImage}"/></a><p><span class="ps-1 pe-1">${item.authorName}</span>${item.comment}<br><span class="date-publ-span t-sm text-muted">${item.dateCreated}</span></p></div>`);
+                });
+                $("#topicCommentForm").attr("data-topic", resp.guid);
+
+                $("#topicWindow").removeClass("d-none");
+                $("#hideBackgroundWrapper").removeClass("d-none");
+                $("body").addClass("overflow-hidden");
+            }
+        });
+    }
+
+    
+
+
+
+    // settings modders
     $("#hideSettingsModders").on("click", (e) => {
         e.preventDefault();
 
@@ -171,6 +228,7 @@
     });
     // ----
 
+    //remove idea
     $(".showHideRemoveIdea").on("click", (e) => {
         e.preventDefault();
         $("#settingsRemoveIdeaWindow").toggleClass("d-none");

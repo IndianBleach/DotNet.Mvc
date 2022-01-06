@@ -282,6 +282,24 @@ namespace Mvc.Infrastructure.Repositories
             else return IdeaMemberRoleDto.Viewer;
         }
 
+        private static string GeneratePublishDate(DateTime dateCreated)
+        {
+            var res = DateTime.Now - dateCreated;
+
+            int years = 0;
+            int months = 0;
+            for (int i = 1; i <= res.Days; i++)
+            {
+                if (i > 30) months++;
+                if (i > 364) years++;
+            }
+
+            if (years > 0) return $"{years} year(s) ago";
+            else if (months > 0) return $"{months} month(s) ago";
+            else if (res.Days < 1) return "today";
+            else return $"{res.Days} day(s) ago";
+        }
+
         public List<IdeaTopicDto> GetIdeaTopics(string ideaGuid)
         {
             var config = new MapperConfiguration(cfg =>
@@ -292,7 +310,8 @@ namespace Mvc.Infrastructure.Repositories
                 .ForMember("AuthorAvatarImageName", opt => opt.MapFrom(x => x.Author.Avatar.ImageName))
                 .ForMember("AuthorGuid", opt => opt.MapFrom(x => x.Author.Id))
                 .ForMember("Description", opt => opt.MapFrom(x => x.Description))
-                .ForMember("CommentsCount", opt => opt.MapFrom(x => x.Comments.Count()));                
+                .ForMember("CommentsCount", opt => opt.MapFrom(x => x.Comments.Count()))
+                .ForMember("DateCreated", opt => opt.MapFrom(x => GeneratePublishDate(x.DateCreated)));                
             });
 
             var mapper = new Mapper(config);
@@ -418,6 +437,69 @@ namespace Mvc.Infrastructure.Repositories
             _dbContext.IdeaMemberRoles.Remove(getRole);
 
             return getRole.User.UserName;
+        }
+
+        public async Task<TopicDetailDto> GetTopicDetail(string topicGuid)
+        {
+            var res = await _dbContext.IdeaTopics
+                .Include(x => x.Idea.Avatar)
+                .Include(x => x.Author)
+                .ThenInclude(x => x.Avatar)
+                .Include(x => x.Comments)
+                .ThenInclude(x => x.Author)
+                .ThenInclude(x => x.Avatar)
+                .FirstOrDefaultAsync(x => x.Guid.ToString() == topicGuid);
+
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<IdeaTopic, TopicDetailDto>()
+                .ForMember("Guid", opt => opt.MapFrom(x => x.Guid))
+                .ForMember("AuthorAvatarImage", opt => opt.MapFrom(x => x.Author.Avatar.ImageName))
+                .ForMember("AuthorGuid", opt => opt.MapFrom(x => x.Author.Id))
+                .ForMember("DatePublished", opt => opt.MapFrom(x => GeneratePublishDate(x.DateCreated)))
+                .ForMember("IdeaAvatarImage", opt => opt.MapFrom(x => x.Idea.Avatar.ImageName))
+                .ForMember("Title", opt => opt.MapFrom(x => x.Title))
+                .ForMember("Description", opt => opt.MapFrom(x => x.Description))
+                .ForMember("Comments", opt => opt.MapFrom(x => x.Comments.Select(e => 
+                    new TopicCommentDto(e.Author.Id,
+                    e.Author.Avatar.ImageName,
+                    e.Author.UserName,
+                    GeneratePublishDate(e.DateCreated),
+                    e.Message)
+                )));
+            });
+
+            var mapper = new Mapper(config);
+
+            TopicDetailDto dto = mapper.Map<IdeaTopic, TopicDetailDto>(res);
+
+            return dto;
+        }
+
+        public async Task<TopicCommentDto> CreateTopicComment(string topicGuid, string authorGuid, string message)
+        {
+            var getTopic = await _dbContext.IdeaTopics
+                .FirstOrDefaultAsync(x => x.Guid.ToString() == topicGuid);
+
+            var getAuthor = await _dbContext.Users
+                .Include(x => x.Avatar)                
+                .FirstOrDefaultAsync(x => x.Id.Equals(authorGuid));
+
+            var createComment = new TopicComment(getTopic.Id, authorGuid, message);
+
+            await _dbContext.IdeaTopicComments
+                .AddAsync(createComment);
+
+            var dto = new TopicCommentDto()
+            {
+                AuthorAvatarImage = getAuthor.Avatar.ImageName,
+                AuthorGuid = getAuthor.Id,
+                AuthorName = getAuthor.UserName,
+                Comment = message,
+                DateCreated = GeneratePublishDate(createComment.DateCreated)
+            };
+
+            return dto;
         }
         #endregion
     }

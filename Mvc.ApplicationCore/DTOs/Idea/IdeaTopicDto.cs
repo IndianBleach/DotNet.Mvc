@@ -14,5 +14,6 @@ namespace Mvc.ApplicationCore.DTOs.Idea
         public string AuthorAvatarImageName { get; set; }
         public string Description {  get; set; }
         public int CommentsCount { get; set; }
+        public string DateCreated { get; set; }
     }
 }

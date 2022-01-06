@@ -24,6 +24,31 @@ namespace Mvc.WebUi.Controllers
 
         [Authorize]
         [HttpPost]
+        [Route("idea/topics/createcomment")]
+        public async Task<JsonResult> CreateTopicComment(string topicGuid, string message)
+        {
+            string authorGuid = await _userRepository.GetUserGuid(User.Identity.Name);
+
+            var res = await _ideaRepository.CreateTopicComment(topicGuid, authorGuid, message);
+
+            _ideaRepository.Save();
+
+            return Json(res);
+        }
+
+
+        [Authorize]
+        [HttpGet]
+        [Route("idea/topicdetail")]
+        public async Task<JsonResult> TopicDetail(string topicGuid)
+        {
+            var res = await _ideaRepository.GetTopicDetail(topicGuid);
+
+            return Json(res);
+        }
+
+        [Authorize]
+        [HttpPost]
         [Route("idea/cickMember")]
         public async Task<JsonResult> CickMember(string roleGuid)
         {

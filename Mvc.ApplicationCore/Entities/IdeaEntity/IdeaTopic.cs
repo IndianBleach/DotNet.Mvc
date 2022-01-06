@@ -17,7 +17,7 @@ namespace Mvc.ApplicationCore.Entities.IdeaEntity
         public string Title { get; set; }
         public string Description { get; set; }
         public DateTime DateCreated { get; set; }
-        public ICollection<CommentMessage> Comments { get; set; }
+        public ICollection<TopicComment> Comments { get; set; }
         public bool IsDefault { get; set; }
 
         public IdeaTopic(string title, string description, ApplicationUser author, bool isDefault)
@@ -25,7 +25,7 @@ namespace Mvc.ApplicationCore.Entities.IdeaEntity
             Title = title;
             Description = description;
             Author = author;
-            Comments = new List<CommentMessage>();
+            Comments = new List<TopicComment>();
             DateCreated = DateTime.Now;
             Guid = Guid.NewGuid();
             IsDefault = isDefault;
@@ -37,7 +37,7 @@ namespace Mvc.ApplicationCore.Entities.IdeaEntity
             Title = title;
             Description = description;
             AuthorId = authorId;
-            Comments = new List<CommentMessage>();
+            Comments = new List<TopicComment>();
             DateCreated = DateTime.Now;
             Guid = Guid.NewGuid();
         }
@@ -54,7 +54,7 @@ namespace Mvc.ApplicationCore.Entities.IdeaEntity
             AuthorId = authorId;
             Guid = Guid.NewGuid();
             DateCreated = DateTime.Now;
-            Comments = new List<CommentMessage>();
+            Comments = new List<TopicComment>();
         }
 
         public IdeaTopic(
@@ -69,7 +69,7 @@ namespace Mvc.ApplicationCore.Entities.IdeaEntity
             Description = description;
             Guid = Guid.NewGuid();
             DateCreated = DateTime.Now;
-            Comments = new List<CommentMessage>();
+            Comments = new List<TopicComment>();
         }
     }
 }

@@ -13,8 +13,7 @@ using System.Threading.Tasks;
 namespace Mvc.Infrastructure.Data
 {
     public class ApplicationContext : IdentityDbContext<ApplicationUser>
-    {
-        //public DbSet<UserRole> UserRoles { get; set; }
+    {        
         public DbSet<Chat> Chats { get; set; }
         public DbSet<ChatUser> ChatUsers { get; set; }
         public DbSet<ChatMessage> ChatMessages { get; set; }
@@ -27,6 +26,7 @@ namespace Mvc.Infrastructure.Data
         public DbSet<IdeaStatus> IdeaStatuses { get; set; }
         public DbSet<IdeaTopic> IdeaTopics { get; set; }
         public DbSet<IdeaAvatarImage> IdeaAvatars { get; set; }
+        public DbSet<TopicComment> IdeaTopicComments { get; set; }
 
         public DbSet<UserAvatarImage> UserAvatars { get; set; }
         public DbSet<CommentMessage> CommentMessages { get; set; }
