@@ -54,6 +54,13 @@ namespace MvcApp.Infrastructure.Data
 
             dbContext.UserAvatars.Add(new UserAvatarImage("DEFAULT_USER_AVATAR.jpg"));
 
+            dbContext.GoalStatuses.AddRange(new BoxGoalStatus[]
+            {
+                new BoxGoalStatus("Failed", BoxGoalStatuses.Failed),
+                new BoxGoalStatus("Complete", BoxGoalStatuses.Complete),
+                new BoxGoalStatus("Waiting", BoxGoalStatuses.Waiting),
+            });
+
             await dbContext.SaveChangesAsync();
         }
     }

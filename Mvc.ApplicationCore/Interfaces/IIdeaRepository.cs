@@ -13,6 +13,7 @@ namespace Mvc.ApplicationCore.Interfaces
 {
     public interface IIdeaRepository
     {
+        //Task<>
         Task<TopicCommentDto> CreateTopicComment(string topicGuid, string authorGuid, string message);
         Task<TopicDetailDto> GetTopicDetail(string topicGuid);
         //

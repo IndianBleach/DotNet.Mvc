@@ -7,28 +7,55 @@ using System.Threading.Tasks;
 
 namespace Mvc.ApplicationCore.Entities.IdeaEntity
 {
-    public class IdeaBoxGoal : BaseEntity
-    {
-        public string GoalContent { get; set; }
-        public int AuthorId { get; set; }
-        public ApplicationUser Author { get; set; }
-        public DateTime DateCreated { get; set; }
-        public int IdeaBoxId { get; set; }
-        public IdeaBox IdeaBox { get; set; }
+    public enum BoxGoalStatuses
+    { 
+        Complete,
+        Waiting,
+        Failed
+    }
 
-        public IdeaBoxGoal(string goalContent, ApplicationUser author, IdeaBox ideaBox)
+    public class BoxGoalStatus : BaseEntity
+    { 
+        public string Name { get; set; }
+        public BoxGoalStatuses Type { get; set; }
+        public ICollection<BoxGoal> Goals { get; set; }
+
+        public BoxGoalStatus(string name, BoxGoalStatuses type)
         {
+            Name = name;
+            Type = type;
+            Goals = new List<BoxGoal>();
+        }
+    }
+
+    public class BoxGoal : BaseEntity
+    {
+        public Guid Guid { get; set; }
+        public string AuthorId { get; set; }
+        public ApplicationUser Author { get; set; }
+        public string Description { get; set; }
+        public DateTime DateCreated { get; set; }
+        public int StatusId { get; set; }
+        public BoxGoalStatus Status { get; set; }
+        public int BoxId { get; set; }
+        public IdeaBox Box {get;set;}
+
+        public BoxGoal(string authorId, string description, int statusId, int boxId)
+        {
+            Guid = Guid.NewGuid();
+            AuthorId = authorId;
+            Description = description;
+            StatusId = statusId;
             DateCreated = DateTime.Now;
-            Author = author;
-            IdeaBox = ideaBox;
-            GoalContent = goalContent;
+            BoxId = boxId;
         }
 
-        public IdeaBoxGoal(string goalContent, int authorId, int ideaBoxId)
+        public BoxGoal(string authorId, string description, int statusId)
         {
-            GoalContent = goalContent;
+            Guid = Guid.NewGuid();
             AuthorId = authorId;
-            IdeaBoxId = ideaBoxId;
+            Description = description;
+            StatusId = statusId;
             DateCreated = DateTime.Now;
         }
     }
@@ -36,47 +63,25 @@ namespace Mvc.ApplicationCore.Entities.IdeaEntity
 
     public class IdeaBox : BaseEntity
     {
-        public Guid Guid { get; set; }
-        public int AuthorId { get; set; }
-        public ApplicationUser Author { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public bool IsConfirmed { get; set; }
+        public Guid Guid {  get; set; }
+        public string Name {  get; set; }
+        public string Description {  get; set; }
         public DateTime DateCreated { get; set; }
-        public ICollection<IdeaBoxGoal> Goals { get; set; }
-        public ICollection<CommentMessage> Comments { get; set; }
+        public string AuthorId { get; set; }
+        public ApplicationUser Author { get; set; }
+        public int IdeaId { get; set; }
+        public Idea Idea { get; set; }
+        public ICollection<BoxGoal> Goals { get; set; }
 
-        public IdeaBox(
-            int authorId,
-            string title,
-            string description,
-            bool isConfirmed
-            )
+        public IdeaBox(string name, string description, string authorId, int ideaId)
         {
+            Guid = Guid.NewGuid();
+            Name = name;
+            Description = description;
             AuthorId = authorId;
-            Title = title;
-            IsConfirmed = isConfirmed;
-            Description = description;
-            Guid = Guid.NewGuid();
+            IdeaId = ideaId;
             DateCreated = DateTime.Now;
-            Comments = new List<CommentMessage>();
-            Goals = new List<IdeaBoxGoal>();
-        }
-
-        public IdeaBox(
-            ApplicationUser user,
-            string title,
-            string description,
-            bool isConfirmed
-            )
-        {
-            Author = user;
-            Title = title;
-            IsConfirmed = isConfirmed;
-            Description = description;
-            Guid = Guid.NewGuid();
-            DateCreated = DateTime.Now;
-            Goals = new List<IdeaBoxGoal>();
+            Goals = new List<BoxGoal>();
         }
     }
 }

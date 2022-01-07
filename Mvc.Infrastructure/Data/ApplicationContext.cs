@@ -14,6 +14,12 @@ namespace Mvc.Infrastructure.Data
 {
     public class ApplicationContext : IdentityDbContext<ApplicationUser>
     {        
+
+        public DbSet<BoxGoalStatus> GoalStatuses { get; set; }
+        public DbSet<BoxGoal> BoxGoals { get; set; }
+        public DbSet<IdeaBox> TopicBoxes { get; set; }
+
+
         public DbSet<Chat> Chats { get; set; }
         public DbSet<ChatUser> ChatUsers { get; set; }
         public DbSet<ChatMessage> ChatMessages { get; set; }
