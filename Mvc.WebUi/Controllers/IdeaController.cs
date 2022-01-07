@@ -22,6 +22,37 @@ namespace Mvc.WebUi.Controllers
             _dbContext = ctx;
         }
 
+
+        [Authorize]
+        [HttpGet]
+        [Route("idea/boxes/detail")]
+        public async Task<JsonResult> BoxDetail(string boxGuid)
+        {
+            string authorGuid = await _userRepository.GetUserGuid(User.Identity.Name);
+
+            var res = await _ideaRepository.GetBoxDetailAsync(boxGuid, authorGuid);
+
+            return Json(res);
+
+        }
+
+
+        [Authorize]
+        [HttpPost]
+        [Route("idea/boxes/create")]
+        public async Task<IActionResult> CreateBox(string name, string description, string ideaGuid, bool isAuthored)
+        {
+            string authorGuid = await _userRepository.GetUserGuid(User.Identity.Name);
+
+            var res = await _ideaRepository.CreateBoxAsync(name, description, isAuthored, authorGuid, ideaGuid);
+
+            if (res) _ideaRepository.Save();           
+
+            return RedirectToAction(ideaGuid, new {section = "goals"});
+        }
+
+
+
         [Authorize]
         [HttpPost]
         [Route("idea/topics/createcomment")]
@@ -112,10 +143,26 @@ namespace Mvc.WebUi.Controllers
 
         
         [Route("idea/{ideaGuid}")]
-        public async Task<IActionResult> Index(string ideaGuid)
+        public async Task<IActionResult> Index(string ideaGuid, string? section)
         {
             string currentUserName = User.Identity.Name;
 
+            if (section == "goals")
+            {
+                IdeaBoxesViewModel goalsVm = new IdeaBoxesViewModel();
+                goalsVm.Idea = _ideaRepository.GetIdeaDetail(ideaGuid);
+                goalsVm.SimilarIdeas = new List<SideIdeaDto>();
+                goalsVm.IdeaBoxes = await _ideaRepository.GetIdeaBoxesAsync(ideaGuid, await _userRepository.GetUserGuid(currentUserName));
+                goalsVm.CurrentUserRole = IdeaMemberRoleDto.Viewer;
+
+                if (currentUserName != null)
+                    goalsVm.CurrentUserRole = _ideaRepository.GetIdeaMemberRole(ideaGuid,
+                        await _userRepository.GetUserGuid(currentUserName));
+
+                return View("Boxes", goalsVm);
+            }
+
+            
             IdeaAboutViewModel indexVm = new IdeaAboutViewModel();
             indexVm.Idea = _ideaRepository.GetIdeaDetail(ideaGuid);
             indexVm.SimilarIdeas = new List<SideIdeaDto>();
@@ -123,7 +170,7 @@ namespace Mvc.WebUi.Controllers
             indexVm.CurrentUserRole = IdeaMemberRoleDto.Viewer;
 
             if (currentUserName != null)
-                indexVm.CurrentUserRole = _ideaRepository.GetIdeaMemberRole(ideaGuid, 
+                indexVm.CurrentUserRole = _ideaRepository.GetIdeaMemberRole(ideaGuid,
                     await _userRepository.GetUserGuid(currentUserName));
 
             return View(indexVm);

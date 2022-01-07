@@ -72,8 +72,9 @@ namespace Mvc.ApplicationCore.Entities.IdeaEntity
         public int IdeaId { get; set; }
         public Idea Idea { get; set; }
         public ICollection<BoxGoal> Goals { get; set; }
+        public bool IsAuthored { get; set; }
 
-        public IdeaBox(string name, string description, string authorId, int ideaId)
+        public IdeaBox(string name, string description, bool isAuthored, string authorId, int ideaId)
         {
             Guid = Guid.NewGuid();
             Name = name;
@@ -82,6 +83,7 @@ namespace Mvc.ApplicationCore.Entities.IdeaEntity
             IdeaId = ideaId;
             DateCreated = DateTime.Now;
             Goals = new List<BoxGoal>();
+            IsAuthored = isAuthored;
         }
     }
 }

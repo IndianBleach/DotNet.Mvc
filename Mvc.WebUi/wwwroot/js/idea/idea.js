@@ -22,6 +22,7 @@
             $("#goalWindow").addClass("d-none");
             $("#joinWindow").addClass("d-none");
             $("#windowParticipation").addClass("d-none");
+            $("#createBoxWindow").addClass("d-none");
         }
     });
 
@@ -45,6 +46,7 @@
             $("#settingsRemoveIdeaWindow").addClass("d-none");
             $("#settingsCreateTopicWindow").addClass("d-none");            
             $("body").removeClass("overflow-hidden");
+            $("#createBoxWindow").addClass("d-none");
         }
     });
 
@@ -121,8 +123,36 @@
         });
     }
 
-    
+    // create BOX
+    $(".showHideCreateBox").on("click", (e) => {
+        $("#createBoxWindow").toggleClass("d-none");
+        $("#hideBackgroundWrapper").toggleClass("d-none");
+        $("body").toggleClass("overflow-hidden");
+    });
 
+    $("#formCreateBox").on("submit", (e) => {
+        e.preventDefault();
+        //string name, string description, string ideaGuid, bool isAuthored
+        let name = e.target.getElementsByTagName("input")[0].value;
+        let description = e.target.getElementsByTagName("textarea")[0].value;
+        let isAuthored = e.target.getElementsByTagName("input")[1].checked;
+        let ideaGuid = e.target.dataset.idea;
+       
+        $.post("/idea/boxes/create", { name, description, ideaGuid, isAuthored }, (resp) => {
+            $("#createBoxWindow").toggleClass("d-none");
+            $("#hideBackgroundWrapper").toggleClass("d-none");
+            $("body").toggleClass("overflow-hidden");
+        });
+    });
+
+    showBoxBtn = (boxGuid) => {
+        $.get("/idea/boxes/detail", { boxGuid }, resp => {
+            console.log(resp);
+        });
+    };
+
+    // -----
+    
 
 
     // settings modders
@@ -205,7 +235,7 @@
         });
     });
 
-    // create topic
+    // create TOPIC
     $("#formCreateTopic").on("submit", (e) => {
         e.preventDefault();
 

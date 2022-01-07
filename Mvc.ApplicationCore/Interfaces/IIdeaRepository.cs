@@ -13,7 +13,10 @@ namespace Mvc.ApplicationCore.Interfaces
 {
     public interface IIdeaRepository
     {
-        //Task<>
+        Task<BoxDetailDto> GetBoxDetailAsync(string boxGuid, string currentUserGuid);
+        Task<List<IdeaBoxDto>> GetIdeaBoxesAsync(string ideaGuid, string currentUserGuid);
+        Task<bool> CreateBoxAsync(string title, string description, bool isAuthored, string authorGuid, string ideaGuid);
+        //
         Task<TopicCommentDto> CreateTopicComment(string topicGuid, string authorGuid, string message);
         Task<TopicDetailDto> GetTopicDetail(string topicGuid);
         //

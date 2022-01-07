@@ -501,6 +501,88 @@ namespace Mvc.Infrastructure.Repositories
 
             return dto;
         }
+
+        public async Task<bool> CreateBoxAsync(string title, string description, bool isAuthored, string authorGuid, string ideaGuid)
+        {
+            var getIdea = await _dbContext.Ideas
+                .FirstOrDefaultAsync(x => x.Guid.ToString() == ideaGuid);
+
+            var createBox = new IdeaBox(title, description, isAuthored, authorGuid, getIdea.Id);
+
+            await _dbContext.IdeaBoxes.AddAsync(createBox);
+
+            return true;
+        }
+
+        public async Task<List<IdeaBoxDto>> GetIdeaBoxesAsync(string ideaGuid, string currentUserGuid)
+        {
+            var boxes = _dbContext.IdeaBoxes
+                .Include(x => x.Idea)
+                .Include(x => x.Author)
+                .Include(x => x.Goals)
+                .Where(x => x.Idea.Guid.ToString() == ideaGuid)
+                .ToList();
+
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<IdeaBox, IdeaBoxDto>()
+                .ForMember("Guid", opt => opt.MapFrom(x => x.Guid))
+                .ForMember("Title", opt => opt.MapFrom(x => x.Name))
+                .ForMember("AuthorGuid", opt => opt.MapFrom(x => x.Author.Id))
+                .ForMember("AuthorAvatarImageName", opt => opt.MapFrom(x => x.Author.Avatar.ImageName))
+                .ForMember("Description", opt => opt.MapFrom(x => x.Description))
+                .ForMember("GoalsCount", opt => opt.MapFrom(x => x.Goals.Count))
+                .ForMember("DateCreated", opt => opt.MapFrom(x => GeneratePublishDate(x.DateCreated)))
+                .ForMember("IsAuthored", opt => opt.MapFrom(x => x.IsAuthored))
+                .ForMember("CurrentUserBox", opt => opt.MapFrom(x => x.Author.Id == currentUserGuid));
+            });
+
+            var mapper = new Mapper(config);
+
+            List<IdeaBoxDto> dto = mapper.Map<List<IdeaBox>, List<IdeaBoxDto>>(boxes);
+
+            return dto;
+        }
+
+        public async Task<BoxDetailDto> GetBoxDetailAsync(string boxGuid, string currentUserGuid)
+        {
+            var box = await _dbContext.IdeaBoxes
+                .Include(x => x.Author)
+                .ThenInclude(x => x.Avatar)
+                .Include(x => x.Goals)
+                .ThenInclude(x => x.Author)
+                .ThenInclude(x => x.Avatar)
+                .FirstOrDefaultAsync(x => x.Guid.ToString() == boxGuid);
+
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<IdeaBox, BoxDetailDto>()
+                .ForMember("Guid", opt => opt.MapFrom(x => x.Guid))
+                .ForMember("AuthorAvatarImage", opt => opt.MapFrom(x => x.Author.Avatar.ImageName))
+                .ForMember("AuthorGuid", opt => opt.MapFrom(x => x.Author.Id))
+                .ForMember("DatePublished", opt => opt.MapFrom(x => GeneratePublishDate(x.DateCreated)))
+                .ForMember("Title", opt => opt.MapFrom(x => x.Name))
+                .ForMember("Description", opt => opt.MapFrom(x => x.Description))
+                .ForMember("IsAuthored", opt => opt.MapFrom(x => x.IsAuthored))
+                .ForMember("Goals", opt => opt.MapFrom(x => x.Goals.Select(goal =>
+                    new BoxGoalDto(
+                        goal.Guid.ToString(),
+                        goal.Author.Id,
+                        goal.Author.Avatar.ImageName,
+                        goal.Author.UserName,
+                        GeneratePublishDate(goal.DateCreated),
+                        goal.Description,
+                        goal.Status.Type
+                    )
+                )));
+            });
+
+            var mapper = new Mapper(config);
+
+            BoxDetailDto dto = mapper.Map<IdeaBox, BoxDetailDto>(box);
+
+            return dto;
+        }
         #endregion
     }
 }
