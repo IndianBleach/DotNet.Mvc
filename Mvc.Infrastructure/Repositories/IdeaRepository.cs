@@ -28,12 +28,7 @@ namespace Mvc.Infrastructure.Repositories
             _userManager = userManager;
             _dbContext = dbContext;
         }
-
-        
-        
-        
-        
-        //fix nontauth       
+             
         public IEnumerable<IdeaRecommendationDto> GetRecommendIdeas(string? forUsername)
         {
             List<Tag> userTags = new List<Tag>();
@@ -359,7 +354,6 @@ namespace Mvc.Infrastructure.Repositories
             IdeaDetailDto dto = mapper.Map<Idea, IdeaDetailDto>(getIdea);
 
             return dto;
-
         }
 
         public async Task<bool> CreateTopic(string title, string description, string authorGuid, string ideaGuid)
@@ -580,6 +574,41 @@ namespace Mvc.Infrastructure.Repositories
             var mapper = new Mapper(config);
 
             BoxDetailDto dto = mapper.Map<IdeaBox, BoxDetailDto>(box);
+
+            return dto;
+        }
+
+        public async Task<List<IdeaMemberDto>> GetIdeaMembersAsync(string ideaGuid)
+        {
+            var members = _dbContext.IdeaMemberRoles
+                .Include(x => x.Idea)
+                .Include(x => x.User)
+                .ThenInclude(x => x.Tags)
+                .Include(x => x.User)
+                .ThenInclude(x => x.Avatar)
+                .Where(x => x.Idea.Guid.ToString() == ideaGuid)
+                .ToList();
+
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<IdeaMemberRole, IdeaMemberDto>()
+                .ForMember("Guid", opt => opt.MapFrom(x => x.User.Id))
+                .ForMember("Name", opt => opt.MapFrom(x => x.User.UserName))
+                .ForMember("AvatarImageName", opt => opt.MapFrom(x => x.User.Avatar.ImageName))
+                .ForMember("Tags", opt => opt.MapFrom(x => x.User.Tags.Select(e => new TagDto(e.Name))));
+            });
+
+            var mapper = new Mapper(config);
+
+            List<IdeaMemberDto> dto = mapper.Map<List<IdeaMemberRole>, List<IdeaMemberDto>>(members);
+
+            int memberNumber = 1;
+            foreach (var item in dto)
+            {
+                item.Number = memberNumber;
+                memberNumber++;
+            }
+
 
             return dto;
         }

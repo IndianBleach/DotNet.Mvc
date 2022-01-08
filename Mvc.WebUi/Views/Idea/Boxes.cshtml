@@ -16,9 +16,9 @@
           class="z-100 col-12 d-flex justify-content-center"
           id="checkOutIdea"
         >
-        <!--Goal detail-->
+          <!--Box detail-->
           <div
-            id="goalWindow"
+            id="boxWindow"
             class="d-none p-4 pb-3 z-100 overhide-window-lg bg-darklight"
           >
             <div class="col-12">
@@ -38,21 +38,27 @@
                 <div
                   class="p-3 ps-4 col-12 d-flex justify-content-between align-items-start"
                 >
-                  <h3 class="z-100 h3 text-white t-xbold">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      fill="currentColor"
-                      class="bi bi-box"
-                      viewBox="0 0 16 16"
-                    >
-                      <path
-                        d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5 8 5.961 14.154 3.5 8.186 1.113zM15 4.239l-6.5 2.6v7.922l6.5-2.6V4.24zM7.5 14.762V6.838L1 4.239v7.923l6.5 2.6zM7.443.184a1.5 1.5 0 0 1 1.114 0l7.129 2.852A.5.5 0 0 1 16 3.5v8.662a1 1 0 0 1-.629.928l-7.185 2.874a.5.5 0 0 1-.372 0L.63 13.09a1 1 0 0 1-.63-.928V3.5a.5.5 0 0 1 .314-.464L7.443.184z"
-                      />
-                    </svg>
-                    About functional
-                  </h3>
+                <div class="d-flex">
+                     <h3 id="boxDetailTitle" class="z-100 h3 text-white t-xbold">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          fill="currentColor"
+                          class="bi bi-box"
+                          viewBox="0 0 16 16"
+                        >
+                          <path
+                            d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5 8 5.961 14.154 3.5 8.186 1.113zM15 4.239l-6.5 2.6v7.922l6.5-2.6V4.24zM7.5 14.762V6.838L1 4.239v7.923l6.5 2.6zM7.443.184a1.5 1.5 0 0 1 1.114 0l7.129 2.852A.5.5 0 0 1 16 3.5v8.662a1 1 0 0 1-.629.928l-7.185 2.874a.5.5 0 0 1-.372 0L.63 13.09a1 1 0 0 1-.63-.928V3.5a.5.5 0 0 1 .314-.464L7.443.184z"
+                          />
+                        </svg>                    
+                     </h3>
+                    <div class="ps-2">
+                        <img id="boxDetailAuthorAvatar" class="circle" height="33" width="33"/>
+                        <span id="boxDetailPublish" class="ps-1 t-sm t-muted date-publ-span"></span>
+                    </div>
+                  </div>
+                  
                   <button class="showHideBox btn btn-sm">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -69,12 +75,8 @@
                   </button>
                 </div>
                 <content>
-                  <p class="mb-2 t-md t-semi-bold t-muted">
-                    Topic description text6Topic description text6 Topic
-                    description text6Topic description text6 Topic description
-                    text6Topic description text6Topic description text6Topic
-                    description text6 Topic description text6Topic description
-                    text6
+                  <p id="boxDetailDescription" class="mb-2 t-md t-semi-bold t-muted">
+                    
                   </p>
                 </content>
               </div>
@@ -782,7 +784,7 @@
               <!---->
               <nav>
                 <div class="pe-2 ps-2 mb-3 mt-3 col-12 d-flex">
-                  <a class="ideaSectionLink me-3 ideaSectionLink-active">
+                  <a asp-action="@Model.Idea.Guid" asp-controller="idea" class="ideaSectionLink me-3">
                     <span class="pe-1">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -802,7 +804,7 @@
                     </span>
                     About
                   </a>
-                  <a class="ideaSectionLink me-3">
+                  <a class="ideaSectionLink me-3 ideaSectionLink-active">
                     <span class="pe-1">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -820,7 +822,7 @@
                     </span>
                     Goals
                   </a>
-                  <a class="ideaSectionLink me-3">
+                  <a asp-action="@Model.Idea.Guid" asp-controller="idea" asp-route-section="members" class="ideaSectionLink me-3">
                     <span class="pe-1">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"

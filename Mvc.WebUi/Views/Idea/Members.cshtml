@@ -2,12 +2,12 @@
 @using Mvc.ApplicationCore.DTOs.Idea;
 @using Mvc.ApplicationCore.Entities.IdeaEntity;
 
-@model IdeaAboutViewModel;
+@model IdeaBoxesViewModel;
 
 @{
 }
 
-<div class="container mt-3 d-flex">
+<div class="container d-flex">
       <div
         id="preCheckOutIdea"
         class="z-100 position-fixed container d-flex justify-content-center"
@@ -16,9 +16,9 @@
           class="z-100 col-12 d-flex justify-content-center"
           id="checkOutIdea"
         >
-          <!--Topic detail-->
+          <!--Box detail-->
           <div
-            id="topicWindow"
+            id="boxWindow"
             class="d-none p-4 pb-3 z-100 overhide-window-lg bg-darklight"
           >
             <div class="col-12">
@@ -38,14 +38,28 @@
                 <div
                   class="p-3 ps-4 col-12 d-flex justify-content-between align-items-start"
                 >
-                  <div class="d-flex">
-                      <h3 id="topicDetailTitle" class="z-100 h3 text-white t-xbold"></h3>
-                      <div class="ps-2">
-                          <img id="topicDetailAuthorAvatar" class="circle" height="33" width="33"/>
-                          <span id="topicDetailPublish" class="ps-1 t-sm t-muted date-publ-span"></span>
-                      </div>
+                <div class="d-flex">
+                     <h3 id="boxDetailTitle" class="z-100 h3 text-white t-xbold">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          fill="currentColor"
+                          class="bi bi-box"
+                          viewBox="0 0 16 16"
+                        >
+                          <path
+                            d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5 8 5.961 14.154 3.5 8.186 1.113zM15 4.239l-6.5 2.6v7.922l6.5-2.6V4.24zM7.5 14.762V6.838L1 4.239v7.923l6.5 2.6zM7.443.184a1.5 1.5 0 0 1 1.114 0l7.129 2.852A.5.5 0 0 1 16 3.5v8.662a1 1 0 0 1-.629.928l-7.185 2.874a.5.5 0 0 1-.372 0L.63 13.09a1 1 0 0 1-.63-.928V3.5a.5.5 0 0 1 .314-.464L7.443.184z"
+                          />
+                        </svg>                    
+                     </h3>
+                    <div class="ps-2">
+                        <img id="boxDetailAuthorAvatar" class="circle" height="33" width="33"/>
+                        <span id="boxDetailPublish" class="ps-1 t-sm t-muted date-publ-span"></span>
+                    </div>
                   </div>
-                  <button class="hideTopicBtn btn btn-sm">
+                  
+                  <button class="showHideBox btn btn-sm">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="30"
@@ -61,33 +75,115 @@
                   </button>
                 </div>
                 <content>
-                  <p id="topicDetailDescription" class="mb-2 t-md t-semi-bold t-muted">
+                  <p id="boxDetailDescription" class="mb-2 t-md t-semi-bold t-muted">
                     
                   </p>
                 </content>
               </div>
-              <div class="col-12 mt-3">
-                <h3 class="t-lg t-bold text-white">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    fill="currentColor"
-                    class="t-muted me-1 bi bi-chat"
-                    viewBox="0 0 16 16"
-                  >
-                    <path
-                      d="M2.678 11.894a1 1 0 0 1 .287.801 10.97 10.97 0 0 1-.398 2c1.395-.323 2.247-.697 2.634-.893a1 1 0 0 1 .71-.074A8.06 8.06 0 0 0 8 14c3.996 0 7-2.807 7-6 0-3.192-3.004-6-7-6S1 4.808 1 8c0 1.468.617 2.83 1.678 3.894zm-.493 3.905a21.682 21.682 0 0 1-.713.129c-.2.032-.352-.176-.273-.362a9.68 9.68 0 0 0 .244-.637l.003-.01c.248-.72.45-1.548.524-2.319C.743 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7-3.582 7-8 7a9.06 9.06 0 0 1-2.347-.306c-.52.263-1.639.742-3.468 1.105z"
-                    />
-                  </svg>
-                  Topic discuss
-                </h3>
+              <div class="col-12 mt-2">
+                <div class="d-flex">
+                  <h3 class="pt-1 t-lg me-3 t-bold text-white">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      class="t-muted bi bi-boxes"
+                      viewBox="0 0 16 16"
+                    >
+                      <path
+                        d="M7.752.066a.5.5 0 0 1 .496 0l3.75 2.143a.5.5 0 0 1 .252.434v3.995l3.498 2A.5.5 0 0 1 16 9.07v4.286a.5.5 0 0 1-.252.434l-3.75 2.143a.5.5 0 0 1-.496 0l-3.502-2-3.502 2.001a.5.5 0 0 1-.496 0l-3.75-2.143A.5.5 0 0 1 0 13.357V9.071a.5.5 0 0 1 .252-.434L3.75 6.638V2.643a.5.5 0 0 1 .252-.434L7.752.066ZM4.25 7.504 1.508 9.071l2.742 1.567 2.742-1.567L4.25 7.504ZM7.5 9.933l-2.75 1.571v3.134l2.75-1.571V9.933Zm1 3.134 2.75 1.571v-3.134L8.5 9.933v3.134Zm.508-3.996 2.742 1.567 2.742-1.567-2.742-1.567-2.742 1.567Zm2.242-2.433V3.504L8.5 5.076V8.21l2.75-1.572ZM7.5 8.21V5.076L4.75 3.504v3.134L7.5 8.21ZM5.258 2.643 8 4.21l2.742-1.567L8 1.076 5.258 2.643ZM15 9.933l-2.75 1.571v3.134L15 13.067V9.933ZM3.75 14.638v-3.134L1 9.933v3.134l2.75 1.571Z"
+                      />
+                    </svg>
+                    Goals
+                  </h3>
+                  <span class="me-3 text-success t-bold t-lg">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      fill="currentColor"
+                      class="bi bi-check"
+                      viewBox="0 0 16 16"
+                    >
+                      <path
+                        d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"
+                      />
+                    </svg>
+                    123
+                  </span>
+                  <span class="me-3 text-warning t-bold t-lg">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="18"
+                      height="18"
+                      fill="currentColor"
+                      class="bi bi-alarm"
+                      viewBox="0 0 16 16"
+                    >
+                      <path
+                        d="M8.5 5.5a.5.5 0 0 0-1 0v3.362l-1.429 2.38a.5.5 0 1 0 .858.515l1.5-2.5A.5.5 0 0 0 8.5 9V5.5z"
+                      />
+                      <path
+                        d="M6.5 0a.5.5 0 0 0 0 1H7v1.07a7.001 7.001 0 0 0-3.273 12.474l-.602.602a.5.5 0 0 0 .707.708l.746-.746A6.97 6.97 0 0 0 8 16a6.97 6.97 0 0 0 3.422-.892l.746.746a.5.5 0 0 0 .707-.708l-.601-.602A7.001 7.001 0 0 0 9 2.07V1h.5a.5.5 0 0 0 0-1h-3zm1.038 3.018a6.093 6.093 0 0 1 .924 0 6 6 0 1 1-.924 0zM0 3.5c0 .753.333 1.429.86 1.887A8.035 8.035 0 0 1 4.387 1.86 2.5 2.5 0 0 0 0 3.5zM13.5 1c-.753 0-1.429.333-1.887.86a8.035 8.035 0 0 1 3.527 3.527A2.5 2.5 0 0 0 13.5 1z"
+                      />
+                    </svg>
+                    123
+                  </span>
+                  <span class="me-3 text-danger t-bold t-lg">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="26"
+                      height="26"
+                      fill="currentColor"
+                      class="bi bi-x"
+                      viewBox="0 0 16 16"
+                    >
+                      <path
+                        d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"
+                      />
+                    </svg>
+                    123
+                  </span>
+                </div>
                 <div
-                id="topicDetailComments"
-                  class="windowContentWrapper overflow-hidden border-bottom mt-2 col-12"
+                  id="boxContentWrapper"
+                  class="windowContentWrapper custom-scroll border-bottom mt-2 col-12"
                 >
                   <!---->
-                  
+                  <div class="topicDiscussMessage">
+                    <a>
+                      <img src="" />
+                    </a>
+                    <div
+                      class="boxGoalContent"
+                    >
+                      <div>
+                          <p class="col mb-0 t-semi-bold t-muted">
+                              <span>Xxvevra</span>
+                              Example text discussExample text discussExample text                               
+                          </p>
+                          <form>
+                              <select
+                                class="form-select form-control"                               
+                              >
+                                <option selected>Wait</option>
+                                <option value="1">Failed</option>
+                                <option value="2">Complete</option>
+                              </select>
+                              <button
+                                class="btn t-primary"
+                              >
+                                Save
+                              </button>
+                              <button class="btn text-muted">Remove goal</button>
+                          </form>
+                      </div>
+                      <div class="mb-0 t-tag t-goal-failed me-1">
+                          <span>Failed</span>
+                      </div>
+                    </div>
+                  </div>
                   <!---->
                 </div>
               </div>
@@ -97,14 +193,14 @@
                 >
                   <div>
                     <img
-                      src="~/media/userAvatars/@User.Claims.Where(x => x.Type.Equals("AvatarImageName")).Select(x => x.Value).SingleOrDefault()"
+                      src=""
                       height="44"
                       width="44"
                       class="circle shadow"
                     />
                   </div>
                   <div class="p-2 pb-0 col">
-                    <form id="topicCommentForm" class="form-dark form-lg">
+                    <form class="form-dark form-lg">
                       <div class="col">
                         <input
                           placeholder="Write comment"
@@ -112,7 +208,7 @@
                         />
                       </div>
                       <div>
-                        <button type="submit" class="btn t-bold t-md t-primary">
+                        <button class="btn t-bold t-md t-primary">
                           Send
                         </button>
                       </div>
@@ -122,8 +218,7 @@
               </section>
             </div>
           </div>
-          <!---->
-          <!--JOIN-->
+          <!--Join-->
           <div
             id="joinWindow"
             class="d-none z-100 overhide-window-xsm bg-darklight"
@@ -199,8 +294,7 @@
               </div>
             </div>
           </div>
-          <!---->
-          <!--GENERAL-->
+          <!--Settings general-->
           <div
             id="settingsGeneralWindow"
             class="d-none overhide-window-sm bg-darklight"
@@ -313,8 +407,7 @@
               </div>
             </div>
           </div>
-          <!---->
-          <!--MODDERS -->
+          <!--Settings Modders-->
           <div
             id="settingsModdersWindow"
             class="d-none overhide-window-sm bg-darklight"
@@ -324,8 +417,7 @@
             >
               <span class="t-md text-white t-bold">Settings</span>
               <button
-                id="hideSettingsModders"
-                class="btn btn-sm text-white t-sm t-semi-bold"
+                class="showHideSettingsModders btn btn-sm text-white t-sm t-semi-bold"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -344,44 +436,48 @@
             <div
               class="p-5 d-flex col-12 justify-content-center align-items-center"
             >
-              <div class="">
-                <div>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="44"
-                    height="44"
-                    fill="currentColor"
-                    class="t-muted bi bi-people"
-                    viewBox="0 0 16 16"
-                  >
-                    <path
-                      d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1h8zm-7.978-1A.261.261 0 0 1 7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002a.274.274 0 0 1-.014.002H7.022zM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM6.936 9.28a5.88 5.88 0 0 0-1.23-.247A7.35 7.35 0 0 0 5 9c-4 0-5 3-5 4 0 .667.333 1 1 1h4.216A2.238 2.238 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816zM4.92 10A5.493 5.493 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275zM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0zm3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"
-                    />
-                  </svg>
-                  <img
-                    src="~/media/ideaAvatars/@Model.Idea.AvatarImageName"
-                    height="44"
-                    width="77"
-                    class="ms-1 radius-md shadow"
-                  />
-                </div>
-                <p
-                  style="width: 140px;"
-                  class="text-center mt-2 ps-2 t-md t-semi-bold text-white"
+              <div class="d-flex">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="44"
+                  height="44"
+                  fill="currentColor"
+                  class="t-muted bi bi-people"
+                  viewBox="0 0 16 16"
                 >
-                  Moderator settings for this idea
+                  <path
+                    d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1h8zm-7.978-1A.261.261 0 0 1 7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002a.274.274 0 0 1-.014.002H7.022zM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM6.936 9.28a5.88 5.88 0 0 0-1.23-.247A7.35 7.35 0 0 0 5 9c-4 0-5 3-5 4 0 .667.333 1 1 1h4.216A2.238 2.238 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816zM4.92 10A5.493 5.493 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275zM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0zm3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"
+                  />
+                </svg>
+                <p class="ps-2 t-md t-semi-bold text-white">
+                  Modders & members
+                  <br />
+                  <span class="t-muted t-sm t-medium">Cick and modders</span>
                 </p>
               </div>
             </div>
-            <div
-              id="settingsModdersLoad"
-              style="height: 335px; overflow-y: scroll;"
-              class="custom-scroll col-12 p-3 pt-0"
-            >
+            <div style="height: 535px;" class="col-12 p-3 pt-0">
+              <div
+                class="mb-2 d-flex align-items-center justify-content-between"
+              >
+                <a>
+                  <img src="" height="33" width="33" class="circle" />
+                  <span class="t-md t-semi-bold text-white ps-1">
+                    чЧBBbebra
+                  </span>
+                </a>
+                <div class="d-flex">
+                  <a class="icon-link me-1 t-muted t-semi-bold t-sm">
+                    To modders
+                  </a>
+                  <a class="icon-link text-muted t-semi-bold t-sm">
+                    Cick
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
-          <!---->
-          <!--CREATE TOPIC-->
+          <!--settings create topic-->
           <div
             id="settingsCreateTopicWindow"
             class="d-none overhide-window-sm bg-darklight"
@@ -411,9 +507,8 @@
               <div
                 class="p-5 d-flex col-12 justify-content-center align-items-center"
               >
-                <div class="">
-                  <div class="d-flex justify-content-center">
-                    <svg
+                <div class="d-flex">
+                  <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="44"
                     height="44"
@@ -432,42 +527,40 @@
                       d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1z"
                     />
                   </svg>
-                  <img src="~/media/userAvatars/@User.Claims.Where(x => x.Type.Equals("AvatarImageName")).Select(x => x.Value).SingleOrDefault()" height="44" width="44" class="circle shadow"/>
-                  </div>
-                  <p style="width:150px;" class="text-center pt-3 ps-2 t-md t-semi-bold text-white">
-                    Describe the idea using topics                   
-                  </p>                  
+                  <p class="ps-2 t-md t-semi-bold text-white">
+                    Add new topic
+                    <br />
+                    <span class="t-muted t-sm t-medium"
+                      >Update idea information</span
+                    >
+                  </p>
                 </div>
               </div>
               <div class="pb-3 ps-4 pe-4">
-                <form id="formCreateTopic">
-                    <input name="ideaGuid" hidden value="@Model.Idea.Guid"/>
+                <form>
                   <div class="mb-2">
                     <input
-                        name="title"
                       class="form-control radius-lg bg-dark border text-white t-md t-semi-bold form-control me-0 pe-1"
-                      placeholder="title"
+                      placeholder="Title"
                     />
                   </div>
                   <div class="mb-2">
                     <textarea
-                      name="description"
                       style="resize: none; height: 66px;"
                       class="radius-lg bg-dark border text-white t-md t-semi-bold form-control me-0 pe-1"
-                      placeholder="description"
+                      placeholder="Description"
                       aria-label="Search"
                     ></textarea>
                   </div>
 
                   <div class="border-top pt-3 mt-4 col-12 text-center">
-                    <button type="submit" class="btn t-bold t-primary">Create topic</button>
+                    <button class="btn t-bold t-primary">Create topic</button>
                   </div>
                 </form>
               </div>
             </div>
           </div>
-          <!--//-->
-          <!--REMOVE-->
+          <!--Settings Remove idea-->
           <div
             id="settingsRemoveIdeaWindow"
             class="d-none overhide-window-xsm bg-darklight"
@@ -534,7 +627,106 @@
               </div>
             </div>
           </div>
-          <!--//-->
+          <!--Create box-->
+          <div
+          id="createBoxWindow"
+          class="d-none overhide-window-sm bg-darklight"
+        >
+          <div
+            class="border-bottom align-items-center p-2 ps-3 pe-0 col-12 d-flex justify-content-between"
+          >
+            <span class="t-md text-white t-bold">Create box</span>
+            <button
+              class="showHideCreateBox btn btn-sm text-white t-sm t-semi-bold"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="26"
+                height="26"
+                fill="currentColor"
+                class="bi bi-x"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"
+                />
+              </svg>
+            </button>
+          </div>
+          <div class="col-12 ps-3 p-2">
+            <div
+              class="p-4 col-12 d-flex justify-content-center align-items-center"
+            >
+              <div>
+                <div class="d-flex justify-content-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" fill="currentColor" class="t-muted bi bi-box" viewBox="0 0 16 16">
+                    <path d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5 8 5.961 14.154 3.5 8.186 1.113zM15 4.239l-6.5 2.6v7.922l6.5-2.6V4.24zM7.5 14.762V6.838L1 4.239v7.923l6.5 2.6zM7.443.184a1.5 1.5 0 0 1 1.114 0l7.129 2.852A.5.5 0 0 1 16 3.5v8.662a1 1 0 0 1-.629.928l-7.185 2.874a.5.5 0 0 1-.372 0L.63 13.09a1 1 0 0 1-.63-.928V3.5a.5.5 0 0 1 .314-.464L7.443.184z"/>
+                  </svg>                
+                <img
+                    src="~/media/userAvatars/@User.Claims.Where(x => x.Type.Equals("AvatarImageName")).Select(x => x.Value).SingleOrDefault()"
+                    class="ms-3 circle shadow border"
+                    height="44"
+                    width="44"
+                  />
+              </div>  
+              <p class="pt-3 text-center t-md t-medium text-white">
+                Create new goal Box                              
+              </p> 
+              </div>           
+            </div>
+            <div class="pb-3 ps-4 pe-4">
+              <form id="formCreateBox" data-idea="@Model.Idea.Guid">
+                <div class="mb-2">
+                  <input
+                    class="form-control radius-lg bg-dark border text-white t-md t-semi-bold form-control me-0 pe-1"
+                    placeholder="Title"
+                  />
+                </div>
+                <div class="mb-2">
+                  <textarea
+                    style="resize: none; height: 66px;"
+                    class="radius-lg bg-dark border text-white t-md t-semi-bold form-control me-0 pe-1"
+                    placeholder="Description"
+                    aria-label="Search"
+                  ></textarea>
+                </div>
+                <div class="mb-2 mt-3 form-check">
+                    <input
+                      class="bg-dark form-check-input"
+                      type="checkbox"
+                      value=""
+                      id="flexCheckDefault"
+                    />
+                    <span>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="22"
+                        height="22"
+                        fill="currentColor"
+                        class="t-muted bi bi-lock"
+                        viewBox="0 0 16 16"
+                      >
+                        <path
+                          d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zM5 8h6a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"
+                        />
+                      </svg>
+                    </span>
+                    <label
+                      class="text-white t-md t-semi-bold form-check-label"
+                      for="flexCheckDefault"
+                    >
+                      Authored box
+                    </label>
+                    <br />
+                    <span class="t-sm t-medium t-muted">Only you can edit this box</span>
+                  </div>
+                <div class="border-top pt-3 mt-4 col-12 text-center">
+                  <button type="submit" class="btn t-bold t-primary">Create box</button>
+                </div>
+              </form>
+            </div>
+          </div>
+          </div>
         </div>
       </div>
       <div class="col-9">
@@ -592,7 +784,7 @@
               <!---->
               <nav>
                 <div class="pe-2 ps-2 mb-3 mt-3 col-12 d-flex">
-                  <a class="ideaSectionLink me-3 ideaSectionLink-active">
+                  <a asp-action="@Model.Idea.Guid" asp-controller="idea" class="ideaSectionLink me-3">
                     <span class="pe-1">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -612,7 +804,7 @@
                     </span>
                     About
                   </a>
-                  <a asp-action="@Model.Idea.Guid" asp-controller="idea" asp-route-section="goals" class="ideaSectionLink me-3">
+                  <a asp-action="@Model.Idea.Guid" asp-controller="idea" asp-route-section="goals" class="ideaSectionLink me-3 ideaSectionLink-active">
                     <span class="pe-1">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -718,53 +910,47 @@
               </nav>
               <!---->
               <div class="mt-4 col-12">
-                <div class="mb-5 ps-2 col-12">
-                  @foreach(var topic in Model.IdeaTopics)
-                  {
-                    <div class="mb-4 col-12 d-flex">
-                    <div class="pt-1">
-                      <a asp-action="@topic.AuthorGuid" asp-controller="user"
-                        ><img
-                          src="/media/userAvatars/@topic.AuthorAvatarImageName"
+                @foreach(var member in Model)
+                {
+                    <div class="mb-5 ps-2 col-12">
+                  <a href="#">
+                    <div class="border-bottom pb-3 mb-4 col-12 d-flex">
+                      <div class="d-flex align-items-center">
+                        <span class="ps-3 pe-3 h1 t-bold t-muted">
+                          1
+                        </span>
+                        <img
+                          src="./test.jpg"
                           class="border circle shadow"
-                          height="44"
-                          width="44"
-                      /></a>
-                    </div>
-                    <a class="ideaTopicLink col" onclick="showTopicBtn('@topic.Guid')">
-                      <div class="ps-3 col">
-                        <div class="col-8 d-flex align-items-center">
-                          <h3 class="h3 text-white t-xbold">@topic.Title</h3>
-                          <span class="date-publ-span t-medium t-muted t-sm">@topic.DateCreated</span>
+                          height="122"
+                          width="122"
+                        />
+                      </div>
+                      <div class="ps-2 pt-2 col">
+                        <div class="col-8">
+                          <h3 class="h3 text-white t-xbold">
+                            XXxxbebra
+                          </h3>
                         </div>
-                        <p
-                          class="mb-0 col-6 col-xl-8 t-bold t-muted t-shadow d-inline-block text-truncate"
-                        >
-                          @topic.Description
-                        </p>
-                        <div class="col-12">
-                          <span class="text-white t-lg t-semi-bold">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="20"
-                              height="20"
-                              fill="currentColor"
-                              class="t-muted bi bi-chat"
-                              viewBox="0 0 16 16"
-                            >
-                              <path
-                                d="M2.678 11.894a1 1 0 0 1 .287.801 10.97 10.97 0 0 1-.398 2c1.395-.323 2.247-.697 2.634-.893a1 1 0 0 1 .71-.074A8.06 8.06 0 0 0 8 14c3.996 0 7-2.807 7-6 0-3.192-3.004-6-7-6S1 4.808 1 8c0 1.468.617 2.83 1.678 3.894zm-.493 3.905a21.682 21.682 0 0 1-.713.129c-.2.032-.352-.176-.273-.362a9.68 9.68 0 0 0 .244-.637l.003-.01c.248-.72.45-1.548.524-2.319C.743 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7-3.582 7-8 7a9.06 9.06 0 0 1-2.347-.306c-.52.263-1.639.742-3.468 1.105z"
-                              />
-                            </svg>
-                            @topic.CommentsCount
-                          </span>
+                        <div class="ps-1 col-12 d-flex flex-wrap">
+                          <div class="t-tag">
+                            <span>Sport</span>
+                          </div>
+                          <div class="t-tag">
+                            <span>Sport</span>
+                          </div>
+                          <div class="t-tag">
+                            <span>Sport</span>
+                          </div>
+                          <div class="t-tag">
+                            <span>Sport</span>
+                          </div>
                         </div>
                       </div>
-                    </a>
-                  </div>
-                  }
-                  
-                </div>
+                    </div>
+                  </a>
+                </div>                
+                }
                 <div class="d-flex">
                   <div class="me-1">
                     <button class="btn text-white t-md t-semi-bold border">

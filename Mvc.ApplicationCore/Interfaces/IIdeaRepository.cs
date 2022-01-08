@@ -13,6 +13,9 @@ namespace Mvc.ApplicationCore.Interfaces
 {
     public interface IIdeaRepository
     {
+
+        Task<List<IdeaMemberDto>> GetIdeaMembersAsync(string ideaGuid);
+        //
         Task<BoxDetailDto> GetBoxDetailAsync(string boxGuid, string currentUserGuid);
         Task<List<IdeaBoxDto>> GetIdeaBoxesAsync(string ideaGuid, string currentUserGuid);
         Task<bool> CreateBoxAsync(string title, string description, bool isAuthored, string authorGuid, string ideaGuid);

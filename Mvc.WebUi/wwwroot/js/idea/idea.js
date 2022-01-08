@@ -148,6 +148,17 @@
     showBoxBtn = (boxGuid) => {
         $.get("/idea/boxes/detail", { boxGuid }, resp => {
             console.log(resp);
+
+            //boxDetailTitle, boxDetailDescription, boxContentWrapper, boxDetailAuthorAvatar, boxDetailPublish
+            $("#boxDetailTitle").text(resp.title);
+            $("#boxDetailDescription").text(resp.description);
+            $("#boxDetailAuthorAvatar").attr("src", "/media/userAvatars/" + resp.authorAvatarImage);
+            $("#boxDetailPublish").text(resp.datePublished)
+
+            $("#boxWindow").toggleClass("d-none");
+            $("#hideBackgroundWrapper").toggleClass("d-none");
+            $("body").toggleClass("overflow-hidden");
+
         });
     };
 
