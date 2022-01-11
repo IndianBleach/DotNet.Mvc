@@ -13,7 +13,11 @@ namespace Mvc.ApplicationCore.Interfaces
 {
     public interface IIdeaRepository
     {
-
+        Task<bool> RemoveGoalAsync(string goalGuid, string currentUserGuid);
+        Task<BoxGoalDetailDto> UpdateGoalStatusAsync(string goalGuid, BoxGoalStatuses newStatus, string currentUserGuid);
+        //
+        Task<BoxGoalDetailDto> CreateBoxGoalAsync(string boxGuid, string authorGuid, string content);
+        //
         Task<List<IdeaMemberDto>> GetIdeaMembersAsync(string ideaGuid);
         //
         Task<BoxDetailDto> GetBoxDetailAsync(string boxGuid, string currentUserGuid);

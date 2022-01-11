@@ -2,7 +2,7 @@
 @using Mvc.ApplicationCore.DTOs.Idea;
 @using Mvc.ApplicationCore.Entities.IdeaEntity;
 
-@model IdeaBoxesViewModel;
+@model IdeaMembersViewModel;
 
 @{
 }
@@ -804,7 +804,7 @@
                     </span>
                     About
                   </a>
-                  <a asp-action="@Model.Idea.Guid" asp-controller="idea" asp-route-section="goals" class="ideaSectionLink me-3 ideaSectionLink-active">
+                  <a asp-action="@Model.Idea.Guid" asp-controller="idea" asp-route-section="goals" class="ideaSectionLink me-3">
                     <span class="pe-1">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -822,7 +822,7 @@
                     </span>
                     Goals
                   </a>
-                  <a asp-action="@Model.Idea.Guid" asp-controller="idea" asp-route-section="members" class="ideaSectionLink me-3">
+                  <a asp-action="@Model.Idea.Guid" asp-controller="idea" asp-route-section="members" class="ideaSectionLink me-3 ideaSectionLink-active">
                     <span class="pe-1">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -910,7 +910,7 @@
               </nav>
               <!---->
               <div class="mt-4 col-12">
-                @foreach(var member in Model)
+                @foreach(var member in Model.IdeaMembers)
                 {
                     <div class="mb-5 ps-2 col-12">
                   <a href="#">
@@ -920,7 +920,7 @@
                           1
                         </span>
                         <img
-                          src="./test.jpg"
+                          src="~/media/userAvatars/@member.AvatarImageName"
                           class="border circle shadow"
                           height="122"
                           width="122"
@@ -929,22 +929,16 @@
                       <div class="ps-2 pt-2 col">
                         <div class="col-8">
                           <h3 class="h3 text-white t-xbold">
-                            XXxxbebra
+                            @member.Name
                           </h3>
                         </div>
                         <div class="ps-1 col-12 d-flex flex-wrap">
-                          <div class="t-tag">
-                            <span>Sport</span>
-                          </div>
-                          <div class="t-tag">
-                            <span>Sport</span>
-                          </div>
-                          <div class="t-tag">
-                            <span>Sport</span>
-                          </div>
-                          <div class="t-tag">
-                            <span>Sport</span>
-                          </div>
+                          @foreach(var tag in member.Tags)
+                          {
+                              <div class="t-tag">
+                                <span>@tag.Name</span>
+                              </div>
+                          }                          
                         </div>
                       </div>
                     </div>

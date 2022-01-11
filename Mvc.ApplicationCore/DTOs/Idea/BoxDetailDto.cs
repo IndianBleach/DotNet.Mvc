@@ -48,6 +48,6 @@ namespace Mvc.ApplicationCore.DTOs.Idea
         public string Title { get; set; }
         public string Description { get; set; }
         public bool IsAuthored { get; set; }
-        public List<BoxGoalDto> Goals { get; set; }
+        public List<BoxGoalDetailDto> Goals { get; set; }
     }
 }

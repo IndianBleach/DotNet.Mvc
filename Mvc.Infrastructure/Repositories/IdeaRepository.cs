@@ -541,12 +541,22 @@ namespace Mvc.Infrastructure.Repositories
         public async Task<BoxDetailDto> GetBoxDetailAsync(string boxGuid, string currentUserGuid)
         {
             var box = await _dbContext.IdeaBoxes
+                .Include(x => x.Idea)
                 .Include(x => x.Author)
                 .ThenInclude(x => x.Avatar)
                 .Include(x => x.Goals)
                 .ThenInclude(x => x.Author)
                 .ThenInclude(x => x.Avatar)
+                .Include(x => x.Goals)
+                .ThenInclude(x => x.Status)
                 .FirstOrDefaultAsync(x => x.Guid.ToString() == boxGuid);
+
+            var getRole = await _dbContext.IdeaMemberRoles
+                .Include(x => x.User)
+                .Include(x => x.Idea)
+                .FirstOrDefaultAsync(x => x.Idea == box.Idea);
+
+            var checkedRole = getRole != null ? getRole.Role : IdeaMemberRoles.Default; 
 
             var config = new MapperConfiguration(cfg =>
             {
@@ -558,16 +568,17 @@ namespace Mvc.Infrastructure.Repositories
                 .ForMember("Title", opt => opt.MapFrom(x => x.Name))
                 .ForMember("Description", opt => opt.MapFrom(x => x.Description))
                 .ForMember("IsAuthored", opt => opt.MapFrom(x => x.IsAuthored))
-                .ForMember("Goals", opt => opt.MapFrom(x => x.Goals.Select(goal =>
-                    new BoxGoalDto(
-                        goal.Guid.ToString(),
-                        goal.Author.Id,
-                        goal.Author.Avatar.ImageName,
-                        goal.Author.UserName,
-                        GeneratePublishDate(goal.DateCreated),
-                        goal.Description,
-                        goal.Status.Type
-                    )
+                .ForMember(x => x.Goals, opt => opt.MapFrom(x => x.Goals.Select(goal =>
+                    new BoxGoalDetailDto() {
+                        Guid = goal.Guid.ToString(),
+                        AuthorGuid = goal.Author.Id,
+                        AuthorAvatarImage = goal.Author.Avatar.ImageName,
+                        AuthorName = goal.Author.UserName,
+                        DatePublished = GeneratePublishDate(goal.DateCreated),
+                        Content = goal.Description,
+                        Status = goal.Status.Type,
+                        CanEdit = checkedRole < IdeaMemberRoles.Default
+                     }
                 )));
             });
 
@@ -609,6 +620,81 @@ namespace Mvc.Infrastructure.Repositories
                 memberNumber++;
             }
 
+
+            return dto;
+        }
+
+        public async Task<BoxGoalDetailDto> CreateBoxGoalAsync(string boxGuid, string authorGuid, string content)
+        {
+            BoxGoalStatus getStatus = await _dbContext.GoalStatuses
+                .FirstOrDefaultAsync(x => x.Type.Equals(BoxGoalStatuses.Waiting));
+
+            IdeaBox getBox = await _dbContext.IdeaBoxes
+                .FirstOrDefaultAsync(x => x.Guid.ToString() == boxGuid);
+
+            IdeaMemberRole getRole = await _dbContext.IdeaMemberRoles
+                .Include(x => x.User)
+                .ThenInclude(x => x.Avatar)
+                .FirstOrDefaultAsync(x => x.User.Id.Equals(authorGuid));
+
+            BoxGoal newGoal = new BoxGoal(authorGuid, content, getStatus.Id, getBox.Id);
+
+            _dbContext.BoxGoals.Add(newGoal);
+
+            BoxGoalDetailDto dto = new()
+            {
+                AuthorAvatarImage = getRole.User.Avatar.ImageName,
+                AuthorName = getRole.User.UserName,
+                Content = content,
+                DatePublished = GeneratePublishDate(newGoal.DateCreated),
+                Guid = newGoal.Guid.ToString(),
+                Status = newGoal.Status.Type,
+                CanEdit = getRole.Role < IdeaMemberRoles.Default
+            };
+
+            return dto;
+        }
+
+        public async Task<bool> RemoveGoalAsync(string goalGuid, string currentUserGuid)
+        {
+            var getGoal = await _dbContext.BoxGoals
+                .FirstOrDefaultAsync(x => x.Guid.ToString() == goalGuid);
+
+            if (getGoal != null)
+            {
+                _dbContext.BoxGoals.Remove(getGoal);
+                return true;
+            }
+            else return false;
+        }
+
+        public async Task<BoxGoalDetailDto> UpdateGoalStatusAsync(string goalGuid, BoxGoalStatuses newStatus, string currentUserGuid)
+        {
+            var getGoal = await _dbContext.BoxGoals
+                .Include(x => x.Status)
+                .Include(x => x.Author)
+                .ThenInclude(x => x.Avatar)
+                .FirstOrDefaultAsync(x => x.Guid.ToString() == goalGuid);
+
+            if (getGoal != null)
+            {
+                getGoal.Status = await _dbContext.GoalStatuses
+                        .FirstOrDefaultAsync(x => x.Type.Equals(newStatus));
+
+                _dbContext.BoxGoals.Update(getGoal);
+            }
+
+            BoxGoalDetailDto dto = new()
+            {
+                AuthorAvatarImage = getGoal.Author.Avatar.ImageName,
+                AuthorGuid = getGoal.Author.Id,
+                DatePublished = GeneratePublishDate(getGoal.DateCreated),
+                AuthorName = getGoal.Author.UserName,
+                CanEdit = true,
+                Content = getGoal.Description,
+                Guid = getGoal.Guid.ToString(),
+                Status = getGoal.Status.Type
+            };
 
             return dto;
         }

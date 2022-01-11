@@ -24,6 +24,49 @@ namespace Mvc.WebUi.Controllers
 
 
         [Authorize]
+        [HttpPost]
+        [Route("idea/goals/update")]
+        public async Task<JsonResult> UpdateGoalStatus(string goalGuid, int goalStatus)
+        {
+            string userGuid = await _userRepository.GetUserGuid(User.Identity.Name);
+            var res = await _ideaRepository.UpdateGoalStatusAsync(goalGuid, (BoxGoalStatuses)goalStatus, userGuid);
+
+            _ideaRepository.Save();
+
+            return Json(res);
+        }
+
+        [Authorize]
+        [HttpPost]
+        [Route("idea/goals/remove")]
+        public async Task<JsonResult> RemoveGoal(string goalGuid)
+        {
+            string userGuid = await _userRepository.GetUserGuid(User.Identity.Name);
+            var res = await _ideaRepository.RemoveGoalAsync(goalGuid, userGuid);
+
+            _ideaRepository.Save();
+
+            return Json(res);
+        }
+
+
+
+        [Authorize]
+        [HttpPost]
+        [Route("idea/boxes/creategoal")]
+        public async Task<JsonResult> CreateBoxGoal(string boxGuid, string content)
+        {
+            string authorGuid = await _userRepository.GetUserGuid(User.Identity.Name);
+
+            var res = await _ideaRepository.CreateBoxGoalAsync(boxGuid, authorGuid, content);
+
+            _ideaRepository.Save();
+
+            return Json(res);
+        }
+
+
+        [Authorize]
         [HttpGet]
         [Route("idea/boxes/detail")]
         public async Task<JsonResult> BoxDetail(string boxGuid)
@@ -33,18 +76,17 @@ namespace Mvc.WebUi.Controllers
             var res = await _ideaRepository.GetBoxDetailAsync(boxGuid, authorGuid);
 
             return Json(res);
-
         }
 
 
         [Authorize]
         [HttpPost]
-        [Route("idea/boxes/create")]
-        public async Task<IActionResult> CreateBox(string name, string description, string ideaGuid, bool isAuthored)
+        [Route("idea/createBox")]
+        public async Task<IActionResult> CreateBox(string title, string description, string ideaGuid, bool isAuthored)
         {
             string authorGuid = await _userRepository.GetUserGuid(User.Identity.Name);
 
-            var res = await _ideaRepository.CreateBoxAsync(name, description, isAuthored, authorGuid, ideaGuid);
+            var res = await _ideaRepository.CreateBoxAsync(title, description, isAuthored, authorGuid, ideaGuid);
 
             if (res) _ideaRepository.Save();           
 
@@ -161,7 +203,20 @@ namespace Mvc.WebUi.Controllers
 
                 return View("Boxes", goalsVm);
             }
+            else if (section == "members")
+            {
+                IdeaMembersViewModel membersVm = new IdeaMembersViewModel();
+                membersVm.Idea = _ideaRepository.GetIdeaDetail(ideaGuid);
+                membersVm.SimilarIdeas = new List<SideIdeaDto>();
+                membersVm.IdeaMembers = await _ideaRepository.GetIdeaMembersAsync(ideaGuid);
+                membersVm.CurrentUserRole = IdeaMemberRoleDto.Viewer;
 
+                if (currentUserName != null)
+                    membersVm.CurrentUserRole = _ideaRepository.GetIdeaMemberRole(ideaGuid,
+                        await _userRepository.GetUserGuid(currentUserName));
+
+                return View("Members", membersVm);
+            }
             
             IdeaAboutViewModel indexVm = new IdeaAboutViewModel();
             indexVm.Idea = _ideaRepository.GetIdeaDetail(ideaGuid);
