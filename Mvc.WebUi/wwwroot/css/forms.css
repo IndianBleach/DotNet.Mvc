@@ -190,3 +190,37 @@
     color: #eb920d !important;
     border: 1px solid #f1aa0f;
 }
+
+
+.upd-form-select {
+    height: 50px !important;
+}
+
+.upd-form-textarea {
+    resize: none;
+    height: 77px;
+    border-radius: 9px !important;
+    color: #9f9f9f !important;
+    border: 1px solid #434343 !important;
+    background-color: #1e1e1e !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+}
+
+.upd-form-avatar-square {
+    background-size: 100%;
+    width: 120px;
+    height: 69px;
+    font-size: 0px;
+    background-color: transparent !important;
+}
+
+.upd-form-input {
+    height: 44px;
+    border-radius: 9px !important;
+    color: #9f9f9f !important;
+    border: 1px solid #434343 !important;
+    background-color: #1e1e1e !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+}

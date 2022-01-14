@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace MvcApp.Infrastructure.Data.Configuration
 {
+    /*
     public class TopicConfiguration : IEntityTypeConfiguration<IdeaTopic>
     {
         public void Configure(EntityTypeBuilder<IdeaTopic> builder)
@@ -19,6 +20,7 @@ namespace MvcApp.Infrastructure.Data.Configuration
         }
     }
 
+    
     public class TopicCommentConfiguration : IEntityTypeConfiguration<TopicComment>
     {
         public void Configure(EntityTypeBuilder<TopicComment> builder)
@@ -27,11 +29,24 @@ namespace MvcApp.Infrastructure.Data.Configuration
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }
+    */
 
     public class UserConfiguration : IEntityTypeConfiguration<ApplicationUser>
     {
         public void Configure(EntityTypeBuilder<ApplicationUser> builder)
         {
+            /*
+            builder.HasMany(x => x.IdeaTopics).WithOne(x => x.Author)
+                .OnDelete(DeleteBehavior.ClientCascade);
+
+            builder.HasMany(x => x.IdeaMemberRoles).WithOne(x => x.User)
+                .OnDelete(DeleteBehavior.ClientCascade);
+
+            builder.HasMany(x => x.TopicComments).WithOne(x => x.Author)
+                .OnDelete(DeleteBehavior.ClientCascade);
+            */
+            //
+
             builder.HasMany(x => x.Following).WithOne(x => x.Following)
                 .OnDelete(DeleteBehavior.NoAction);
 

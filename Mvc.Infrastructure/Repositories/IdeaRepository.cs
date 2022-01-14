@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Mvc.ApplicationCore.DTOs;
@@ -214,6 +215,7 @@ namespace Mvc.Infrastructure.Repositories
             List<Tag> ideaTags = BuildTagList(item.Tags);
 
             var config = new MapperConfiguration(conf => conf.CreateMap<CreateIdeaDto, Idea>()
+                .ForMember("IsSecurity", opt => opt.MapFrom(x => x.IsSecret))
                 .ForMember("Title", opt => opt.MapFrom(x => x.Title))
                 .ForMember("Tags", opt => opt.MapFrom(x => ideaTags))
                 .ForMember("Topics", opt => opt.MapFrom(x => new List<IdeaTopic>()
@@ -479,7 +481,7 @@ namespace Mvc.Infrastructure.Repositories
                 .Include(x => x.Avatar)                
                 .FirstOrDefaultAsync(x => x.Id.Equals(authorGuid));
 
-            var createComment = new TopicComment(getTopic.Id, authorGuid, message);
+            var createComment = new TopicComment(getTopic, authorGuid, message);
 
             await _dbContext.IdeaTopicComments
                 .AddAsync(createComment);
@@ -554,7 +556,7 @@ namespace Mvc.Infrastructure.Repositories
             var getRole = await _dbContext.IdeaMemberRoles
                 .Include(x => x.User)
                 .Include(x => x.Idea)
-                .FirstOrDefaultAsync(x => x.Idea == box.Idea);
+                .FirstOrDefaultAsync(x => x.Idea == box.Idea && x.UserId.Equals(currentUserGuid));
 
             var checkedRole = getRole != null ? getRole.Role : IdeaMemberRoles.Default; 
 
@@ -697,6 +699,152 @@ namespace Mvc.Infrastructure.Repositories
             };
 
             return dto;
+        }
+
+        public async Task<string> UpdateIdeaSettingsAsync(IFormFile avatar, IdeaStatuses status, string description, bool isSecurity, string ideaGuid, string currentUserGuid)
+        {
+            var getIdea = await _dbContext.Ideas
+                .Include(x => x.Members)
+                .Include(x => x.Status)
+                .Include(x => x.Topics)
+                .FirstOrDefaultAsync(x => x.Guid.ToString() == ideaGuid);
+
+            bool isUserAuthor = false;
+            if (getIdea != null)
+            {
+                isUserAuthor = getIdea.Members.Any(x => x.UserId.Equals(currentUserGuid) &&
+                    x.Role.Equals(IdeaMemberRoles.Author));
+
+                if (avatar != null)
+                {
+                    using (Stream str = new FileStream(Path.GetFullPath($"/media/ideaAvatars/{avatar.FileName}"), FileMode.Create))
+                    {
+                        avatar.CopyTo(str);
+                        str.Close();
+                    }
+
+                    getIdea.Avatar = new IdeaAvatarImage(avatar.FileName);
+
+                    if (getIdea.Avatar.ImageName != "DEFAULT_IDEA_AVATAR.jpg")
+                    {
+                        File.Delete(Path.GetFullPath($"/media/ideaAvatars/{getIdea.Avatar.ImageName}"));
+                    }
+                }
+                if (!string.IsNullOrEmpty(status.ToString()))
+                {
+                    getIdea.Status = await _dbContext.IdeaStatuses
+                        .FirstOrDefaultAsync(x => x.Status.Equals(status));
+                }
+                if (!string.IsNullOrEmpty(description))
+                {
+                    getIdea.Topics
+                        .FirstOrDefault(x => x.IsDefault == true)
+                        .Description = description;
+                }
+
+                getIdea.IsSecurity = isSecurity; 
+            }          
+
+            return getIdea.Guid.ToString();
+        }
+
+        public async Task<bool> RemoveIdeaAsync(string ideaGuid, string confirmPassword, string currentUserGuid)
+        {
+            var getRole = await _dbContext.IdeaMemberRoles
+                .Include(x => x.Idea)  
+                .ThenInclude(x => x.Topics)
+                .ThenInclude(x => x.Comments)
+                .Include(x => x.Idea)
+                .ThenInclude(x => x.Boxes)
+                .ThenInclude(x => x.Goals)
+                .Include(x => x.Idea)
+                .ThenInclude(x => x.Members)                
+                .Include(x => x.User)
+                .FirstOrDefaultAsync(x => x.UserId.Equals(currentUserGuid) && x.Idea.Guid.ToString() == ideaGuid);
+
+            bool isAuthor = false;
+            if (getRole != null)
+                if (getRole.Role.Equals(IdeaMemberRoles.Author))
+                    isAuthor = true;
+
+            if (isAuthor == true)
+            {
+                _dbContext.Ideas.Remove(getRole.Idea);
+
+                return true;
+            }
+
+            return false;
+        }
+
+        public async Task<List<JoinRequestDto>> GetIdeaJoinRequests(string ideaGuid)
+        {
+            var getIdea = await _dbContext.Ideas
+                .FirstOrDefaultAsync(x => x.Guid.ToString() == ideaGuid);
+
+            var res = _dbContext.IdeaInvites
+                .Include(x => x.Author)
+                .ThenInclude(x => x.Avatar)
+                .Include(x => x.InvitedUser)
+                .ThenInclude(x => x.Avatar)
+                .Include(x => x.RelateIdea)
+                .Where(x => x.RelateIdea == getIdea && x.InviteType.Equals(InviteTypes.JoinRequest))
+                .ToList();
+
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<IdeaInvitation, JoinRequestDto>()
+                .ForMember("InviteGuid", opt => opt.MapFrom(x => x.Guid))
+                .ForMember("FromUserGuid", opt => opt.MapFrom(x => x.Author.Id))
+                .ForMember("FromUserAvatar", opt => opt.MapFrom(x => x.Author.Avatar.ImageName))
+                .ForMember("FromUserName", opt => opt.MapFrom(x => x.Author.UserName))
+                .ForMember("Description", opt => opt.MapFrom(x => x.Content));
+            });
+
+            var mapper = new Mapper(config);
+
+            var resp = mapper.Map<List<IdeaInvitation>, List<JoinRequestDto>>(res);
+
+            return resp;
+        }
+
+        public async Task<bool> DeclineJoinAsync(string joinGuid)
+        {
+            var getJoin = await _dbContext.IdeaInvites
+                .FirstOrDefaultAsync(x => x.Guid.ToString() == joinGuid);
+
+            if (getJoin != null)
+            {
+                _dbContext.IdeaInvites.Remove(getJoin);
+                return true;
+            }
+
+            return false;
+        }
+
+        public async Task<bool> AcceptJoinAsync(string joinGuid)
+        {
+            var getJoin = await _dbContext.IdeaInvites
+                .Include(x => x.RelateIdea)
+                .ThenInclude(x => x.Members)
+                .Include(x => x.Author)
+                .FirstOrDefaultAsync(x => x.Guid.ToString() == joinGuid);
+
+            if (getJoin != null)
+            {
+                var createRole = new IdeaMemberRole(
+                    IdeaMemberRoles.Default,
+                    getJoin.AuthorId,
+                    getJoin.RelateIdeaId);
+
+                _dbContext.IdeaMemberRoles.Add(createRole);
+
+                _dbContext.IdeaInvites.Remove(getJoin);
+
+                return true;
+            }
+
+            return false;            
         }
         #endregion
     }

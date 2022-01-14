@@ -13,6 +13,7 @@ namespace Mvc.ApplicationCore.Interfaces
 {
     public interface IUserRepository
     {
+        Task<bool> CreateIdeaJoinRequest(string description, string ideaGuid, string userGuid);
         Task<string> UserAcceptInvite(string inviteGuid);
         Task<string> UserRejectInvite(string inviteGuid);
         Task<List<InviteDetailDto>> GetUserInvites(string userGuid);

@@ -22,6 +22,63 @@ namespace Mvc.WebUi.Controllers
             _dbContext = ctx;
         }
 
+        [Authorize]
+        [HttpPost]
+        [Route("idea/acceptJoin")]
+        public async Task<JsonResult> AcceptJoin(string joinGuid)
+        {
+            //var guid = await _userRepository.GetUserGuid(User.Identity.Name);
+
+            var res = await _ideaRepository.AcceptJoinAsync(joinGuid);
+
+            _userRepository.Save();
+
+            return Json(res);
+        }
+
+
+        [Authorize]
+        [HttpPost]
+        [Route("idea/declineJoin")]
+        public async Task<JsonResult> DeclineJoin(string joinGuid)
+        {
+            //var guid = await _userRepository.GetUserGuid(User.Identity.Name);
+
+            var res = await _ideaRepository.DeclineJoinAsync(joinGuid);
+
+            _userRepository.Save();
+
+            return Json(res);
+        }
+
+
+        [Authorize]
+        [HttpPost]
+        [Route("idea/removeIdea")]
+        public async Task<IActionResult> RemoveIdea(string confirmPassword, string ideaGuid)
+        {
+            string userGuid = await _userRepository.GetUserGuid(User.Identity.Name);
+            bool res = await _ideaRepository.RemoveIdeaAsync(ideaGuid, confirmPassword, userGuid);
+
+            _ideaRepository.Save();
+
+            return RedirectToAction("Index", "home");
+        }
+
+
+        [Authorize]
+        [HttpPost]
+        [Route("idea/updateIdeaSettings")]
+        public async Task<IActionResult> UpdateIdeaSettings(IFormFile avatar, string description, string ideaGuid, int status, bool isSecutiry)
+        {
+            string userGuid = await _userRepository.GetUserGuid(User.Identity.Name);
+
+            var res = await _ideaRepository.UpdateIdeaSettingsAsync(avatar, (IdeaStatuses)status, description, isSecutiry, ideaGuid, userGuid);
+
+            _ideaRepository.Save();
+
+            return RedirectToAction(res.ToString(), "idea");
+        }
 
         [Authorize]
         [HttpPost]
@@ -160,30 +217,18 @@ namespace Mvc.WebUi.Controllers
         [Authorize]
         [HttpPost]
         [Route("idea/createTopic")]
-        public async Task<IActionResult> NewTopic(string title, string description, string ideaGuid)
+        public async Task<IActionResult> CreateTopic(string title, string description, string ideaGuid)
         {
             string authorGuid = await _userRepository.GetUserGuid(User.Identity.Name);
             bool res = await _ideaRepository.CreateTopic(title, description, authorGuid, ideaGuid);
 
             if (res) _ideaRepository.Save();
 
-            string currentUserName = User.Identity.Name;
-
-            IdeaAboutViewModel indexVm = new IdeaAboutViewModel();
-            indexVm.Idea = _ideaRepository.GetIdeaDetail(ideaGuid);
-            indexVm.SimilarIdeas = new List<SideIdeaDto>();
-            indexVm.IdeaTopics = _ideaRepository.GetIdeaTopics(ideaGuid);
-            indexVm.CurrentUserRole = IdeaMemberRoleDto.Viewer;
-
-            if (currentUserName != null)
-                indexVm.CurrentUserRole = _ideaRepository.GetIdeaMemberRole(ideaGuid,
-                    await _userRepository.GetUserGuid(currentUserName));
-
-            return View("Index", indexVm);
+            return RedirectToAction(ideaGuid);
         }
 
 
-        
+        [HttpGet]
         [Route("idea/{ideaGuid}")]
         public async Task<IActionResult> Index(string ideaGuid, string? section)
         {
@@ -216,6 +261,20 @@ namespace Mvc.WebUi.Controllers
                         await _userRepository.GetUserGuid(currentUserName));
 
                 return View("Members", membersVm);
+            }
+            else if (section == "joinings")
+            {
+                IdeaJoiningsViewModel joiningsVm = new IdeaJoiningsViewModel();
+                joiningsVm.Idea = _ideaRepository.GetIdeaDetail(ideaGuid);
+                joiningsVm.SimilarIdeas = new List<SideIdeaDto>();
+                joiningsVm.IdeaJoinings = await _ideaRepository.GetIdeaJoinRequests(ideaGuid);
+                joiningsVm.CurrentUserRole = IdeaMemberRoleDto.Viewer;
+
+                if (currentUserName != null)
+                    joiningsVm.CurrentUserRole = _ideaRepository.GetIdeaMemberRole(ideaGuid,
+                        await _userRepository.GetUserGuid(currentUserName));
+
+                return View("Joinings", joiningsVm);
             }
             
             IdeaAboutViewModel indexVm = new IdeaAboutViewModel();

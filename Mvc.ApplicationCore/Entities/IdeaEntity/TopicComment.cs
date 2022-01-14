@@ -12,13 +12,20 @@ namespace Mvc.ApplicationCore.Entities.IdeaEntity
         public string Message { get; set; }
         public string AuthorId { get; set; }
         public ApplicationUser Author { get; set; }
-        public DateTime DateCreated { get; set; }        
+        public DateTime DateCreated { get; set; }  
         public int TopicId { get; set; }
         public IdeaTopic Topic { get; set; }
 
-        public TopicComment(int topicId, string authorId, string message)
+        public TopicComment(string authorId, string message)
         {
-            TopicId = topicId;
+            AuthorId = authorId;
+            Message = message;
+            DateCreated = DateTime.Now;
+        }
+
+        public TopicComment(IdeaTopic topic, string authorId, string message)
+        {
+            Topic = topic;
             AuthorId = authorId;
             Message = message;
             DateCreated = DateTime.Now;

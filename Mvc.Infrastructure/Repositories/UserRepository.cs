@@ -104,7 +104,7 @@ namespace Mvc.Infrastructure.Repositories
             return true;
         }
 
-
+        
 
 
         #region ready
@@ -713,6 +713,7 @@ namespace Mvc.Infrastructure.Repositories
 
             return resp;
         }
+        //public async Task<List<>>
 
         public async Task<string> UserAcceptInvite(string inviteGuid)
         {
@@ -741,6 +742,23 @@ namespace Mvc.Infrastructure.Repositories
             _dbContext.IdeaInvites.Remove(getInvite);
 
             return getInvite.Guid.ToString();
+        }
+
+        public async Task<bool> CreateIdeaJoinRequest(string description, string ideaGuid, string userGuid)
+        {
+            var getIdea = await _dbContext.Ideas
+                .FirstOrDefaultAsync(x => x.Guid.ToString() == ideaGuid);
+
+            if (getIdea != null)
+            {
+                var data = new IdeaInvitation(description, userGuid, getIdea.Id, InviteTypes.JoinRequest, null);
+
+                _dbContext.IdeaInvites.Add(data);
+                    
+                return true;
+            }
+
+            return false;
         }
         #endregion
     }

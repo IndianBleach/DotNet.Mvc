@@ -14,7 +14,6 @@
     $("#hideBackgroundWrapper").mouseup(function (e) {
         var container = $("#checkOutContainer");
         if (container.has(e.target).length === 0) {
-            $("#windowStarred").addClass("d-none");
             $("#windowCreateIdea").addClass("d-none");
             $("#windowParticipation").addClass("d-none");
             $("#hideBackgroundWrapper").addClass("d-none");
@@ -22,30 +21,14 @@
         }
     });    
 
-    $(".showHideJoin").on("click", (e) => {
-        e.preventDefault();
-        $("#joinWindow").toggleClass("d-none");
-        $("#hideBackgroundWrapper").toggleClass("d-none");
-        $("body").toggleClass("overflow-hidden");
-    });
-
-
+    // create idea window
     $(".showHideCreateIdea").on("click", (e) => {
         e.preventDefault();
         $("body").toggleClass("overflow-hidden");
         $("#hideBackgroundWrapper").toggleClass("d-none");
         $("#windowCreateIdea").toggleClass("d-none");
     });
-
-    $(".showHideStarred").on("click", (e) => {
-        e.preventDefault();
-        $("body").toggleClass("overflow-hidden");
-        $("#hideBackgroundWrapper").toggleClass("d-none");
-        $("#windowStarred").toggleClass("d-none");
-    });
-
     
-
     // Participation
     $(".showParticipation").on("click", (e) => {
         e.preventDefault();
@@ -55,7 +38,7 @@
         $.post("/load/LoadParticipation", { userName }, (resp) => {
             resp.forEach(elem => {
                 $("#participationLoad").append(
-                    `<div class='note-participation'><a href='idea/${elem.ideaGuid}'><span>${elem.ideaName}</span><br /><p>Role:<span class='t-sm text-white t-semi-bold'>${elem.roleName}</span></p></a></div>`
+                    `<div class='note-participation'><a href='/idea/${elem.ideaGuid}'><span>${elem.ideaName}</span><br /><p>Role:<span class='t-sm text-white t-semi-bold'>${elem.roleName}</span></p></a></div>`
                 );
             })
 

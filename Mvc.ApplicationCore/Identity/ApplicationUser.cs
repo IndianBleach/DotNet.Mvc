@@ -43,7 +43,8 @@ namespace Mvc.ApplicationCore.Identity
         public ICollection<Follower> Following { get; set; }
         //public ICollection<Chat> ChatMessagesFromAuthor { get; set; }
         //public ICollection<Chat> ChatMessagesToAuthor { get; set; }
-        public ICollection<CommentMessage> Comments { get; set; }
+        public ICollection<TopicComment> TopicComments { get; set; }
+        //public ICollection<CommentMessage> Comments { get; set; }
         public int AvatarId { get; set; }
         public UserAvatarImage Avatar { get; set; }
         public ICollection<ChatUser> Chats { get; set; }
@@ -65,7 +66,7 @@ namespace Mvc.ApplicationCore.Identity
             Following = new List<Follower>();
             //ChatMessagesFromAuthor = new List<Chat>();
             //ChatMessagesToAuthor = new List<Chat>();
-            Comments = new List<CommentMessage>();
+            TopicComments = new List<TopicComment>();
             Chats = new List<ChatUser>();
         }
 
@@ -92,7 +93,7 @@ namespace Mvc.ApplicationCore.Identity
             Following = new List<Follower>();
             //ChatMessagesFromAuthor = new List<Chat>();
             //ChatMessagesToAuthor = new List<Chat>();
-            Comments = new List<CommentMessage>();
+            TopicComments = new List<TopicComment>();
             Chats = new List<ChatUser>();
         }
     }

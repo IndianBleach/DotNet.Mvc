@@ -34,9 +34,11 @@ namespace Mvc.ApplicationCore.Entities.IdeaEntity
         public ICollection<IdeaStar> Stars { get; set; }
         public int AvatarId { get; set; }
         public IdeaAvatarImage Avatar { get; set; }
+        public bool IsSecurity { get; set; }
 
         public Idea()
         {
+            IsSecurity = false;
             Guid = Guid.NewGuid();
             DateCreated = DateTime.Now;
             DateUpdated = DateTime.Now;
@@ -46,6 +48,7 @@ namespace Mvc.ApplicationCore.Entities.IdeaEntity
 
         public Idea(string title, int statusId)
         {
+            IsSecurity = false;
             StatusId = statusId;
             Title = title;
             Topics = new List<IdeaTopic>();
@@ -62,9 +65,11 @@ namespace Mvc.ApplicationCore.Entities.IdeaEntity
             string title,
             IdeaMemberRole initMember,
             IdeaStatus initStatus,
-            IdeaTopic initTopic
+            IdeaTopic initTopic,
+            bool isSecurity
             )
         {
+            IsSecurity = isSecurity;
             Members = new List<IdeaMemberRole>() { initMember };
             Topics = new List<IdeaTopic>() { initTopic };
             Status = initStatus;

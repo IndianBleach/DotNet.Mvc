@@ -1,4 +1,5 @@
-﻿using Mvc.ApplicationCore.DTOs;
+﻿using Microsoft.AspNetCore.Http;
+using Mvc.ApplicationCore.DTOs;
 using Mvc.ApplicationCore.DTOs.Idea;
 using Mvc.ApplicationCore.DTOs.Load;
 using Mvc.ApplicationCore.Entities;
@@ -13,6 +14,13 @@ namespace Mvc.ApplicationCore.Interfaces
 {
     public interface IIdeaRepository
     {
+        Task<bool> DeclineJoinAsync(string joinGuid);
+        Task<bool> AcceptJoinAsync(string joinGuid);
+        Task<List<JoinRequestDto>> GetIdeaJoinRequests(string ideaGuid);
+        //
+        Task<string> UpdateIdeaSettingsAsync(IFormFile avatar, IdeaStatuses status, string description, bool isSecurity,string ideaGuid, string currentUserGuid);
+        Task<bool> RemoveIdeaAsync(string ideaGuid, string confirmPassword, string currentUserGuid);
+        //
         Task<bool> RemoveGoalAsync(string goalGuid, string currentUserGuid);
         Task<BoxGoalDetailDto> UpdateGoalStatusAsync(string goalGuid, BoxGoalStatuses newStatus, string currentUserGuid);
         //

@@ -20,6 +20,19 @@ namespace Mvc.WebUi.Controllers
             _tagService = tagService;
         }
 
+        [Authorize]
+        [HttpPost]
+        [Route("user/joinrequest")]
+        public async Task<JsonResult> JoinRequest(string description, string ideaGuid)
+        {
+            var guid = await _userRepository.GetUserGuid(User.Identity.Name);
+
+            var res = await _userRepository.CreateIdeaJoinRequest(description, ideaGuid, guid);
+
+            _userRepository.Save();
+
+            return Json(res);
+        }
 
 
         #region Ready

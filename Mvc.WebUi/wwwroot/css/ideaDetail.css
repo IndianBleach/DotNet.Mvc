@@ -17,6 +17,7 @@
 }
 
 .ideaTopicLink {
+    cursor: pointer;
     transition: padding-left 0.3s ease-in-out;
 }
 

@@ -18,7 +18,7 @@ namespace Mvc.WebUi.Controllers
             var res = _ideaRepository.CreateIdea(idea);
             _ideaRepository.Save();
 
-            return RedirectToAction("index", "home");
+            return RedirectToAction(res.ToString(), "idea");
         }
     }
 }

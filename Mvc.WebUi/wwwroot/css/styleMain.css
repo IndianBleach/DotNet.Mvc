@@ -194,6 +194,7 @@ a > img {
     }
 
 .icon-link-btn {
+    cursor: pointer;
     transition: background 0.3s ease;
     background: rgba(0, 0, 0, 0.66);
     border-radius: 32px;

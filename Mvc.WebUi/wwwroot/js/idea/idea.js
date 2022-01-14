@@ -7,11 +7,16 @@
         }
     };
 
+    $("input[type='file']").on("change", (e) => {
+        e.preventDefault();
+        console.log(e.target.files[0].name);
+        $("#avatarPreRenderName").text(e.target.files[0].name);
+    });
+
     $("#hideBackgroundWrapper").mouseup(function (e) {
         var container = $("#checkOutContainer");
         if (container.has(e.target).length === 0) {
-            $("#windowStarred").addClass("d-none");
-            $("#windowCreateIdea").addClass("d-none");
+            //$("#windowCreateIdea").addClass("d-none");
             $("#hideBackgroundWrapper").addClass("d-none");
             $("body").removeClass("overflow-hidden");
             $("#settingsModdersWindow").addClass("d-none");
@@ -21,26 +26,23 @@
             $("#topicWindow").addClass("d-none");
             //$("#goalWindow").addClass("d-none");
             $("#joinWindow").addClass("d-none");
-            $("#windowParticipation").addClass("d-none");
+            //$("#windowParticipation").addClass("d-none");
             $("#createBoxWindow").addClass("d-none");
             hideBoxWindow();
         }
     });
 
-    $(".showHideJoin").on("click", (e) => {
-        e.preventDefault();
-        $("#joinWindow").toggleClass("d-none");
-        $("#hideBackgroundWrapper").toggleClass("d-none");
-        $("body").toggleClass("overflow-hidden");
-    });
 
+
+
+    
     $("#preCheckOutIdea").mouseup(function (e) {
         var container = $("#checkOutIdea");
         if (container.has(e.target).length === 0) {
             $("#topicWindow").addClass("d-none");
             $("#joinWindow").addClass("d-none");
             //$("#goalWindow").addClass("d-none");
-            $("#windowParticipation").addClass("d-none");
+            //$("#windowParticipation").addClass("d-none");
             $("#settingsModdersWindow").addClass("d-none");
             $("#settingsGeneralWindow").addClass("d-none");
             $("#hideBackgroundWrapper").addClass("d-none");
@@ -52,20 +54,6 @@
         }
     });
 
-    $(".showHideCreateIdea").on("click", (e) => {
-        e.preventDefault();
-        $("body").toggleClass("overflow-hidden");
-        $("#hideBackgroundWrapper").toggleClass("d-none");
-        $("#windowCreateIdea").toggleClass("d-none");
-    });
-
-    $(".showHideStarred").on("click", (e) => {
-        e.preventDefault();
-        $("body").toggleClass("overflow-hidden");
-        $("#hideBackgroundWrapper").toggleClass("d-none");
-        $("#windowStarred").toggleClass("d-none");
-    });
-
     $(".showHideGeneralSettings").on("click", (e) => {
         e.preventDefault();
         $("#settingsGeneralWindow").toggleClass("d-none");
@@ -73,8 +61,63 @@
         $("body").toggleClass("overflow-hidden");
     });
 
+    $(".showHideJoin").on("click", (e) => {
+        e.preventDefault();
+        $("#joinWindow").toggleClass("d-none");
+        $("#hideBackgroundWrapper").toggleClass("d-none");
+        $("body").toggleClass("overflow-hidden");
+    });
 
-    
+
+    // Joinings
+    $(".acceptJoinBtn").on("click", (e) => {
+        e.preventDefault();
+
+        let joinGuid = e.target.dataset.join;
+
+        $.post("/idea/acceptJoin", { joinGuid }, resp => {
+            if (resp) {
+                sendNotifyMessage("Join request accepted!", true);
+                $(`.joinRequestSection[data-join="${joinGuid}"]`).remove();
+            }
+        });
+    });
+
+    $(".declineJoinBtn").on("click", (e) => {
+        e.preventDefault();
+
+        let joinGuid = e.target.dataset.join;
+
+        $.post("/idea/declineJoin", { joinGuid }, resp => {
+            if (resp) {
+                sendNotifyMessage("Join request decline!", true);
+                $(`.joinRequestSection[data-join="${joinGuid}"]`).remove();
+            }
+        });
+    });
+
+    $("#joinRequestForm").on("submit", (e) => {
+        e.preventDefault();
+
+        let description = e.target.getElementsByTagName("textarea")[0].value;
+        let ideaGuid = e.target.getElementsByTagName("input")[0].value;
+
+        console.log(description);
+        console.log(ideaGuid);
+
+        $.post("/user/joinrequest", { description, ideaGuid }, (resp) => {
+            if (resp) {
+                sendNotifyMessage("Join request sended!", true);
+
+                $("#joinWindow").addClass("d-none");
+                $("#hideBackgroundWrapper").addClass("d-none");
+                $("body").removeClass("overflow-hidden");
+                e.target.getElementsByTagName("textarea")[0].value = "";
+            }
+        });
+
+    });
+    // -------
 
     // Box 
     $(".showHideCreateBox").on("click", (e) => {

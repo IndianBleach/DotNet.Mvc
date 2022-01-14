@@ -596,12 +596,12 @@
                   </svg>                
                 <img
                     src="~/media/userAvatars/@User.Claims.Where(x => x.Type.Equals("AvatarImageName")).Select(x => x.Value).SingleOrDefault()"
-                    class="ms-3 circle shadow border"
+                    class="ms-1 circle shadow border"
                     height="44"
                     width="44"
                   />
               </div>  
-              <p class="pt-3 text-center t-md t-medium text-white">
+              <p class="pt-3 text-center t-md t-semi-bold text-white">
                 Create new goal Box                              
               </p> 
               </div>           
@@ -611,7 +611,7 @@
                   <input hidden value="@Model.Idea.Guid" name="ideaGuid"/>
                 <div class="mb-2">
                   <input
-                    class="form-control radius-lg bg-dark border text-white t-md t-semi-bold form-control me-0 pe-1"
+                    class="upd-form-input form-control me-0 pe-1"
                     placeholder="Title"
                     name="title"
                   />
@@ -620,7 +620,7 @@
                   <textarea
                   name="description"
                     style="resize: none; height: 66px;"
-                    class="radius-lg bg-dark border text-white t-md t-semi-bold form-control me-0 pe-1"
+                    class="upd-form-textarea form-control me-0 pe-1"
                     placeholder="Description"
                     aria-label="Search"
                   ></textarea>
@@ -656,9 +656,9 @@
                     <br />
                     <span class="t-sm t-medium t-muted">Only you can edit this box</span>
                   </div>
-                <div class="border-top pt-3 mt-4 col-12 text-center">
-                  <button type="submit" class="btn t-bold t-primary">Create box</button>
-                </div>
+                <div class="border-top pt-3 col-12 text-center">
+                      <button  type="submit" class=" icon-link-btn">Create box</button>
+                 </div>
               </form>
             </div>
           </div>
