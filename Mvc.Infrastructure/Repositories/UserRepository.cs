@@ -138,8 +138,25 @@ namespace Mvc.Infrastructure.Repositories
         public async Task<bool> UpdateUserSettings(string name, UserEditGeneralSettingsDto model)
         {
             ApplicationUser getUser = _dbContext.Users
+                .Include(x => x.Avatar)
                 .Include(x => x.Tags)
                 .FirstOrDefault(x => x.UserName.Equals(name));
+
+            if (model.NewAvatar != null)
+            {
+                using (FileStream str = new FileStream($"wwwroot/media/userAvatars/" + model.NewAvatar.FileName, FileMode.Create))
+                {
+                    await model.NewAvatar.CopyToAsync(str);
+                    str.Close();
+                }
+
+                if (getUser.Avatar.ImageName != "DEFAULT_USER_AVATAR.jpg")
+                {
+                    File.Delete($"wwwroot/media/userAvatars/{getUser.Avatar.ImageName}");
+                }
+
+                getUser.Avatar = new UserAvatarImage(model.NewAvatar.FileName);
+            }
 
             if (!string.IsNullOrEmpty(model.NewUsername))
                 getUser.UserName = model.NewUsername;

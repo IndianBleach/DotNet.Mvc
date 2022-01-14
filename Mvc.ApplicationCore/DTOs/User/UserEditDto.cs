@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,7 @@ namespace Mvc.ApplicationCore.DTOs.User
 {
     public class UserEditGeneralSettingsDto
     {
+        public IFormFile NewAvatar { get; set; }
         public string NewUsername { get; set; }
         public string NewPassword { get; set; }
         public string OldPassword { get; set; }

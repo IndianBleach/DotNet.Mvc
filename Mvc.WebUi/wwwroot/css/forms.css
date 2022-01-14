@@ -224,3 +224,14 @@
     font-size: 14px !important;
     font-weight: 600 !important;
 }
+
+.upd-form-avatar-circle {
+    background-size: 100% auto;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 70px;
+    height: 70px;
+    font-size: 0px;
+    border-radius: 50%;
+    background-color: transparent !important;
+}

@@ -6,6 +6,13 @@
             $("#notifyMessage").addClass("notifyActive");
         }
     };
+
+    $("input[type='file']").on("change", (e) => {
+        e.preventDefault();
+        console.log(e.target.files[0].name);
+        $("#avatarPreRenderName").text(e.target.files[0].name);
+    });
+
     $("#hideNotifyMessage").on("click", (e) => {
         e.preventDefault();
         $("#notifyMessage").addClass("d-none");

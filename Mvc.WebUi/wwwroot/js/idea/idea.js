@@ -5,13 +5,7 @@
             $("#notifyMessageText").text(text);
             $("#notifyMessage").addClass("notifyActive");
         }
-    };
-
-    $("input[type='file']").on("change", (e) => {
-        e.preventDefault();
-        console.log(e.target.files[0].name);
-        $("#avatarPreRenderName").text(e.target.files[0].name);
-    });
+    };   
 
     $("#hideBackgroundWrapper").mouseup(function (e) {
         var container = $("#checkOutContainer");
@@ -33,9 +27,7 @@
     });
 
 
-
-
-    
+        
     $("#preCheckOutIdea").mouseup(function (e) {
         var container = $("#checkOutIdea");
         if (container.has(e.target).length === 0) {

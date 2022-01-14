@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 
 namespace Mvc.Infrastructure.Repositories
 {
@@ -28,6 +29,7 @@ namespace Mvc.Infrastructure.Repositories
         {
             _userManager = userManager;
             _dbContext = dbContext;
+            
         }
              
         public IEnumerable<IdeaRecommendationDto> GetRecommendIdeas(string? forUsername)
@@ -704,6 +706,7 @@ namespace Mvc.Infrastructure.Repositories
         public async Task<string> UpdateIdeaSettingsAsync(IFormFile avatar, IdeaStatuses status, string description, bool isSecurity, string ideaGuid, string currentUserGuid)
         {
             var getIdea = await _dbContext.Ideas
+                .Include(x => x.Avatar)
                 .Include(x => x.Members)
                 .Include(x => x.Status)
                 .Include(x => x.Topics)
@@ -717,18 +720,18 @@ namespace Mvc.Infrastructure.Repositories
 
                 if (avatar != null)
                 {
-                    using (Stream str = new FileStream(Path.GetFullPath($"/media/ideaAvatars/{avatar.FileName}"), FileMode.Create))
+                    using (FileStream str = new FileStream($"wwwroot/media/ideaAvatars/"+ avatar.FileName , FileMode.Create))
                     {
-                        avatar.CopyTo(str);
+                        await avatar.CopyToAsync(str);
                         str.Close();
-                    }
-
-                    getIdea.Avatar = new IdeaAvatarImage(avatar.FileName);
+                    }                    
 
                     if (getIdea.Avatar.ImageName != "DEFAULT_IDEA_AVATAR.jpg")
                     {
-                        File.Delete(Path.GetFullPath($"/media/ideaAvatars/{getIdea.Avatar.ImageName}"));
+                        File.Delete($"wwwroot/media/ideaAvatars/{getIdea.Avatar.ImageName}");
                     }
+
+                    getIdea.Avatar = new IdeaAvatarImage(avatar.FileName);
                 }
                 if (!string.IsNullOrEmpty(status.ToString()))
                 {
@@ -742,7 +745,7 @@ namespace Mvc.Infrastructure.Repositories
                         .Description = description;
                 }
 
-                getIdea.IsSecurity = isSecurity; 
+                getIdea.IsSecurity = isSecurity;
             }          
 
             return getIdea.Guid.ToString();
