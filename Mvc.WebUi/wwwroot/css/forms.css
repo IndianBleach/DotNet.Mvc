@@ -3,7 +3,7 @@
 }
 
 .form-light input:focus {
-    background-color: #373737;
+    background-color:transparent;
     border: none !important;
     border-radius: 9px;
     height: 32px !important;
@@ -12,7 +12,7 @@
 }
 
 .form-light {
-    background-color: #373737;
+    background-color: #1c1c1c;
     border-radius: 9px;
     height: 32px;
     display: flex;
@@ -63,7 +63,7 @@
     .form-lg input {
         height: 38px;
         font-weight: 500;
-        font-size: 13px;
+        font-size: 16px;
     }
 
 .form-dark-select {
@@ -143,14 +143,14 @@
     justify-content: space-between;
     opacity: 0;
     transition: opacity 1s ease;
-    border: 1px solid rgb(34, 34, 34);
+    border: 1px solid #0e0e0e;
     display: flex;
-    padding: 10px 8px 10px 15px;
+    padding: 16px 10px 16px 15px;
     font-size: 14px;
     font-weight: 500;
     align-items: center;
     border-radius: 10px;
-    background-color: #373737 !important;
+    background-color: #000000 !important;
 }
 
 
@@ -195,18 +195,49 @@
     border: 1px solid #f1aa0f;
 }
 
+.bg-danger {
+    background-color: #a43a3a!important;
+}
+
+
+.upd-window-btn {
+    cursor: pointer;
+    width: 100%;
+    transition: background 0.3s ease 0s;
+    padding: 12px 16px 14px 18px;
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    border: 1px solid transparent;
+    background: #1C92FF;
+    border: 1px solid #14436D;
+    box-sizing: border-box;
+    border-radius: 8px;
+}
+
+.select-multiple {
+    height: 108px!important;
+}
 
 .upd-form-select {
-    height: 50px !important;
+    padding-left: .5rem !important;
+    border: 1px solid rgb(38, 38, 38);
+    background-color: #111111 !important;
+    height: 52px;
+    color: #9f9f9f !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    border-radius: 8px !important;
+    border: 1px solid #4a4a4a !important;
 }
 
 .upd-form-textarea {
     resize: none;
     height: 77px;
-    border-radius: 9px !important;
+    border-radius: 4px !important;
     color: #9f9f9f !important;
-    border: 1px solid #434343 !important;
-    background-color: #1e1e1e !important;
+    border: 1px solid #4a4a4a !important;
+    background-color: #111111 !important;
     font-size: 14px !important;
     font-weight: 600 !important;
 }
@@ -220,11 +251,11 @@
 }
 
 .upd-form-input {
-    height: 44px;
-    border-radius: 9px !important;
+    height: 46px;
+    border-radius: 4px !important;
     color: #9f9f9f !important;
-    border: 1px solid #434343 !important;
-    background-color: #1e1e1e !important;
+    border: 1px solid #4a4a4a !important;
+    background-color: #111111 !important;
     font-size: 14px !important;
     font-weight: 600 !important;
 }

@@ -243,7 +243,7 @@ namespace Mvc.WebUi.Controllers
             {
                 IdeaBoxesViewModel goalsVm = new IdeaBoxesViewModel();
                 goalsVm.Idea = _ideaRepository.GetIdeaDetail(ideaGuid);
-                goalsVm.SimilarIdeas = new List<SideIdeaDto>();
+                goalsVm.SimilarIdeas = _ideaRepository.GetSimilarIdeas(ideaGuid);
                 goalsVm.IdeaBoxes = await _ideaRepository.GetIdeaBoxesAsync(ideaGuid, await _userRepository.GetUserGuid(currentUserName), (int)page);
                 goalsVm.CurrentUserRole = IdeaMemberRoleDto.Viewer;
                 goalsVm.Pages = _pageService.GeneratePages((int)page, goalsVm.IdeaBoxes.Count, 10);
@@ -258,7 +258,7 @@ namespace Mvc.WebUi.Controllers
             {
                 IdeaMembersViewModel membersVm = new IdeaMembersViewModel();
                 membersVm.Idea = _ideaRepository.GetIdeaDetail(ideaGuid);
-                membersVm.SimilarIdeas = new List<SideIdeaDto>();
+                membersVm.SimilarIdeas = _ideaRepository.GetSimilarIdeas(ideaGuid);
                 membersVm.IdeaMembers = await _ideaRepository.GetIdeaMembersAsync(ideaGuid, (int)page);
                 membersVm.CurrentUserRole = IdeaMemberRoleDto.Viewer;
                 membersVm.Pages = _pageService.GeneratePages((int)page, membersVm.IdeaMembers.Count, 10);
@@ -273,7 +273,7 @@ namespace Mvc.WebUi.Controllers
             {
                 IdeaJoiningsViewModel joiningsVm = new IdeaJoiningsViewModel();
                 joiningsVm.Idea = _ideaRepository.GetIdeaDetail(ideaGuid);
-                joiningsVm.SimilarIdeas = new List<SideIdeaDto>();
+                joiningsVm.SimilarIdeas = _ideaRepository.GetSimilarIdeas(ideaGuid);
                 joiningsVm.IdeaJoinings = await _ideaRepository.GetIdeaJoinRequests(ideaGuid, (int)page);
                 joiningsVm.CurrentUserRole = IdeaMemberRoleDto.Viewer;
                 joiningsVm.Pages = _pageService.GeneratePages((int)page, joiningsVm.IdeaJoinings.Count, 10);
@@ -287,7 +287,7 @@ namespace Mvc.WebUi.Controllers
             
             IdeaAboutViewModel indexVm = new IdeaAboutViewModel();
             indexVm.Idea = _ideaRepository.GetIdeaDetail(ideaGuid);
-            indexVm.SimilarIdeas = new List<SideIdeaDto>();
+            indexVm.SimilarIdeas = _ideaRepository.GetSimilarIdeas(ideaGuid);
             indexVm.IdeaTopics = await _ideaRepository.GetIdeaTopicsAsync(ideaGuid, (int)page);
             indexVm.CurrentUserRole = IdeaMemberRoleDto.Viewer;
             indexVm.Pages = _pageService.GeneratePages((int)page, indexVm.IdeaTopics.Count, 10);

@@ -89,10 +89,6 @@ namespace Mvc.Infrastructure.Repositories
             return dtos;
         }
 
-
-        #region ready
-
-        #endregion
         public IEnumerable<SideIdeaDto> GetSideIdeasByStatusFilter(IdeaStatuses filterStatus)
         {
             var config = new MapperConfiguration(cfg =>
@@ -260,7 +256,6 @@ namespace Mvc.Infrastructure.Repositories
             _dbContext.SaveChanges();
         }
 
-        //
         public IdeaMemberRoleDto GetIdeaMemberRole(string ideaGuid, string userGuid)
         {
             var res = _dbContext.IdeaMemberRoles
@@ -858,6 +853,51 @@ namespace Mvc.Infrastructure.Repositories
 
             return false;            
         }
-        
+
+        public List<SideIdeaDto> GetSimilarIdeas(string ideaGuid)
+        {
+            Idea getIdea = _dbContext.Ideas
+                .Include(x => x.Tags)
+                .FirstOrDefault(x => x.Guid.ToString() == ideaGuid);
+
+            List<Idea> similarIdeas = new List<Idea>();
+
+            if (getIdea != null)
+            {
+                int countFill = 5 - getIdea.Tags.Count;
+
+                if (getIdea.Tags.Count > 0)
+                {
+                    for (int i = 0; i < getIdea.Tags.Count; i++)
+                    {
+                        similarIdeas.AddRange(_dbContext.Ideas
+                            .Include(x => x.Avatar)
+                            .Include(x => x.Tags)
+                            .Where(x => x.Tags
+                            .Contains(getIdea.Tags.ElementAt(i))).Take(countFill + 1));
+                    }
+                }                
+            }
+            else
+                similarIdeas = _dbContext.Ideas
+                    .Include(x => x.Avatar)
+                    .Take(5)
+                    .ToList();
+
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<Idea, SideIdeaDto>()
+                .ForMember("Title", opt => opt.MapFrom(x => x.Title))
+                .ForMember("Guid", opt => opt.MapFrom(x => x.Guid))
+                .ForMember("AvatarImageName", opt => opt.MapFrom(x => x.Avatar.ImageName));
+
+            });
+
+            var mapper = new Mapper(config);
+
+            var dtos = mapper.Map<List<Idea>, List<SideIdeaDto>>(similarIdeas);
+
+            return dtos;
+        }
     }
 }

@@ -231,7 +231,7 @@
                 <form enctype="multipart/form-data" asp-action="updateIdeaSettings" asp-controller="idea" asp-antiforgery="true">
                     <input hidden value="@Model.Idea.Guid" name="ideaGuid"/>
                   <div class="mb-3 mt-2 d-flex justify-content-center col-12">                    
-                    <div class="d-flex col-12 p-2 border radius-md">
+                    <div class="d-flex col-12 p-2 upd-dark border radius-md">
                         <div>
                             <input name="avatar" style="background-image: url('/media/ideaAvatars/@Model.Idea.AvatarImageName');" class="upd-form-avatar-square form-control" type="file" id="formFile">
                           </div>
@@ -814,17 +814,42 @@
               @switch(Model.CurrentUserRole)
               {
                 case IdeaMemberRoleDto.Author:
-                   <h3 class="t-lg t-bold t-muted">Your are Author</h3>
-                    <div class="ps-1 pt-2">
-                        <a class="showHideJoin icon-link-btn">Join idea</a>
-                    </div>         
+                   <h3 class="t-lg t-bold t-muted">Your role</h3>
+                  <div class="ps-1 col-12 text-break">
+                    <span class="t-md t-bold text-white">Author</span>
+                    <ul class="ps-3 mb-1 t-md t-medium t-muted">
+                      <li>Edit boxes and goals</li>
+                      <li>Edit member roles</li>
+                      <li>Invite members</li>
+                      <li>Edit topics</li>
+                      <li>Edit goal status</li>
+                    </ul>
+                  </div>        
                 break;
 
                 case IdeaMemberRoleDto.Modder:
-                   <h3 class="t-lg t-bold t-muted">Your are Modder</h3>
-                    <div class="ps-1 pt-2">
-                        <a class="showHideJoin icon-link-btn">Join idea</a>
-                    </div>         
+                   <h3 class="t-lg t-bold t-muted">Your role</h3>
+                  <div class="ps-1 col-12 text-break">
+                    <span class="t-md t-bold text-white">Modder</span>
+                    <ul class="ps-3 mb-1 t-md t-medium t-muted">
+                      <li>Edit boxes and goals</li>
+                      <li>Invite members</li>
+                      <li>Edit topics</li>
+                      <li>Edit goal status</li>
+                    </ul>
+                  </div>         
+                break;
+
+                case IdeaMemberRoleDto.Member:
+                   <h3 class="t-lg t-bold t-muted">Your role</h3>
+                  <div class="ps-1 col-12 text-break">
+                    <span class="t-md t-bold text-white">Member</span>
+                    <ul class="ps-3 mb-1 t-md t-medium t-muted">
+                      <li>Edit boxes and goals</li>
+                      <li>Lead discussions in topics</li>
+                      <li>Communicate with other participants</li>
+                    </ul>
+                  </div>         
                 break;
 
                 default:                
@@ -841,13 +866,16 @@
             <div class="col-12 pt-2 mt-3">
               <h3 class="t-lg t-bold t-muted">Similar ideas</h3>
               <div style="max-width: 180px;" class="ps-1 pt-3 d-flex flex-wrap">
-                <div class="rotate-idea-card-wrap position-relative">
-                  <a href="./">
-                    <div class="shadow position-absolute rotate-idea-card">
-                      <img src="#" />
+                @foreach(var simIdea in Model.SimilarIdeas)
+                {
+                    <div class="rotate-idea-card-wrap position-relative">
+                      <a asp-action="@simIdea.Guid" asp-controller="idea">
+                        <div class="shadow position-absolute rotate-idea-card">
+                          <img src="~/media/ideaAvatars/@simIdea.AvatarImageName" />
+                        </div>
+                      </a>
                     </div>
-                  </a>
-                </div>
+                }
               </div>
             </div>
           </aside>

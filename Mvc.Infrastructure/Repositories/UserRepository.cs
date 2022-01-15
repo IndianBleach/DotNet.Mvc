@@ -71,7 +71,6 @@ namespace Mvc.Infrastructure.Repositories
                     .Include(x => x.Tags)
                     .OrderByDescending(x => x.IdeaMemberRoles.Count()).Take(5).ToList();
 
-
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<ApplicationUser, SideUserDto>()
@@ -103,11 +102,7 @@ namespace Mvc.Infrastructure.Repositories
 
             return true;
         }
-
-        
-
-
-        #region ready
+       
         public async Task<bool> UpdateUserSettings(string name, UserEditTagSettingsDto model)
         {
             ApplicationUser getUser = _dbContext.Users
@@ -364,6 +359,17 @@ namespace Mvc.Infrastructure.Repositories
             return ideas.ToList();
         }
 
+        private string GetNormalizeRoleName(IdeaMemberRoles role)
+        {
+            return role switch
+            {
+                IdeaMemberRoles.Author => "Author",
+                IdeaMemberRoles.Modder => "Modder",
+                IdeaMemberRoles.Default => "Member",
+                _ => "",
+            };
+        }
+
         public List<UserParticipationDto> GetUserParticipations(string userName)
         {
             var roles = _dbContext.IdeaMemberRoles
@@ -376,7 +382,7 @@ namespace Mvc.Infrastructure.Repositories
             {
                 cfg.CreateMap<IdeaMemberRole, UserParticipationDto>()
                 .ForMember("IdeaName", opt => opt.MapFrom(x => x.Idea.Title))
-                .ForMember("RoleName", opt => opt.MapFrom(x => x.Role.ToString()))
+                .ForMember("RoleName", opt => opt.MapFrom(x => GetNormalizeRoleName(x.Role)))
                 .ForMember("IdeaGuid", opt => opt.MapFrom(x => x.Idea.Guid));
             });
 
@@ -428,43 +434,7 @@ namespace Mvc.Infrastructure.Repositories
         {
             _dbContext.SaveChanges();
         }
-
-        /*
-        public async Task<List<ChatUserDto>> GetUserChats(string userGuid)
-        {
-            var chats = await _dbContext.ChatMessages
-                .Include(x => x.ToUser)
-                .ThenInclude(x => x.Avatar)
-                .Where(x => x.FromUser.Id.Equals(userGuid))
-                .ToListAsync();
-
-
-            var users = chats.Select(x => x.ToUserId).Distinct();
-
-            List<ChatMessage> filter = new List<ChatMessage>();
-
-            foreach (var user in users)
-            {
-                filter.Add(chats.OrderByDescending(x => x.DateCreated)
-                    .FirstOrDefault(x => x.ToUserId.Equals(user)));
-            }
-
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<ChatMessage, ChatUserDto>()
-                .ForMember("UserGuid", opt => opt.MapFrom(x => x.FromUserId))
-                .ForMember("UserName", opt => opt.MapFrom(x => x.ToUser.UserName))
-                .ForMember("AvatarImageName", opt => opt.MapFrom(x => x.ToUser.Avatar.ImageName))
-                .ForMember("LastMessage", opt => opt.MapFrom(x => x.Message));
-            });
-
-            var mapper = new Mapper(config);
-
-            var resp = mapper.Map<List<ChatMessage>, List<ChatUserDto>>(filter);
-
-            return resp;
-        }
-        */
+        
         public async Task<List<NewChatDto>> GetNewChatUsersAsync(string guid)
         {
             List<Follower> following = await _dbContext.Follows
@@ -486,30 +456,7 @@ namespace Mvc.Infrastructure.Repositories
             var resp = mapper.Map<List<Follower>, List<NewChatDto>>(following);
 
             return resp;
-        }
-
-        /*
-        public async Task<ChatUserDto> CreateChatWithUser(string userGuid, string chatUserGuid)
-        {
-            ChatMessage chatMessage = new ChatMessage(userGuid, chatUserGuid, "Hello!");
-
-            ApplicationUser toUser = _dbContext.Users
-                .Include(x => x.Avatar)
-                .FirstOrDefault(x => x.Id.Equals(chatUserGuid));
-
-            _dbContext.ChatMessages.Add(chatMessage);
-
-            ChatUserDto resultDto = new ChatUserDto()
-            {
-                AvatarImageName = toUser.Avatar.ImageName,
-                LastMessage = "Hello!",
-                UserGuid = toUser.Id,
-                UserName = toUser.UserName
-            };
-
-            return resultDto;
-        }
-        */
+        }        
 
         public async Task<List<IdeaToInviteDto>> GetUserIdeasToInvite(string guid)
         {
@@ -793,6 +740,6 @@ namespace Mvc.Infrastructure.Repositories
 
             return false;
         }
-        #endregion
+       
     }
 }

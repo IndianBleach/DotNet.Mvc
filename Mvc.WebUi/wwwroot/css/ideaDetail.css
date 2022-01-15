@@ -9,12 +9,12 @@
 }
 
 .ideaSectionLink-active {
-    border-bottom: 1px solid #ff3434 !important;
+    border-bottom: 1px solid #1c92ff !important;
 }
 
 .ideaSectionLink:hover {
     color: white !important;
-    border-bottom: 1px solid #a52525;
+    border-bottom: 1px solid #36648f;
 }
 
 .ideaTopicLink {

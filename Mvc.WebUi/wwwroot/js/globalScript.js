@@ -46,7 +46,7 @@
         $.post("/load/LoadParticipation", { userName }, (resp) => {
             resp.forEach(elem => {
                 $("#participationLoad").append(
-                    `<div class='note-participation'><a href='/idea/${elem.ideaGuid}'><span>${elem.ideaName}</span><br /><p>Role:<span class='t-sm text-white t-semi-bold'>${elem.roleName}</span></p></a></div>`
+                    `<div class='note-participation'><a href='/idea/${elem.ideaGuid}'><span>${elem.ideaName}</span><br /><p class="t-medium t-muted">${elem.roleName}</p></a></div>`
                 );
             })
 
