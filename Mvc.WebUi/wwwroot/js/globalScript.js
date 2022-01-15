@@ -4,6 +4,7 @@
         if (isSuccess == true) {
             $("#notifyMessageText").text(text);
             $("#notifyMessage").addClass("notifyActive");
+            $("#preNotifyMessage").addClass("preNotifyActive");
         }
     };
 

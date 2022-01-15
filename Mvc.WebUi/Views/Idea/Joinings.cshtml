@@ -189,6 +189,8 @@
             </div>
           </div>
           <!---->
+          @if (Model.CurrentUserRole.Equals(IdeaMemberRoleDto.Author))
+          {
           <!--GENERAL-->
           <div
             id="settingsGeneralWindow"
@@ -226,7 +228,7 @@
               </div>
             </div>
               <div class="pb-3 ps-4 pe-4">
-                <form asp-action="updateIdeaSettings" asp-controller="idea" asp-antiforgery="true">
+                <form enctype="multipart/form-data" asp-action="updateIdeaSettings" asp-controller="idea" asp-antiforgery="true">
                     <input hidden value="@Model.Idea.Guid" name="ideaGuid"/>
                   <div class="mb-3 mt-2 d-flex justify-content-center col-12">                    
                     <div class="d-flex col-12 p-2 border radius-md">
@@ -528,6 +530,7 @@
             </div>
           </div>
           <!---->
+          }
         </div>
       </div>
       <div class="col-9">
@@ -754,26 +757,29 @@
                       </div>
                     </div>
                   </section>
-                  }
-                  
+                  }                  
                 </div>
+                
                 <div class="d-flex">
-                  <div class="me-1">
-                    <button class="btn text-white t-md t-semi-bold border">
-                      1
-                    </button>
-                  </div>
-                  <div class="me-1">
-                    <button class="btn text-white t-md t-semi-bold border">
-                      2
-                    </button>
-                  </div>
-                  <div class="me-1">
-                    <button class="btn text-white t-md t-semi-bold border">
-                      3
-                    </button>
-                  </div>
+                @foreach(var pageInfo in Model.Pages)
+                {
+                    <div class="me-1">
+                        @if (pageInfo.IsActive)
+                        {
+                            <a disabled asp-action="@Model.Idea.Guid" asp-route-section="joinings" asp-route-page="@pageInfo.NumberValue" class="disabled btn text-muted t-md t-semi-bold border">
+                                @pageInfo.NumberValue
+                            </a>
+                        }
+                        else
+                        {
+                            <a asp-action="@Model.Idea.Guid" asp-route-section="joinings" asp-route-page="@pageInfo.NumberValue" class=" text-white btn t-md t-semi-bold border">
+                                @pageInfo.NumberValue
+                            </a>                    
+                        }
+                    </div>
+                }                
                 </div>
+
               </div>
             </div>
           </div>

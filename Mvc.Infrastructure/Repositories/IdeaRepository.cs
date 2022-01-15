@@ -91,6 +91,8 @@ namespace Mvc.Infrastructure.Repositories
 
 
         #region ready
+
+        #endregion
         public IEnumerable<SideIdeaDto> GetSideIdeasByStatusFilter(IdeaStatuses filterStatus)
         {
             var config = new MapperConfiguration(cfg =>
@@ -299,7 +301,7 @@ namespace Mvc.Infrastructure.Repositories
             else return $"{res.Days} day(s) ago";
         }
 
-        public List<IdeaTopicDto> GetIdeaTopics(string ideaGuid)
+        public async Task<List<IdeaTopicDto>> GetIdeaTopicsAsync(string ideaGuid, int page)
         {
             var config = new MapperConfiguration(cfg =>
             {
@@ -315,13 +317,15 @@ namespace Mvc.Infrastructure.Repositories
 
             var mapper = new Mapper(config);
 
-            var topics = _dbContext.IdeaTopics
+            var topics = await _dbContext.IdeaTopics
                 .Include(x => x.Idea)
                 .Include(x => x.Author)
                 .ThenInclude(x => x.Avatar)
                 .Include(x => x.Comments)
                 .Where(x => x.Idea.Guid.ToString() == ideaGuid)
-                .ToList();
+                .Skip(10 * (page - 1))
+                .Take(10)
+                .ToListAsync();
 
             List<IdeaTopicDto> res = mapper.Map<List<IdeaTopic>, List<IdeaTopicDto>>(topics);
 
@@ -376,13 +380,13 @@ namespace Mvc.Infrastructure.Repositories
 
         public async Task<List<IdeaRoleDto>> GetIdeaRolesAsync(string ideaGuid)
         {
-            var roles = _dbContext.IdeaMemberRoles
+            var roles = await _dbContext.IdeaMemberRoles
                 .Include(x => x.Idea)
                 .Include(x => x.User)
                 .ThenInclude(x => x.Avatar)
                 .Where(x => x.Idea.Guid.ToString() == ideaGuid &&
                     x.Role != IdeaMemberRoles.Author)
-                .ToList();
+                .ToListAsync();
 
             var config = new MapperConfiguration(cfg =>
             {
@@ -512,14 +516,16 @@ namespace Mvc.Infrastructure.Repositories
             return true;
         }
 
-        public async Task<List<IdeaBoxDto>> GetIdeaBoxesAsync(string ideaGuid, string currentUserGuid)
+        public async Task<List<IdeaBoxDto>> GetIdeaBoxesAsync(string ideaGuid, string currentUserGuid, int page)
         {
-            var boxes = _dbContext.IdeaBoxes
+            var boxes = await _dbContext.IdeaBoxes
                 .Include(x => x.Idea)
                 .Include(x => x.Author)
                 .Include(x => x.Goals)
                 .Where(x => x.Idea.Guid.ToString() == ideaGuid)
-                .ToList();
+                .Skip(10 * (page - 1))
+                .Take(10)
+                .ToListAsync();
 
             var config = new MapperConfiguration(cfg =>
             {
@@ -593,16 +599,18 @@ namespace Mvc.Infrastructure.Repositories
             return dto;
         }
 
-        public async Task<List<IdeaMemberDto>> GetIdeaMembersAsync(string ideaGuid)
+        public async Task<List<IdeaMemberDto>> GetIdeaMembersAsync(string ideaGuid, int page)
         {
-            var members = _dbContext.IdeaMemberRoles
+            var members = await _dbContext.IdeaMemberRoles
                 .Include(x => x.Idea)
                 .Include(x => x.User)
                 .ThenInclude(x => x.Tags)
                 .Include(x => x.User)
                 .ThenInclude(x => x.Avatar)
                 .Where(x => x.Idea.Guid.ToString() == ideaGuid)
-                .ToList();
+                .Skip(10 * (page - 1))
+                .Take(10)
+                .ToListAsync();
 
             var config = new MapperConfiguration(cfg =>
             {
@@ -623,7 +631,6 @@ namespace Mvc.Infrastructure.Repositories
                 item.Number = memberNumber;
                 memberNumber++;
             }
-
 
             return dto;
         }
@@ -780,19 +787,21 @@ namespace Mvc.Infrastructure.Repositories
             return false;
         }
 
-        public async Task<List<JoinRequestDto>> GetIdeaJoinRequests(string ideaGuid)
+        public async Task<List<JoinRequestDto>> GetIdeaJoinRequests(string ideaGuid, int page)
         {
             var getIdea = await _dbContext.Ideas
                 .FirstOrDefaultAsync(x => x.Guid.ToString() == ideaGuid);
 
-            var res = _dbContext.IdeaInvites
+            var res = await _dbContext.IdeaInvites
                 .Include(x => x.Author)
                 .ThenInclude(x => x.Avatar)
                 .Include(x => x.InvitedUser)
                 .ThenInclude(x => x.Avatar)
                 .Include(x => x.RelateIdea)
                 .Where(x => x.RelateIdea == getIdea && x.InviteType.Equals(InviteTypes.JoinRequest))
-                .ToList();
+                .Skip(10 * (page - 1))
+                .Take(10)
+                .ToListAsync();
 
             var config = new MapperConfiguration(cfg =>
             {
@@ -849,6 +858,6 @@ namespace Mvc.Infrastructure.Repositories
 
             return false;            
         }
-        #endregion
+        
     }
 }

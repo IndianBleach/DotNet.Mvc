@@ -142,43 +142,44 @@ namespace Mvc.Infrastructure.Repositories
                 .Include(x => x.Tags)
                 .FirstOrDefault(x => x.UserName.Equals(name));
 
-            if (model.NewAvatar != null)
+            if (getUser != null)
             {
-                using (FileStream str = new FileStream($"wwwroot/media/userAvatars/" + model.NewAvatar.FileName, FileMode.Create))
+                if (model.NewAvatar != null)
                 {
-                    await model.NewAvatar.CopyToAsync(str);
-                    str.Close();
+                    using (FileStream str = new FileStream($"wwwroot/media/userAvatars/" + model.NewAvatar.FileName, FileMode.Create))
+                    {
+                        await model.NewAvatar.CopyToAsync(str);
+                        str.Close();
+                    }
+
+                    if (getUser.Avatar.ImageName != "DEFAULT_USER_AVATAR.jpg")
+                    {
+                        File.Delete($"wwwroot/media/userAvatars/{getUser.Avatar.ImageName}");
+                    }
+
+                    getUser.Avatar = new UserAvatarImage(model.NewAvatar.FileName);
                 }
 
-                if (getUser.Avatar.ImageName != "DEFAULT_USER_AVATAR.jpg")
+                if (!string.IsNullOrEmpty(model.NewUsername))
+                    getUser.UserName = model.NewUsername;
+
+                if (!string.IsNullOrEmpty(model.NewDescription))
+                    getUser.Description = model.NewDescription;
+
+                if (!string.IsNullOrEmpty(model.NewPassword) && !string.IsNullOrEmpty(model.OldPassword))
+                    await _userManager.ChangePasswordAsync(getUser, model.OldPassword, model.NewPassword);
+
+                IdentityResult res = await _userManager.UpdateAsync(getUser);
+
+                if (res.Succeeded)
                 {
-                    File.Delete($"wwwroot/media/userAvatars/{getUser.Avatar.ImageName}");
+                    await _signInManager.SignInAsync(getUser, false);
+                    return true;
                 }
-
-                getUser.Avatar = new UserAvatarImage(model.NewAvatar.FileName);
+                else return false;
             }
 
-            if (!string.IsNullOrEmpty(model.NewUsername))
-                getUser.UserName = model.NewUsername;
-
-            if (!string.IsNullOrEmpty(model.NewDescription))
-                getUser.Description = model.NewDescription;
-
-            if (!string.IsNullOrEmpty(model.NewPassword) && !string.IsNullOrEmpty(model.OldPassword))
-                await _userManager.ChangePasswordAsync(getUser, model.OldPassword, model.NewPassword);
-
-            IdentityResult res = await _userManager.UpdateAsync(getUser);
-
-            if (res.Succeeded)
-            {
-                await _signInManager.SignInAsync(getUser, false);
-
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return false;            
         }
 
         public UserDetailDto GetUserDetail(string guid)
@@ -521,7 +522,7 @@ namespace Mvc.Infrastructure.Repositories
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<Idea, IdeaToInviteDto>()
-                .ForMember("Guid", opt => opt.MapFrom(x => x.Id))
+                .ForMember("Guid", opt => opt.MapFrom(x => x.Guid))
                 .ForMember("Name", opt => opt.MapFrom(x => x.Title));
             });
 
@@ -648,7 +649,6 @@ namespace Mvc.Infrastructure.Repositories
             return chatDto;
         }
 
-
         public async Task<List<MessageDetailDto>> GetChatMessages(string chatGuid, string currentUsername)
         {
             var getChat = _dbContext.Chats
@@ -730,7 +730,6 @@ namespace Mvc.Infrastructure.Repositories
 
             return resp;
         }
-        //public async Task<List<>>
 
         public async Task<string> UserAcceptInvite(string inviteGuid)
         {
@@ -772,6 +771,23 @@ namespace Mvc.Infrastructure.Repositories
 
                 _dbContext.IdeaInvites.Add(data);
                     
+                return true;
+            }
+
+            return false;
+        }
+
+        public async Task<bool> SendFastInviteAsync(string ideaGuid, string userGuid, string authorGuid)
+        {
+            var getIdea = await _dbContext.Ideas
+                .FirstOrDefaultAsync(x => x.Guid.ToString() == ideaGuid);
+
+            if (getIdea != null)
+            {
+                var data = new IdeaInvitation("Join my idea!", authorGuid, getIdea.Id, InviteTypes.Invite, userGuid);
+
+                _dbContext.IdeaInvites.Add(data);
+
                 return true;
             }
 

@@ -1,4 +1,5 @@
-﻿using Mvc.ApplicationCore.DTOs.Idea;
+﻿using Mvc.ApplicationCore.DTOs;
+using Mvc.ApplicationCore.DTOs.Idea;
 using Mvc.ApplicationCore.Entities.IdeaEntity;
 
 namespace Mvc.WebUi.ViewModels
@@ -9,5 +10,6 @@ namespace Mvc.WebUi.ViewModels
         public List<SideIdeaDto> SimilarIdeas { get; set; }
         public List<IdeaTopicDto> IdeaTopics { get; set; } 
         public IdeaMemberRoleDto CurrentUserRole { get; set; }
+        public List<PageInfoDto> Pages { get; set; }
     }
 }

@@ -189,6 +189,8 @@
             </div>
           </div>
           <!---->
+          @if (Model.CurrentUserRole.Equals(IdeaMemberRoleDto.Author))
+          {
           <!--GENERAL-->
           <div
             id="settingsGeneralWindow"
@@ -528,6 +530,7 @@
             </div>
           </div>
           <!---->
+          }
         </div>
       </div>
       <div class="col-9">
@@ -764,26 +767,29 @@
                       </div>
                     </a>
                   </div>
-                  }
-                  
+                  }                  
                 </div>
+                
                 <div class="d-flex">
-                  <div class="me-1">
-                    <button class="btn text-white t-md t-semi-bold border">
-                      1
-                    </button>
-                  </div>
-                  <div class="me-1">
-                    <button class="btn text-white t-md t-semi-bold border">
-                      2
-                    </button>
-                  </div>
-                  <div class="me-1">
-                    <button class="btn text-white t-md t-semi-bold border">
-                      3
-                    </button>
-                  </div>
+                @foreach(var pageInfo in Model.Pages)
+                {
+                    <div class="me-1">
+                        @if (pageInfo.IsActive)
+                        {
+                            <a disabled asp-action="@Model.Idea.Guid" asp-route-page="@pageInfo.NumberValue" class="disabled btn text-muted t-md t-semi-bold border">
+                                @pageInfo.NumberValue
+                            </a>
+                        }
+                        else
+                        {
+                            <a asp-action="@Model.Idea.Guid" asp-route-page="@pageInfo.NumberValue" class=" text-white btn t-md t-semi-bold border">
+                                @pageInfo.NumberValue
+                            </a>                    
+                        }
+                    </div>
+                }                
                 </div>
+
               </div>
             </div>
           </div>

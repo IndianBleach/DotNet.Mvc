@@ -1,5 +1,13 @@
 ﻿$(document).ready(() => {
 
+    const sendNotifyMessage = (text, isSuccess) => {
+        if (isSuccess == true) {
+            $("#notifyMessageText").text(text);
+            $("#notifyMessage").addClass("notifyActive");
+            $("#preNotifyMessage").addClass("preNotifyActive");
+        }
+    };
+
     // CONNECTION SETTINGS
     let connection = new signalR.HubConnectionBuilder()
         .withUrl("/chatHub")
@@ -19,6 +27,28 @@
             console.log("Connect failed");
         });
     //END OF CONNECTION SETTINGS
+
+    // FAST INVITE FROM ACTIVE CHAT
+    $("#fastInviteForm").on("submit", (e) => {
+        e.preventDefault();
+        let ideaGuid = e.target.getElementsByTagName("select")[0].value;
+        let userGuid = sessionStorage.getItem("chatWith");
+        let authorGuid = sessionStorage.getItem("authorGuid");
+        console.log(ideaGuid);
+        console.log(userGuid);
+        console.log(authorGuid);
+        $.post("/user/fastinvite", { ideaGuid, userGuid, authorGuid }, resp => {
+            if (resp) {
+                sendNotifyMessage("User invited!", true);
+            }
+            sendNotifyMessage("Something went wrong!", false);
+        })
+
+    })
+
+
+
+
 
     // SHOW NEW-CHAT WINDOW
     $(".showNewChatWindow").on("click", (e) => {
@@ -136,6 +166,8 @@
         sessionStorage.setItem("authorAvatar", avatar);
         sessionStorage.setItem("authorUserName", username);
 
+        console.log(messages);
+
         messages.forEach(x => {
             if (x.isAuthorMessage) {
                 $("#existChatContainer").append(`<div class="messageWrapper myMessage"><div><a href="/user/${x.authorName}"><img src="/media/userAvatars/${x.avatarImageName}" /></a><p>${x.message}</p></div></div>`)
@@ -178,7 +210,7 @@
                     let userName = sessionStorage.getItem("authorUserName");
 
                     //$("#existChatContainer").append(`<div class="messageWrapper myMessage"><div><a href="/user/${userName}"><img src="${avatarSrc}" /></a><p>${message}</p></div></div>`);
-
+                    console.log(resp);
                 }
             })
 

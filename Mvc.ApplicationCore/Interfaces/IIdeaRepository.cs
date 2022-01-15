@@ -16,7 +16,7 @@ namespace Mvc.ApplicationCore.Interfaces
     {
         Task<bool> DeclineJoinAsync(string joinGuid);
         Task<bool> AcceptJoinAsync(string joinGuid);
-        Task<List<JoinRequestDto>> GetIdeaJoinRequests(string ideaGuid);
+        Task<List<JoinRequestDto>> GetIdeaJoinRequests(string ideaGuid, int page);
         //
         Task<string> UpdateIdeaSettingsAsync(IFormFile avatar, IdeaStatuses status, string description, bool isSecurity,string ideaGuid, string currentUserGuid);
         Task<bool> RemoveIdeaAsync(string ideaGuid, string confirmPassword, string currentUserGuid);
@@ -26,10 +26,10 @@ namespace Mvc.ApplicationCore.Interfaces
         //
         Task<BoxGoalDetailDto> CreateBoxGoalAsync(string boxGuid, string authorGuid, string content);
         //
-        Task<List<IdeaMemberDto>> GetIdeaMembersAsync(string ideaGuid);
+        Task<List<IdeaMemberDto>> GetIdeaMembersAsync(string ideaGuid, int page);
         //
         Task<BoxDetailDto> GetBoxDetailAsync(string boxGuid, string currentUserGuid);
-        Task<List<IdeaBoxDto>> GetIdeaBoxesAsync(string ideaGuid, string currentUserGuid);
+        Task<List<IdeaBoxDto>> GetIdeaBoxesAsync(string ideaGuid, string currentUserGuid, int page);
         Task<bool> CreateBoxAsync(string title, string description, bool isAuthored, string authorGuid, string ideaGuid);
         //
         Task<TopicCommentDto> CreateTopicComment(string topicGuid, string authorGuid, string message);
@@ -43,7 +43,7 @@ namespace Mvc.ApplicationCore.Interfaces
         Task<bool> CreateTopic(string title, string description, string authorGuid, string ideaGuid);
         //
         IdeaMemberRoleDto GetIdeaMemberRole(string ideaGuid, string userGuid);
-        List<IdeaTopicDto> GetIdeaTopics(string ideaGuid);
+        Task<List<IdeaTopicDto>> GetIdeaTopicsAsync(string ideaGuid, int page);
         IdeaDetailDto GetIdeaDetail(string ideaGuid);
         //
         IEnumerable<IdeaRecommendationDto> GetRecommendIdeas(string forUsername);

@@ -196,7 +196,7 @@
                         to your idea
                       </h3>
                     </div>
-                    <form class="mt-3 d-flex align-items-center">
+                    <form id="fastInviteForm" class="mt-3 d-flex align-items-center">
                       <select
                         class="me-1 col t-md t-muted t-semi-bold form-light border"
                         aria-label="Default select example"
@@ -204,11 +204,10 @@
                         @foreach(var item in Model.IdeasToInvite)
                         {
                             <option class="t-semi-bold" value="@item.Guid">@item.Name</option>
-                        }
-                        
+                        }                        
                       </select>
                       <div>
-                        <a class="icon-link-btn">Invite </a>
+                        <button type="submit" class="icon-link-btn">Invite</button>
                       </div>
                     </form>
                   </div>
@@ -294,7 +293,7 @@
                   <div class="p-2 col">
                     <form id="newMessageForm" data-chatwith="" class="form-light form-lg">
                       <div class="col">
-                        <input id="newMessageInput" type="text" placeholder="New message" name="message" class="form-control" />
+                        <input style="height: 62px; z-index: 100;" id="newMessageInput" type="text" placeholder="New message" name="message" class="form-control" />
                       </div>
                       <div>
                         <button type="submit" class="btn t-bold t-md t-primary">

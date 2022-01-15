@@ -34,6 +34,18 @@ namespace Mvc.WebUi.Controllers
             return Json(res);
         }
 
+        [Authorize]
+        [HttpPost]
+        [Route("user/fastInvite")]
+        public async Task<JsonResult> FastInvite(string ideaGuid, string userGuid, string authorGuid)
+        {
+            var res = await _userRepository.SendFastInviteAsync(ideaGuid, userGuid, authorGuid);
+
+            _userRepository.Save();
+
+            return Json(res);
+
+        }
 
         #region Ready
         public async Task<JsonResult> Invite(InviteUserDto model)

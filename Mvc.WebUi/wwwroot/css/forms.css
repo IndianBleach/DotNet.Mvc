@@ -57,7 +57,7 @@
     }
 
 .form-lg {
-    height: 38px;
+    height: 48px;
 }
 
     .form-lg input {
@@ -153,6 +153,10 @@
     background-color: #373737 !important;
 }
 
+
+.preNotifyActive {
+    z-index:1000!important;
+}
 .notifyActive {
     opacity: 1 !important;
 }

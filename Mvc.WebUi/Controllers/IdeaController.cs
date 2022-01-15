@@ -13,13 +13,15 @@ namespace Mvc.WebUi.Controllers
     {
         private readonly IIdeaRepository _ideaRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IPageService _pageService;
         private readonly ApplicationContext _dbContext;
 
-        public IdeaController(IIdeaRepository ideaRepository, IUserRepository userRepository, ApplicationContext ctx)
+        public IdeaController(IIdeaRepository ideaRepository, IUserRepository userRepository, ApplicationContext ctx, IPageService pageService)
         {
             _ideaRepository = ideaRepository;
             _userRepository = userRepository;
             _dbContext = ctx;
+            _pageService = pageService;
         }
 
         [Authorize]
@@ -230,8 +232,11 @@ namespace Mvc.WebUi.Controllers
 
         [HttpGet]
         [Route("idea/{ideaGuid}")]
-        public async Task<IActionResult> Index(string ideaGuid, string? section)
+        public async Task<IActionResult> Index(string ideaGuid, string? section, int? page)
         {
+            if (page == null)
+                page = 1;
+
             string currentUserName = User.Identity.Name;
 
             if (section == "goals")
@@ -239,8 +244,9 @@ namespace Mvc.WebUi.Controllers
                 IdeaBoxesViewModel goalsVm = new IdeaBoxesViewModel();
                 goalsVm.Idea = _ideaRepository.GetIdeaDetail(ideaGuid);
                 goalsVm.SimilarIdeas = new List<SideIdeaDto>();
-                goalsVm.IdeaBoxes = await _ideaRepository.GetIdeaBoxesAsync(ideaGuid, await _userRepository.GetUserGuid(currentUserName));
+                goalsVm.IdeaBoxes = await _ideaRepository.GetIdeaBoxesAsync(ideaGuid, await _userRepository.GetUserGuid(currentUserName), (int)page);
                 goalsVm.CurrentUserRole = IdeaMemberRoleDto.Viewer;
+                goalsVm.Pages = _pageService.GeneratePages((int)page, goalsVm.IdeaBoxes.Count, 10);
 
                 if (currentUserName != null)
                     goalsVm.CurrentUserRole = _ideaRepository.GetIdeaMemberRole(ideaGuid,
@@ -253,8 +259,9 @@ namespace Mvc.WebUi.Controllers
                 IdeaMembersViewModel membersVm = new IdeaMembersViewModel();
                 membersVm.Idea = _ideaRepository.GetIdeaDetail(ideaGuid);
                 membersVm.SimilarIdeas = new List<SideIdeaDto>();
-                membersVm.IdeaMembers = await _ideaRepository.GetIdeaMembersAsync(ideaGuid);
+                membersVm.IdeaMembers = await _ideaRepository.GetIdeaMembersAsync(ideaGuid, (int)page);
                 membersVm.CurrentUserRole = IdeaMemberRoleDto.Viewer;
+                membersVm.Pages = _pageService.GeneratePages((int)page, membersVm.IdeaMembers.Count, 10);
 
                 if (currentUserName != null)
                     membersVm.CurrentUserRole = _ideaRepository.GetIdeaMemberRole(ideaGuid,
@@ -267,8 +274,9 @@ namespace Mvc.WebUi.Controllers
                 IdeaJoiningsViewModel joiningsVm = new IdeaJoiningsViewModel();
                 joiningsVm.Idea = _ideaRepository.GetIdeaDetail(ideaGuid);
                 joiningsVm.SimilarIdeas = new List<SideIdeaDto>();
-                joiningsVm.IdeaJoinings = await _ideaRepository.GetIdeaJoinRequests(ideaGuid);
+                joiningsVm.IdeaJoinings = await _ideaRepository.GetIdeaJoinRequests(ideaGuid, (int)page);
                 joiningsVm.CurrentUserRole = IdeaMemberRoleDto.Viewer;
+                joiningsVm.Pages = _pageService.GeneratePages((int)page, joiningsVm.IdeaJoinings.Count, 10);
 
                 if (currentUserName != null)
                     joiningsVm.CurrentUserRole = _ideaRepository.GetIdeaMemberRole(ideaGuid,
@@ -280,8 +288,9 @@ namespace Mvc.WebUi.Controllers
             IdeaAboutViewModel indexVm = new IdeaAboutViewModel();
             indexVm.Idea = _ideaRepository.GetIdeaDetail(ideaGuid);
             indexVm.SimilarIdeas = new List<SideIdeaDto>();
-            indexVm.IdeaTopics = _ideaRepository.GetIdeaTopics(ideaGuid);
+            indexVm.IdeaTopics = await _ideaRepository.GetIdeaTopicsAsync(ideaGuid, (int)page);
             indexVm.CurrentUserRole = IdeaMemberRoleDto.Viewer;
+            indexVm.Pages = _pageService.GeneratePages((int)page, indexVm.IdeaTopics.Count, 10);
 
             if (currentUserName != null)
                 indexVm.CurrentUserRole = _ideaRepository.GetIdeaMemberRole(ideaGuid,
