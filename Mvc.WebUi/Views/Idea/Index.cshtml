@@ -523,7 +523,7 @@
                     >
                   </div>
                   <div class="border-top pt-3 pb-3 col-12 text-center">
-                      <button type="submit" class="icon-link-btn text-danger">Remove</button>
+                      <button type="submit" class="icon-link-btn text-white bg-danger">Remove</button>
                   </div>
                 </form>
               </div>
@@ -588,7 +588,7 @@
               <!---->
               <nav>
                 <div class="pe-2 ps-2 mb-3 mt-3 col-12 d-flex">
-                  <a class="ideaSectionLink me-3 ideaSectionLink-active">
+                  <a disabled class="ideaSectionLink me-3 ideaSectionLink-active">
                     <span class="pe-1">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -647,10 +647,10 @@
                   {
                    <a asp-action="@Model.Idea.Guid" asp-controller="idea" asp-route-section="joinings" class="ideaSectionLink me-3">
                     <span class="pe-1">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="t-muted bi bi-reply-all-fill" viewBox="0 0 16 16">
-                      <path d="M8.021 11.9 3.453 8.62a.719.719 0 0 1 0-1.238L8.021 4.1a.716.716 0 0 1 1.079.619V6c1.5 0 6 0 7 8-2.5-4.5-7-4-7-4v1.281c0 .56-.606.898-1.079.62z"/>
-                      <path d="M5.232 4.293a.5.5 0 0 1-.106.7L1.114 7.945a.5.5 0 0 1-.042.028.147.147 0 0 0 0 .252.503.503 0 0 1 .042.028l4.012 2.954a.5.5 0 1 1-.593.805L.539 9.073a1.147 1.147 0 0 1 0-1.946l3.994-2.94a.5.5 0 0 1 .699.106z"/>
-                    </svg>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="t-muted bi bi-send-plus" viewBox="0 0 16 16">
+                        <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855a.75.75 0 0 0-.124 1.329l4.995 3.178 1.531 2.406a.5.5 0 0 0 .844-.536L6.637 10.07l7.494-7.494-1.895 4.738a.5.5 0 1 0 .928.372l2.8-7Zm-2.54 1.183L5.93 9.363 1.591 6.602l11.833-4.733Z"/>
+                        <path d="M16 12.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Zm-3.5-2a.5.5 0 0 0-.5.5v1h-1a.5.5 0 0 0 0 1h1v1a.5.5 0 0 0 1 0v-1h1a.5.5 0 0 0 0-1h-1v-1a.5.5 0 0 0-.5-.5Z"/>
+                      </svg>
                     </span>
                     Joinings
                   </a>
@@ -713,14 +713,14 @@
                         <a
                           class="showHideRemoveIdea dropdown-item t-light"
                           href="#"
-                          >Remove idea</a
-                        >
+                          >Remove idea
+                          </a>
                       </li>
                     </ul>
                   </div>
                   }                  
                 </div>
-              </nav>
+              </nav>              
               <!---->
               <div class="mt-4 col-12">
                 <div class="mb-5 ps-2 col-12">

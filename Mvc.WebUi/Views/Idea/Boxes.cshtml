@@ -550,7 +550,7 @@
                     >
                   </div>
                   <div class="border-top pt-3 pb-3 col-12 text-center">
-                      <button type="submit" class="icon-link-btn text-danger">Remove</button>
+                      <button type="submit" class="icon-link-btn text-white bg-danger">Remove</button>
                   </div>
                 </form>
               </div>
@@ -739,7 +739,7 @@
                     </span>
                     About
                   </a>
-                  <a asp-action="@Model.Idea.Guid" asp-controller="idea" asp-route-section="goals" class="ideaSectionLink me-3 ideaSectionLink-active">
+                  <a disabled class=" ideaSectionLink-active ideaSectionLink me-3">
                     <span class="pe-1">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -776,6 +776,15 @@
                   </a>
                   @if (Model.CurrentUserRole.Equals(IdeaMemberRoleDto.Author))
                   {
+                   <a asp-action="@Model.Idea.Guid" asp-controller="idea" asp-route-section="joinings" class="ideaSectionLink me-3">
+                    <span class="pe-1">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="t-muted bi bi-send-plus" viewBox="0 0 16 16">
+                        <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855a.75.75 0 0 0-.124 1.329l4.995 3.178 1.531 2.406a.5.5 0 0 0 .844-.536L6.637 10.07l7.494-7.494-1.895 4.738a.5.5 0 1 0 .928.372l2.8-7Zm-2.54 1.183L5.93 9.363 1.591 6.602l11.833-4.733Z"/>
+                        <path d="M16 12.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Zm-3.5-2a.5.5 0 0 0-.5.5v1h-1a.5.5 0 0 0 0 1h1v1a.5.5 0 0 0 1 0v-1h1a.5.5 0 0 0 0-1h-1v-1a.5.5 0 0 0-.5-.5Z"/>
+                      </svg>
+                    </span>
+                    Joinings
+                  </a>
                     <div class="ms-auto dropdown pt-2">
                     <a
                       id="dropdownMenuLink3"
@@ -835,14 +844,14 @@
                         <a
                           class="showHideRemoveIdea dropdown-item t-light"
                           href="#"
-                          >Remove idea</a
-                        >
+                          >Remove idea
+                          </a>
                       </li>
                     </ul>
                   </div>
-                  }
+                  }                  
                 </div>
-              </nav>
+              </nav> 
               <!---->
               <div class="mt-4 col-12">
                 @if (Model.CurrentUserRole < IdeaMemberRoleDto.Viewer)
@@ -878,58 +887,75 @@
                  </section>
                 }
                 <div class="mb-5 ps-2 col-12">
-                  @foreach(var item in Model.IdeaBoxes)
+
+                    @if (Model.IdeaBoxes.Count < 1) 
+                    {
+                        <div class="warwin-md border mb-3 bg-darkdeep col-12 radius-md">
+                        <div class="text-center">
+                          <div class="mb-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" fill="currentColor" class="t-muted bi bi-boxes" viewBox="0 0 16 16">
+                              <path d="M7.752.066a.5.5 0 0 1 .496 0l3.75 2.143a.5.5 0 0 1 .252.434v3.995l3.498 2A.5.5 0 0 1 16 9.07v4.286a.5.5 0 0 1-.252.434l-3.75 2.143a.5.5 0 0 1-.496 0l-3.502-2-3.502 2.001a.5.5 0 0 1-.496 0l-3.75-2.143A.5.5 0 0 1 0 13.357V9.071a.5.5 0 0 1 .252-.434L3.75 6.638V2.643a.5.5 0 0 1 .252-.434L7.752.066ZM4.25 7.504 1.508 9.071l2.742 1.567 2.742-1.567L4.25 7.504ZM7.5 9.933l-2.75 1.571v3.134l2.75-1.571V9.933Zm1 3.134 2.75 1.571v-3.134L8.5 9.933v3.134Zm.508-3.996 2.742 1.567 2.742-1.567-2.742-1.567-2.742 1.567Zm2.242-2.433V3.504L8.5 5.076V8.21l2.75-1.572ZM7.5 8.21V5.076L4.75 3.504v3.134L7.5 8.21ZM5.258 2.643 8 4.21l2.742-1.567L8 1.076 5.258 2.643ZM15 9.933l-2.75 1.571v3.134L15 13.067V9.933ZM3.75 14.638v-3.134L1 9.933v3.134l2.75 1.571Z"/>
+                            </svg>
+                          </div>
+                          <p class="text-muted t-xl t-medium">This idea doesnt have boxes</p>
+                        </div>
+                      </div>
+                  } 
+                  else
                   {
-                    <section>
-                      <div class="ideaTopicLink mb-4 col-12 d-flex">
-                    <div class="pt-1">
-                      <a asp-action="@item.AuthorGuid" asp-controller="user"
-                        ><img
-                          src="/media/userAvatars/@item.AuthorAvatarImageName"
-                          class="border circle shadow"
-                          height="44"
-                          width="44"
-                      /></a>
-                    </div>
-                    <div class="ps-3 col">
-                       <a onclick="showBoxBtn('@item.Guid')">
-                          <div class="col-8">                        
-                              <h3 class="h3 text-white t-xbold">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="22"
-                                  height="22"
-                                  fill="currentColor"
-                                  class="bi bi-box"
-                                  viewBox="0 0 16 16"
-                                >
-                                  <path
-                                    d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5 8 5.961 14.154 3.5 8.186 1.113zM15 4.239l-6.5 2.6v7.922l6.5-2.6V4.24zM7.5 14.762V6.838L1 4.239v7.923l6.5 2.6zM7.443.184a1.5 1.5 0 0 1 1.114 0l7.129 2.852A.5.5 0 0 1 16 3.5v8.662a1 1 0 0 1-.629.928l-7.185 2.874a.5.5 0 0 1-.372 0L.63 13.09a1 1 0 0 1-.63-.928V3.5a.5.5 0 0 1 .314-.464L7.443.184z"
-                                  />
-                                </svg>
-                                @item.Title
-                              </h3>                          
-                          </div>
-                          <p
-                            class="mb-0 col-6 col-xl-8 t-bold t-muted t-shadow d-inline-block text-truncate"
-                          >
-                            @item.Description
-                          </p>
-                          <div class="col-12 d-flex align-items-center">
-                            <div class="ms-2">
-                              <span class="text-white t-lg t-semi-bold">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="t-muted bi bi-boxes" viewBox="0 0 16 16">
-                                  <path d="M7.752.066a.5.5 0 0 1 .496 0l3.75 2.143a.5.5 0 0 1 .252.434v3.995l3.498 2A.5.5 0 0 1 16 9.07v4.286a.5.5 0 0 1-.252.434l-3.75 2.143a.5.5 0 0 1-.496 0l-3.502-2-3.502 2.001a.5.5 0 0 1-.496 0l-3.75-2.143A.5.5 0 0 1 0 13.357V9.071a.5.5 0 0 1 .252-.434L3.75 6.638V2.643a.5.5 0 0 1 .252-.434L7.752.066ZM4.25 7.504 1.508 9.071l2.742 1.567 2.742-1.567L4.25 7.504ZM7.5 9.933l-2.75 1.571v3.134l2.75-1.571V9.933Zm1 3.134 2.75 1.571v-3.134L8.5 9.933v3.134Zm.508-3.996 2.742 1.567 2.742-1.567-2.742-1.567-2.742 1.567Zm2.242-2.433V3.504L8.5 5.076V8.21l2.75-1.572ZM7.5 8.21V5.076L4.75 3.504v3.134L7.5 8.21ZM5.258 2.643 8 4.21l2.742-1.567L8 1.076 5.258 2.643ZM15 9.933l-2.75 1.571v3.134L15 13.067V9.933ZM3.75 14.638v-3.134L1 9.933v3.134l2.75 1.571Z"/>
-                                </svg>
-                                @item.GoalsCount
-                              </span>
-                            </div>
-                          </div>
-                      </a>
-                    </div>
-                  </div>
-                  </section>
-                  }                  
+                      @foreach(var item in Model.IdeaBoxes)
+                      {
+                        <section>
+                          <div class="ideaTopicLink mb-4 col-12 d-flex">
+                        <div class="pt-1">
+                          <a asp-action="@item.AuthorGuid" asp-controller="user"
+                            ><img
+                              src="/media/userAvatars/@item.AuthorAvatarImageName"
+                              class="border circle shadow"
+                              height="44"
+                              width="44"
+                          /></a>
+                        </div>
+                        <div class="ps-3 col">
+                           <a onclick="showBoxBtn('@item.Guid')">
+                              <div class="col-8">                        
+                                  <h3 class="h3 text-white t-xbold">
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width="22"
+                                      height="22"
+                                      fill="currentColor"
+                                      class="bi bi-box"
+                                      viewBox="0 0 16 16"
+                                    >
+                                      <path
+                                        d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5 8 5.961 14.154 3.5 8.186 1.113zM15 4.239l-6.5 2.6v7.922l6.5-2.6V4.24zM7.5 14.762V6.838L1 4.239v7.923l6.5 2.6zM7.443.184a1.5 1.5 0 0 1 1.114 0l7.129 2.852A.5.5 0 0 1 16 3.5v8.662a1 1 0 0 1-.629.928l-7.185 2.874a.5.5 0 0 1-.372 0L.63 13.09a1 1 0 0 1-.63-.928V3.5a.5.5 0 0 1 .314-.464L7.443.184z"
+                                      />
+                                    </svg>
+                                    @item.Title
+                                  </h3>                          
+                              </div>
+                              <p
+                                class="mb-0 col-6 col-xl-8 t-bold t-muted t-shadow d-inline-block text-truncate"
+                              >
+                                @item.Description
+                              </p>
+                              <div class="col-12 d-flex align-items-center">
+                                <div class="ms-2">
+                                  <span class="text-white t-lg t-semi-bold">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="t-muted bi bi-boxes" viewBox="0 0 16 16">
+                                      <path d="M7.752.066a.5.5 0 0 1 .496 0l3.75 2.143a.5.5 0 0 1 .252.434v3.995l3.498 2A.5.5 0 0 1 16 9.07v4.286a.5.5 0 0 1-.252.434l-3.75 2.143a.5.5 0 0 1-.496 0l-3.502-2-3.502 2.001a.5.5 0 0 1-.496 0l-3.75-2.143A.5.5 0 0 1 0 13.357V9.071a.5.5 0 0 1 .252-.434L3.75 6.638V2.643a.5.5 0 0 1 .252-.434L7.752.066ZM4.25 7.504 1.508 9.071l2.742 1.567 2.742-1.567L4.25 7.504ZM7.5 9.933l-2.75 1.571v3.134l2.75-1.571V9.933Zm1 3.134 2.75 1.571v-3.134L8.5 9.933v3.134Zm.508-3.996 2.742 1.567 2.742-1.567-2.742-1.567-2.742 1.567Zm2.242-2.433V3.504L8.5 5.076V8.21l2.75-1.572ZM7.5 8.21V5.076L4.75 3.504v3.134L7.5 8.21ZM5.258 2.643 8 4.21l2.742-1.567L8 1.076 5.258 2.643ZM15 9.933l-2.75 1.571v3.134L15 13.067V9.933ZM3.75 14.638v-3.134L1 9.933v3.134l2.75 1.571Z"/>
+                                    </svg>
+                                    @item.GoalsCount
+                                  </span>
+                                </div>
+                              </div>
+                          </a>
+                        </div>
+                      </div>
+                      </section>
+                      }  
+                  }                                   
                 </div>
 
                 <div class="d-flex">

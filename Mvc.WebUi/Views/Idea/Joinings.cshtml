@@ -523,7 +523,7 @@
                     >
                   </div>
                   <div class="border-top pt-3 pb-3 col-12 text-center">
-                      <button type="submit" class="icon-link-btn text-danger">Remove</button>
+                      <button type="submit" class="icon-link-btn text-white bg-danger">Remove</button>
                   </div>
                 </form>
               </div>
@@ -588,7 +588,7 @@
               <!---->
               <nav>
                 <div class="pe-2 ps-2 mb-3 mt-3 col-12 d-flex">
-                  <a class="ideaSectionLink me-3 ideaSectionLink-active">
+                  <a asp-action="@Model.Idea.Guid" asp-controller="idea" class="ideaSectionLink me-3">
                     <span class="pe-1">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -645,6 +645,15 @@
                   </a>
                   @if (Model.CurrentUserRole.Equals(IdeaMemberRoleDto.Author))
                   {
+                   <a disabled class="ideaSectionLink-active ideaSectionLink me-3">
+                    <span class="pe-1">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="t-muted bi bi-send-plus" viewBox="0 0 16 16">
+                        <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855a.75.75 0 0 0-.124 1.329l4.995 3.178 1.531 2.406a.5.5 0 0 0 .844-.536L6.637 10.07l7.494-7.494-1.895 4.738a.5.5 0 1 0 .928.372l2.8-7Zm-2.54 1.183L5.93 9.363 1.591 6.602l11.833-4.733Z"/>
+                        <path d="M16 12.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Zm-3.5-2a.5.5 0 0 0-.5.5v1h-1a.5.5 0 0 0 0 1h1v1a.5.5 0 0 0 1 0v-1h1a.5.5 0 0 0 0-1h-1v-1a.5.5 0 0 0-.5-.5Z"/>
+                      </svg>
+                    </span>
+                    Joinings
+                  </a>
                     <div class="ms-auto dropdown pt-2">
                     <a
                       id="dropdownMenuLink3"
@@ -704,60 +713,79 @@
                         <a
                           class="showHideRemoveIdea dropdown-item t-light"
                           href="#"
-                          >Remove idea</a
-                        >
+                          >Remove idea
+                          </a>
                       </li>
                     </ul>
                   </div>
-                  }
+                  }                  
                 </div>
               </nav>
               <!---->
               <div class="mt-4 col-12">
                 <div class="mb-5 ps-2 col-12">
-                  @foreach(var join in Model.IdeaJoinings)
+
+                  @if (Model.IdeaJoinings.Count < 1)
                   {
-                    <section class="joinRequestSection" data-join="@join.InviteGuid">
-                    <div
-                      class="p-3 d-flex align-items-center col-12 mb-3 border radius-md"
-                    >
-                      <div class="col-8 d-flex">
-                        <div class="pt-1">
-                          <a href="/user/@join.FromUserGuid">
-                              <img
-                          src="~/media/userAvatars/@join.FromUserAvatar"
-                          width="33"
-                          height="33"
-                          class="shadow circle"
-                        />
-                          </a>
-                        </div>
-                        <div class="ps-2">
-                          <span class="t-md t-semi-bold text-white">
-                            @join.FromUserName
-                            <span class="t-semi-bold text-muted"> wants to join </span>
-                          </span>
-                          <p class="mb-0 t-semi-bold t-md t-muted">
-                            @join.Description
-                          </p>
+                    <div class="warwin-md border mb-3 bg-darkdeep col-12 radius-md">
+                        <div class="text-center">
+                          <div class="mb-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" fill="currentColor" class="t-muted bi bi-send-plus" viewBox="0 0 16 16">
+                              <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855a.75.75 0 0 0-.124 1.329l4.995 3.178 1.531 2.406a.5.5 0 0 0 .844-.536L6.637 10.07l7.494-7.494-1.895 4.738a.5.5 0 1 0 .928.372l2.8-7Zm-2.54 1.183L5.93 9.363 1.591 6.602l11.833-4.733Z"/>
+                              <path d="M16 12.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Zm-3.5-2a.5.5 0 0 0-.5.5v1h-1a.5.5 0 0 0 0 1h1v1a.5.5 0 0 0 1 0v-1h1a.5.5 0 0 0 0-1h-1v-1a.5.5 0 0 0-.5-.5Z"/>
+                            </svg>
+                          </div>
+                          <p class="text-muted t-xl t-medium">This idea doesnt have join requests</p>
                         </div>
                       </div>
-                      <div class="col-4 d-flex justify-content-center">
-                        <div>                          
-                          <div class="d-flex align-items-center t-muted t-sm">
-                            <button data-join="@join.InviteGuid" class="declineJoinBtn btn t-bold t-md t-muted">
-                              Decline
-                            </button>
-                            or
-                            <button data-join="@join.InviteGuid" class="acceptJoinBtn btn t-bold t-md t-primary">
-                              Accept
-                            </button>
+                  }
+                  else
+                  {
+                    @foreach(var join in Model.IdeaJoinings)
+                      {
+                        <section class="joinRequestSection" data-join="@join.InviteGuid">
+                        <div
+                          class="p-3 d-flex align-items-center col-12 mb-3 border radius-md"
+                        >
+                          <div class="col-8 d-flex">
+                            <div class="pt-1">
+                              <a href="/user/@join.FromUserGuid">
+                                  <img
+                              src="~/media/userAvatars/@join.FromUserAvatar"
+                              width="33"
+                              height="33"
+                              class="shadow circle"
+                            />
+                              </a>
+                            </div>
+                            <div class="ps-2">
+                              <span class="t-md t-semi-bold text-white">
+                                @join.FromUserName
+                                <span class="t-semi-bold text-muted"> wants to join </span>
+                              </span>
+                              <p class="mb-0 t-semi-bold t-md t-muted">
+                                @join.Description
+                              </p>
+                            </div>
+                          </div>
+                          <div class="col-4 d-flex justify-content-center">
+                            <div>                          
+                              <div class="d-flex align-items-center t-muted t-sm">
+                                <button data-join="@join.InviteGuid" class="declineJoinBtn btn t-bold t-md t-muted">
+                                  Decline
+                                </button>
+                                or
+                                <button data-join="@join.InviteGuid" class="acceptJoinBtn btn t-bold t-md t-primary">
+                                  Accept
+                                </button>
+                              </div>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </div>
-                  </section>
-                  }                  
+                      </section>
+                      } 
+                  }
+                                   
                 </div>
                 
                 <div class="d-flex">
