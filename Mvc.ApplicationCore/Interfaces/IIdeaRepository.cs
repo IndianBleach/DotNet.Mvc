@@ -14,6 +14,7 @@ namespace Mvc.ApplicationCore.Interfaces
 {
     public interface IIdeaRepository
     {
+
         List<SideIdeaDto> GetSimilarIdeas(string ideaGuid);
         //
         Task<bool> DeclineJoinAsync(string joinGuid);

@@ -119,6 +119,7 @@
 
     // HIDE NEW-CHAT WINDOW
     $(".hideNewChatWindow").on("click", () => {
+        $(".newChatForm").remove();
         $(".note-newchat").remove();
         $("#newChatWindow").toggleClass("d-none");
         $("#hideBackgroundWrapper").toggleClass("d-none");

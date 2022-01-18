@@ -437,23 +437,35 @@ namespace Mvc.Infrastructure.Repositories
         
         public async Task<List<NewChatDto>> GetNewChatUsersAsync(string guid)
         {
-            List<Follower> following = await _dbContext.Follows
+            List<ApplicationUser> getAuthorChatUsers = _dbContext.Chats
+                .Include(x => x.Users)
+                .ThenInclude(x => x.User)
+                .Where(x => x.Users.Any(x => x.UserId.Equals(guid)))
+                .ToList()
+                .Select(x => x.Users.FirstOrDefault(x => x.UserId != guid))
+                .Select(x => x.User)
+                .ToList();                           
+
+            List<ApplicationUser> following = await _dbContext.Follows
                 .Include(x => x.Following)
                 .ThenInclude(x => x.Avatar)
                 .Where(x => x.AuthorId.Equals(guid))
+                .Select(x => x.Following)
                 .ToListAsync();
+
+            var except = following.Except(getAuthorChatUsers).ToList();
 
             var config = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<Follower, NewChatDto>()
-                .ForMember("UserGuid", opt => opt.MapFrom(x => x.FollowingId))
-                .ForMember("UserName", opt => opt.MapFrom(x => x.Following.UserName))
-                .ForMember("AvatarImageName", opt => opt.MapFrom(x => x.Following.Avatar.ImageName));
+                cfg.CreateMap<ApplicationUser, NewChatDto>()
+                .ForMember("UserGuid", opt => opt.MapFrom(x => x.Id))
+                .ForMember("UserName", opt => opt.MapFrom(x => x.UserName))
+                .ForMember("AvatarImageName", opt => opt.MapFrom(x => x.Avatar.ImageName));
             });
 
             var mapper = new Mapper(config);
 
-            var resp = mapper.Map<List<Follower>, List<NewChatDto>>(following);
+            var resp = mapper.Map<List<ApplicationUser>, List<NewChatDto>>(except);
 
             return resp;
         }        
@@ -490,39 +502,50 @@ namespace Mvc.Infrastructure.Repositories
                 .Include(x => x.Avatar)
                 .FirstOrDefault(x => x.Id.Equals(toUserGuid));
 
-            Chat createChat = new Chat();
+            bool isExist = _dbContext.Chats
+                .Include(x => x.Users)
+                .Any(x => x.Users.All(x => x.Id.ToString() == authorGuid &&
+                    x.Id.ToString() == toUserGuid));
 
-            ChatMessage createMessage = new ChatMessage(messageAuthor, message, createChat);
 
-            ChatUser chatUser = new ChatUser(messageAuthor, createChat);
-            ChatUser chatUserSec = new ChatUser(toUser, createChat);
-
-            createChat.Messages.Add(createMessage);
-            createChat.Users.Add(chatUser);
-            createChat.Users.Add(chatUserSec);
-
-            _dbContext.Chats.Add(createChat);
-
-            _dbContext.SaveChanges();
-
-            CreatedChatDto dto = new();
-            dto.Guid = createChat.Guid.ToString();
-            dto.Messages = new List<MessageDetailDto>()
+            if (isExist)
             {
-                new MessageDetailDto()
-                {
-                    AuthorName = messageAuthor.UserName,
-                    AvatarImageName = messageAuthor.Avatar.ImageName,
-                    DateCreated = createMessage.DateCreated.ToShortDateString(),
-                    IsAuthorMessage = true,
-                    Message = message
-                }
-            };
-            dto.UserGuid = toUserGuid;
-            dto.UserName = toUser.UserName;
-            dto.AvatarImageName = toUser.Avatar.ImageName;
+                Chat createChat = new Chat();
 
-            return dto;
+                ChatMessage createMessage = new ChatMessage(messageAuthor, message, createChat);
+
+                ChatUser chatUser = new ChatUser(messageAuthor, createChat);
+                ChatUser chatUserSec = new ChatUser(toUser, createChat);
+
+                createChat.Messages.Add(createMessage);
+                createChat.Users.Add(chatUser);
+                createChat.Users.Add(chatUserSec);
+
+                _dbContext.Chats.Add(createChat);
+
+                _dbContext.SaveChanges();
+
+                CreatedChatDto dto = new();
+                dto.Guid = createChat.Guid.ToString();
+                dto.Messages = new List<MessageDetailDto>()
+                {
+                    new MessageDetailDto()
+                    {
+                        AuthorName = messageAuthor.UserName,
+                        AvatarImageName = messageAuthor.Avatar.ImageName,
+                        DateCreated = createMessage.DateCreated.ToShortDateString(),
+                        IsAuthorMessage = true,
+                        Message = message
+                    }
+                };
+                dto.UserGuid = toUserGuid;
+                dto.UserName = toUser.UserName;
+                dto.AvatarImageName = toUser.Avatar.ImageName;
+
+                return dto;
+            }
+
+            return null;
         }
 
         public async Task<List<ChatUserDto>> GetUserChats(string userGuid)

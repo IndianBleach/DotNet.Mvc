@@ -12,9 +12,9 @@
 }
 
 .form-light {
-    background-color: #1c1c1c;
+    background-color: #111111;
     border-radius: 9px;
-    height: 32px;
+    height: 41px;
     display: flex;
     align-items: center;
 }
@@ -22,7 +22,7 @@
     .form-light input {
         color: rgb(221, 221, 221);
         font-weight: 500;
-        font-size: 13px;
+        font-size: 15px;
     }
 
     .form-light input {
