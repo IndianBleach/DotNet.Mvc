@@ -8,6 +8,32 @@
         }
     };
 
+    $("#hideBackgroundWrapper").mouseup(function (e) {
+        var container = $("#checkOutContainer");
+        if (container.has(e.target).length === 0) {
+            //close chat
+            $(".newChatForm").remove();
+            $(".note-newchat").remove();
+            $("#newChatWindow").addClass("d-none");
+
+            $("body").addClass("overflow-hidden");
+            $("#hideBackgroundWrapper").addClass("d-none");
+        }
+    });
+
+    $("#preCheckOutChat").mouseup(function (e) {
+        var container = $("#checkOutChat");
+        if (container.has(e.target).length === 0) {
+            //close chat
+            $(".newChatForm").remove();
+            $(".note-newchat").remove();
+            $("#newChatWindow").addClass("d-none");
+
+            $("body").addClass("overflow-hidden");
+            $("#hideBackgroundWrapper").addClass("d-none");
+        }
+    });
+
     // CONNECTION SETTINGS
     let connection = new signalR.HubConnectionBuilder()
         .withUrl("/chatHub")
@@ -44,10 +70,7 @@
             sendNotifyMessage("Something went wrong!", false);
         })
 
-    })
-
-
-
+    });
 
 
     // SHOW NEW-CHAT WINDOW

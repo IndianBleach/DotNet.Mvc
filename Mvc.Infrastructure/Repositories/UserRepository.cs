@@ -763,6 +763,55 @@ namespace Mvc.Infrastructure.Repositories
 
             return false;
         }
-       
+
+        public async Task<List<UserFollowingDto>> GetUserSubscribersAsync(string userGuid)
+        {
+            var subs = await _dbContext.Follows
+                .Include(x => x.Author)
+                .ThenInclude(x => x.Avatar)
+                .Where(x => x.FollowingId.Equals(userGuid))
+                .ToListAsync();
+
+            //var followers = author.Followers;
+
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<Follower, UserFollowingDto>()
+                .ForMember("Name", opt => opt.MapFrom(x => x.Author.UserName))
+                .ForMember("Guid", opt => opt.MapFrom(x => x.Author.Id))
+                .ForMember("AvatarImageName", opt => opt.MapFrom(x => x.Author.Avatar.ImageName));                
+            });
+
+            var mapper = new Mapper(config);
+
+            var resp = mapper.Map<List<Follower>, List<UserFollowingDto>>(subs);
+
+            return resp;
+        }
+
+        public async Task<List<UserFollowingDto>> GetUserFollowingsAsync(string userGuid)
+        {
+            var subs = await _dbContext.Follows
+                .Include(x => x.Following)
+                .ThenInclude(x => x.Avatar)
+                .Where(x => x.AuthorId.Equals(userGuid))
+                .ToListAsync();
+
+            //var followers = author.Followers;
+
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<Follower, UserFollowingDto>()
+                .ForMember("Name", opt => opt.MapFrom(x => x.Following.UserName))
+                .ForMember("Guid", opt => opt.MapFrom(x => x.Following.Id))
+                .ForMember("AvatarImageName", opt => opt.MapFrom(x => x.Following.Avatar.ImageName));
+            });
+
+            var mapper = new Mapper(config);
+
+            var resp = mapper.Map<List<Follower>, List<UserFollowingDto>>(subs);
+
+            return resp;
+        }
     }
 }

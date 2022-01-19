@@ -70,7 +70,8 @@
               {
               <section>
                 <div class="col-12 mb-3">
-                  <div
+                  <a asp-action="@idea.Guid" asp-controller="idea">
+                      <div
                     style="
                       background: linear-gradient(
                           0deg,
@@ -85,8 +86,8 @@
                     <div class="pb-4 ps-4 pe-4 text-break col-12">
                       <div style="margin-bottom: 86px;" class="text-break">
                         <content>
-                          <a asp-controller="idea" asp-action="@idea.Guid" asp- class="h1 t-xbold text-white t-shadow"
-                            >@idea.Title</a
+                          <span class="h1 t-xbold text-white t-shadow"
+                            >@idea.Title</span
                           >
                           <p
                             class="col-10 t-bold t-muted t-shadow d-inline-block text-truncate"
@@ -97,7 +98,7 @@
                       </div>
                       <div class="d-flex">
                         <div class="me-2 icon-link">
-                          <a class="t-muted t-semi-bold t-md">
+                          <span class="t-muted t-semi-bold t-md">
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               width="21"
@@ -111,19 +112,20 @@
                               />
                             </svg>
                             @idea.TotalCommentsCount
-                          </a>
+                          </span>
                         </div>
                         <div class="me-2 icon-link">
-                          <a class="t-muted t-semi-bold t-md">
+                          <span class="t-muted t-semi-bold t-md">
                             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-boxes" viewBox="0 0 16 16">
                               <path d="M7.752.066a.5.5 0 0 1 .496 0l3.75 2.143a.5.5 0 0 1 .252.434v3.995l3.498 2A.5.5 0 0 1 16 9.07v4.286a.5.5 0 0 1-.252.434l-3.75 2.143a.5.5 0 0 1-.496 0l-3.502-2-3.502 2.001a.5.5 0 0 1-.496 0l-3.75-2.143A.5.5 0 0 1 0 13.357V9.071a.5.5 0 0 1 .252-.434L3.75 6.638V2.643a.5.5 0 0 1 .252-.434L7.752.066ZM4.25 7.504 1.508 9.071l2.742 1.567 2.742-1.567L4.25 7.504ZM7.5 9.933l-2.75 1.571v3.134l2.75-1.571V9.933Zm1 3.134 2.75 1.571v-3.134L8.5 9.933v3.134Zm.508-3.996 2.742 1.567 2.742-1.567-2.742-1.567-2.742 1.567Zm2.242-2.433V3.504L8.5 5.076V8.21l2.75-1.572ZM7.5 8.21V5.076L4.75 3.504v3.134L7.5 8.21ZM5.258 2.643 8 4.21l2.742-1.567L8 1.076 5.258 2.643ZM15 9.933l-2.75 1.571v3.134L15 13.067V9.933ZM3.75 14.638v-3.134L1 9.933v3.134l2.75 1.571Z"/>
                             </svg>
                             @idea.TotalBoxCount
-                          </a>
+                          </span>
                         </div>
                       </div>
                     </div>
                   </div>
+                  </a>
                   <div class="mt-2 d-flex flex-wrap">
                     @foreach(var tag in idea.Tags)
                     {
@@ -159,15 +161,16 @@
           </div>
         </main>
       </div>
-      <div class="ps-3 pt-4 col">
-        <aside>
+      <div class="ps-3 pt-4 col position-relative">
+        <div class="position-fixed">
+            <aside>
           <div class="col-12 pt-2">
-            <h3 class="t-lg t-bold t-muted">Recommend</h3>
+            <h3 class="t-md t-semi-bold t-muted">Recommend</h3>
             <div class="ps-1 col-12 text-break">
               @foreach(var recommend in Model.Recommends)
               {
                 <div class="mt-2 col-12 d-flex align-items-center">
-                <a>
+                <a asp-action="@recommend.AuthorGuid" asp-controller="user">
                   <img
                     src="~/media/userAvatars/@recommend.UserAvatarImageName"
                     height="33"
@@ -178,19 +181,19 @@
                 <div class="ps-2">
                   <a class="t-semi-bold text-white t-md">@recommend.AuthorName</a>
                   <br />
-                  <a class="t-bold t-primary t-md">@recommend.IdeaTitle</a>
+                  <a asp-action="@recommend.IdeaGuid" asp-controller="idea" class="t-bold t-primary t-md">@recommend.IdeaTitle</a>
                 </div>
               </div>
               }              
             </div>
           </div>
           <div class="col-12 pt-2 mt-4">
-            <h3 class="t-lg t-bold t-muted">Need members</h3>
+            <h3 class="t-md t-semi-bold t-muted">Need members</h3>
             <div style="max-width: 180px;" class="ps-1 pt-3 d-flex flex-wrap">
               @foreach(var sideIdea in Model.IdeasNeedMembers)
               {
                 <div class="rotate-idea-card-wrap position-relative">
-                <a href="./">
+                <a asp-action="@sideIdea.Guid" asp-controller="idea">
                   <div class="shadow position-absolute rotate-idea-card">
                     <img src="~/media/ideaAvatars/@sideIdea.AvatarImageName" />
                   </div>
@@ -206,6 +209,7 @@
             </div>
           </div>
         </aside>
+        </div>
       </div>
     </div>
 

@@ -13,6 +13,8 @@ namespace Mvc.ApplicationCore.Interfaces
 {
     public interface IUserRepository
     {
+        Task<List<UserFollowingDto>> GetUserFollowingsAsync(string userGuid);
+        Task<List<UserFollowingDto>> GetUserSubscribersAsync(string userGuid);
         Task<bool> SendFastInviteAsync(string ideaGuid, string userGuid, string authorGuid);
         //
         Task<bool> CreateIdeaJoinRequest(string description, string ideaGuid, string userGuid);

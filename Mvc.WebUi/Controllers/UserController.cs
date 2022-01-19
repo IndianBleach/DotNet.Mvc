@@ -153,11 +153,36 @@ namespace Mvc.WebUi.Controllers
         [Route("user/{guid}")]
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> Index(string guid, int? page)
+        public async Task<IActionResult> Index(string guid, int? page, string? section)
         {
             if (page == null) page = 1;
 
             string userGuid = await _userRepository.GetUserGuid(User.Identity.Name);
+
+            if (section == "subscribers")
+            {
+                UserFollowingViewModel followingVm = new UserFollowingViewModel();
+                followingVm.User = _userRepository.GetUserDetail(guid);
+                followingVm.UserFollowing = await _userRepository.GetUserSubscribersAsync(guid);
+                followingVm.Pages = _pageService.GeneratePages((int)page, _userRepository.GetUserIdeasCount(guid), 5);
+                followingVm.IsSelfProfile = _userRepository.CheckSelfProfile(guid, User.Identity.Name);
+                followingVm.IdeasToInvite = await _userRepository.GetIdeasToInvite(User.Identity.Name);
+                followingVm.IsFollowed = await _userRepository.CheckUserFollowedAsync(userGuid, guid);
+
+                return View("Subscribers", followingVm);
+            }
+            else if (section == "followings")
+            {
+                UserFollowingViewModel followingVm = new UserFollowingViewModel();
+                followingVm.User = _userRepository.GetUserDetail(guid);
+                followingVm.UserFollowing = await _userRepository.GetUserFollowingsAsync(guid);
+                followingVm.Pages = _pageService.GeneratePages((int)page, _userRepository.GetUserIdeasCount(guid), 5);
+                followingVm.IsSelfProfile = _userRepository.CheckSelfProfile(guid, User.Identity.Name);
+                followingVm.IdeasToInvite = await _userRepository.GetIdeasToInvite(User.Identity.Name);
+                followingVm.IsFollowed = await _userRepository.CheckUserFollowedAsync(userGuid, guid);
+
+                return View("Followings", followingVm);
+            }
 
             UserProfileViewModel indexVm = new UserProfileViewModel();
             indexVm.User = _userRepository.GetUserDetail(guid);
@@ -166,7 +191,6 @@ namespace Mvc.WebUi.Controllers
             indexVm.IsSelfProfile = _userRepository.CheckSelfProfile(guid, User.Identity.Name);
             indexVm.IdeasToInvite = await _userRepository.GetIdeasToInvite(User.Identity.Name);
             indexVm.IsFollowed = await _userRepository.CheckUserFollowedAsync(userGuid, guid);
-
 
             return View(indexVm);
         }

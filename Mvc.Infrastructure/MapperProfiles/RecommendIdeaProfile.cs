@@ -14,6 +14,8 @@ namespace Mvc.Infrastructure.MapperProfiles
         public RecommendIdeaProfile()
         {
             CreateMap<Idea, IdeaRecommendationDto>()
+                .ForMember("AuthorGuid", opt => opt.MapFrom(x => x.Members
+                    .FirstOrDefault(x => x.Role.Equals(IdeaMemberRoles.Author)).User.Id))
                 .ForMember("IdeaGuid", opt => opt.MapFrom(x => x.Guid))
                 .ForMember("IdeaTitle", opt => opt.MapFrom(x => x.Title))
                 .ForMember("AuthorName", opt => opt.MapFrom(x => x.Members

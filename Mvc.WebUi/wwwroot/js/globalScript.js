@@ -23,7 +23,7 @@
         var container = $("#checkOutContainer");
         if (container.has(e.target).length === 0) {
             $("#windowCreateIdea").addClass("d-none");
-            $("#windowParticipation").addClass("d-none");
+            hideParticipationWindow();
             $("#hideBackgroundWrapper").addClass("d-none");
             $("body").removeClass("overflow-hidden");
         }
@@ -55,11 +55,14 @@
             $("body").toggleClass("overflow-hidden");
         })
     });
-    $(".hideParticipation").on("click", () => {
+    const hideParticipationWindow = () => {
         $(".note-participation").remove();
         $("#windowParticipation").addClass("d-none");
         $("#hideBackgroundWrapper").addClass("d-none");
         $("body").toggleClass("overflow-hidden");
+    };
+    $(".hideParticipation").on("click", () => {
+        hideParticipationWindow();
     });
     // -----
 

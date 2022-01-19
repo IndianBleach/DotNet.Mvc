@@ -7,6 +7,25 @@
             $("#preNotifyMessage").addClass("preNotifyActive");
         }
     };
+
+    $("#hideBackgroundWrapper").mouseup(function (e) {
+        var container = $("#checkOutContainer");
+        if (container.has(e.target).length === 0) {
+            $("#inviteWindow").addClass("d-none");
+            $("body").addClass("overflow-hidden");
+            $("#hideBackgroundWrapper").addClass("d-none");
+        }
+    });
+
+    $("#preCheckOutIdea").mouseup(function (e) {
+        var container = $("#checkOutIdea");
+        if (container.has(e.target).length === 0) {
+            $("#inviteWindow").addClass("d-none");
+            $("body").addClass("overflow-hidden");
+            $("#hideBackgroundWrapper").addClass("d-none");
+        }
+    });
+
     $("#hideNotifyMessage").on("click", (e) => {
         e.preventDefault();
         $("#notifyMessage").addClass("d-none");
@@ -65,11 +84,9 @@
         });
     });
 
-    // Invite - show / hide
     $(".showHideInvite").on("click", (e) => {
-        e.preventDefault();
-        $("#inviteWindow").toggleClass("d-none");
-        $("#hideBackgroundWrapper").toggleClass("d-none");
         $("body").toggleClass("overflow-hidden");
+        $("#hideBackgroundWrapper").toggleClass("d-none");
+        $("#inviteWindow").toggleClass("d-none");
     });
 });

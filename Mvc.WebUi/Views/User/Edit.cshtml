@@ -60,14 +60,6 @@
               }              
             </div>
           </div>
-          <div class="mt-4">
-            <div class="mb-3">
-              <h3 class="t-lg t-bold t-muted">Can user help?</h3>
-            </div>
-            <div>
-              <a class="showHideInvite icon-link-btn">Invite</a>
-            </div>
-          </div>
         </aside>
       </div>
       <div class="col-9 pt-5">
@@ -75,6 +67,16 @@
           <div class="col-12">
             <header>
               <div class="col-12 z-1 mt-3">
+                  <div class="d-flex p-3 pb-0">
+                  <a asp-action="@Model.User.Guid" asp-route-section="subscribers" asp-controller="user" class="t-semi-bold t-muted t-md m-2">
+                    Subscribers:
+                    <span class="text-white t-lg">42</span>
+                  </a>
+                  <a asp-action="@Model.User.Guid" asp-route-section="followings" asp-controller="user" class="t-semi-bold t-muted t-md m-2">
+                    Following:
+                    <span class="text-white t-lg">42</span>
+                  </a>
+                </div>
                 <div class="p-3 d-flex">
                     <!---->
                   <div class="mb-2">
