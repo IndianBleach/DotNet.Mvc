@@ -115,8 +115,9 @@
         </div>
       </div>
       <!---->
-      <div class="pe-3 pt-4 col">
-        <aside>
+      <div class="pe-3 pt-4 col position-relative">
+        <div class="position-fixed">
+         <aside>
           <div class="text-center mt-3">
             <img
               src="~/media/userAvatars/@Model.User.AvatarImageName"
@@ -177,7 +178,7 @@
 
           </div>
           <div class="mt-4">
-            <h3 class="t-lg t-bold t-muted">Interests</h3>
+            <h3 class="t-md t-semi-bold t-muted">Interests</h3>
             <div class="mt-2 d-flex flex-wrap">
               @foreach(var tag in Model.User.Tags)
               {
@@ -185,6 +186,13 @@
                     <a class="t-primary">@tag.Name</a>
                 </div>
               }              
+            </div>
+            <div class="mt-4 text-center">
+            <form asp-action="logout" asp-controller="account">
+              <button type="submit" class="border col-12 radius-md btn text-danger t-md">
+                Logout
+              </button>
+            </form>
             </div>
           </div>
          @if (!Model.IsSelfProfile)
@@ -199,6 +207,7 @@
              </div>
          }  
         </aside>
+        </div>
       </div>
       <div class="col-9 pt-5">
         <main>

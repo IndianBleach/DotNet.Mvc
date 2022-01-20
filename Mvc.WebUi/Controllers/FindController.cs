@@ -26,6 +26,8 @@ namespace Mvc.WebUi.Controllers
 
             FindMembersViewModel indexVm = new FindMembersViewModel();
 
+            string currentUsername = User.Identity.Name != null ? User.Identity.Name : "";
+
             if (string.IsNullOrEmpty(query))
             {
                 indexVm.Users = _userRepository.GetUsers((int)page);
@@ -37,9 +39,9 @@ namespace Mvc.WebUi.Controllers
                 indexVm.Pages = _pageService.GeneratePages((int)page, _userRepository.GetCount(query), 10);
             }
 
-            indexVm.InterestTags = _tagService.GetUserTags(User.Identity.Name);
+            indexVm.InterestTags = _tagService.GetUserTags(currentUsername);
             indexVm.SearchTags = _tagService.GetAllTags();            
-            indexVm.RecommendUsers = _userRepository.GetRecommendUsers(User.Identity.Name);
+            indexVm.RecommendUsers = _userRepository.GetRecommendUsers(currentUsername);
 
             return View(indexVm);
         }

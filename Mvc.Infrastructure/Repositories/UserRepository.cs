@@ -45,9 +45,12 @@ namespace Mvc.Infrastructure.Repositories
         public ICollection<SideUserDto> GetRecommendUsers(string forUsername)
         {
             List<Tag> userTags = new List<Tag>();
-            if (forUsername != null)
+
+            var getUser = _userManager.FindByNameAsync(forUsername).Result;
+
+            if (getUser != null)
             {
-                userTags.AddRange(_userManager.FindByNameAsync(forUsername).Result.Tags.ToList());
+                userTags.AddRange(getUser.Tags.ToList());
             }
 
             List<ApplicationUser> recommendUsers = new List<ApplicationUser>();

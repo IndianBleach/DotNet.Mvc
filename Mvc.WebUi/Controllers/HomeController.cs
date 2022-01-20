@@ -44,13 +44,13 @@ namespace Mvc.WebUi.Controllers
         }
 
 
-        [Authorize]
         public async Task<IActionResult> Index(string? query, int? page)
         {
             HomeIdeasViewModel indexVm = new();
 
             if (page == null) page = 1;
 
+            string currentUsername = User.Identity.Name != null ? User.Identity.Name : "";
 
             if (string.IsNullOrEmpty(query))
             {
@@ -63,7 +63,7 @@ namespace Mvc.WebUi.Controllers
                 indexVm.Pages = _pageSerivce.GeneratePages((int)page, _ideaRepository.GetCount(query), 10);
             }
             
-            indexVm.Recommends = _ideaRepository.GetRecommendIdeas(User.Identity.Name).ToList();
+            indexVm.Recommends = _ideaRepository.GetRecommendIdeas(currentUsername).ToList();
             indexVm.IdeasNeedMembers = _ideaRepository.GetSideIdeasByStatusFilter(IdeaStatuses.FindMembers).ToList();
             indexVm.SearchTags = _tagService.GetAllTags().Take(5).ToList();
 

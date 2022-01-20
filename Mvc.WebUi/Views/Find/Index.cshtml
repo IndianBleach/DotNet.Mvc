@@ -125,10 +125,11 @@
           </div>
         </main>
       </div>
-      <div class="ps-3 pt-4 col">
-        <aside>
+      <div class="ps-3 pt-4 col position-relative">
+        <div class="position-fixed">
+            <aside>
           <div class="col-12 pt-2">
-            <h3 class="t-lg t-bold t-muted">For your ideas</h3>
+            <h3 class="t-md t-semi-bold t-muted">For your ideas</h3>
             <div class="ps-1 col-12 text-break">
               @foreach(var recommendUser in Model.RecommendUsers)
               {
@@ -148,8 +149,10 @@
               }
             </div>
           </div>
-          <div class="col-12 pt-2 mt-4">
-            <h3 class="t-lg t-bold t-muted">You interesed</h3>
+          @if (User.Identity.IsAuthenticated)
+          {
+            <div class="col-12 pt-2 mt-4">
+            <h3 class="t-md t-semi-bold t-muted">You interesed</h3>
             <div style="max-width: 180px;" class="ps-1 pt-1 d-flex flex-wrap">
               <div class="col-12 d-flex flex-wrap">
                 @foreach(var interestTag in Model.InterestTags)
@@ -161,6 +164,17 @@
               </div>
             </div>
           </div>
+          }
+          else
+          {
+            <div class="col-12 pt-2 mt-4">
+            <h3 class="t-md t-semi-bold t-muted">Join us</h3>
+            <div style="max-width: 180px;" class="ps-1 pt-1 d-flex flex-wrap">
+              <a asp-action="login" asp-controller="account" class="icon-link-btn col-12 text-center">Login Or Register</a>
+            </div>
+          </div>
+          }
         </aside>
+        </div>
       </div>
     </div>

@@ -32,11 +32,13 @@ namespace Mvc.Infrastructure.Services
 
             var mapper = new Mapper(config);
 
-            var tags = _dbContext.Users
+            var user = _dbContext.Users
                 .Include(x => x.Tags)
-                .FirstOrDefault(x => x.UserName.Equals(userName)).Tags;
+                .FirstOrDefault(x => x.UserName.Equals(userName));
 
-            List<TagDto> dtos = mapper.Map<List<Tag>, List<TagDto>>(tags.ToList());
+            List<TagDto> dtos = new();
+            if (user != null)
+                dtos = mapper.Map<List<Tag>, List<TagDto>>(user.Tags.ToList());
 
             return dtos;
         }
