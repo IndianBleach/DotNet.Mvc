@@ -517,6 +517,7 @@ namespace Mvc.Infrastructure.Repositories
                 .Include(x => x.Idea)
                 .Include(x => x.Author)
                 .Include(x => x.Goals)
+                .ThenInclude(x => x.Status)
                 .Where(x => x.Idea.Guid.ToString() == ideaGuid)
                 .Skip(10 * (page - 1))
                 .Take(10)
@@ -533,7 +534,16 @@ namespace Mvc.Infrastructure.Repositories
                 .ForMember("GoalsCount", opt => opt.MapFrom(x => x.Goals.Count))
                 .ForMember("DateCreated", opt => opt.MapFrom(x => GeneratePublishDate(x.DateCreated)))
                 .ForMember("IsAuthored", opt => opt.MapFrom(x => x.IsAuthored))
-                .ForMember("CurrentUserBox", opt => opt.MapFrom(x => x.Author.Id == currentUserGuid));
+                .ForMember("CurrentUserBox", opt => opt.MapFrom(x => x.Author.Id == currentUserGuid))
+                .ForMember("CountCompleteGoals", opt => opt.MapFrom(x => x.Goals
+                    .Where(x => x.Status.Type.Equals(BoxGoalStatuses.Complete))
+                    .Count()))
+                .ForMember("CountFailedGoals", opt => opt.MapFrom(x => x.Goals
+                    .Where(x => x.Status.Type.Equals(BoxGoalStatuses.Failed))
+                    .Count()))
+                .ForMember("CountWaitingGoals", opt => opt.MapFrom(x => x.Goals
+                    .Where(x => x.Status.Type.Equals(BoxGoalStatuses.Waiting))
+                    .Count()));
             });
 
             var mapper = new Mapper(config);

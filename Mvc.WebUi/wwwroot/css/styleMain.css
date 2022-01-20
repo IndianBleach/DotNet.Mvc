@@ -352,3 +352,7 @@ a > img {
 #StarredLoad {
     overflow-y: scroll;
 }
+
+.border-none {
+    border: unset!important;
+}

@@ -38,6 +38,11 @@ namespace Mvc.WebUi.Controllers
 
         }
 
+        public IActionResult About()
+        {
+            return View();
+        }
+
 
         [Authorize]
         public async Task<IActionResult> Index(string? query, int? page)

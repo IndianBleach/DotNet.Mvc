@@ -17,5 +17,8 @@ namespace Mvc.ApplicationCore.DTOs.Idea
         public string DateCreated { get; set; }
         public bool IsAuthored { get; set; }
         public bool CurrentUserBox { get; set; }
+        public int CountCompleteGoals { get; set; }
+        public int CountFailedGoals { get; set; }
+        public int CountWaitingGoals { get; set; }
     }
 }
