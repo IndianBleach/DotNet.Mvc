@@ -18,6 +18,7 @@ using Mvc.Infrastructure.MapperProfiles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -128,7 +129,7 @@ namespace Mvc.Infrastructure.Repositories
             return false;
         }
         
-        public async Task<bool> UpdateUserSettings(string name, UserEditGeneralSettingsDto model)
+        public async Task<bool> UpdateUserSettings(IEnumerable<ClaimsIdentity> identities, string name, UserEditGeneralSettingsDto model)
         {
             ApplicationUser getUser = _dbContext.Users
                 .Include(x => x.Avatar)
@@ -151,6 +152,13 @@ namespace Mvc.Infrastructure.Repositories
                     }
 
                     getUser.Avatar = new UserAvatarImage(model.NewAvatar.FileName);
+
+                    //change avatar claim
+                    var userIdentity = identities.FirstOrDefault(x => x.Name == name);
+                    var getClaim = userIdentity.FindFirst("AvatarImageName");
+                    Claim newClaim = new Claim("AvatarImageName", model.NewAvatar.FileName);
+
+                    await _userManager.ReplaceClaimAsync(getUser, getClaim, newClaim);
                 }
 
                 if (!string.IsNullOrEmpty(model.NewUsername))

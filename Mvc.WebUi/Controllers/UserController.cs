@@ -101,10 +101,8 @@ namespace Mvc.WebUi.Controllers
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> UpdateGeneralSettings(UserEditGeneralSettingsDto model)
-        {
-            var res1 = User.Identity.Name;
-
-            bool res = await _userRepository.UpdateUserSettings(User.Identity.Name, model);
+        {                                   
+            bool res = await _userRepository.UpdateUserSettings(User.Identities, User.Identity.Name, model);
 
             if (res)
             {

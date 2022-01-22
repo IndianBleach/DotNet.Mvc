@@ -57,7 +57,7 @@ namespace Mvc.Infrastructure.Services
             .ForMember("UserName", opt => opt.MapFrom(x => x.Username))
             .ForMember("Tags", opt => opt.MapFrom(x => _tagService.CreateTagList(x.Tags)))
             .ForMember("Avatar", opt => opt.MapFrom(x => _dbContext.UserAvatars
-                .FirstOrDefault(x => x.ImageName.Equals("DEFAULT_USER_AVATAR.jpg")))));
+                .FirstOrDefault(x => x.ImageName.Equals("def_user_avatar.jpg")))));
 
             var mapper = new Mapper(config);
 
@@ -65,7 +65,7 @@ namespace Mvc.Infrastructure.Services
 
             var result = await _userManager.CreateAsync(createUser, model.Password);
 
-            Claim cl = new Claim("AvatarImageName", "DEFAULT_USER_AVATAR.jpg");
+            Claim cl = new Claim("AvatarImageName", "def_user_avatar.jpg");
 
             if (result.Succeeded)
             {

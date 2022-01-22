@@ -7,6 +7,7 @@ using Mvc.ApplicationCore.DTOs.User;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -45,7 +46,7 @@ namespace Mvc.ApplicationCore.Interfaces
         Task<bool> InviteUserToIdea(string invitedFromUserGuid, InviteUserDto model);
         Task<string> GetUserGuid(string userName);
         Task<bool> UpdateUserSettings(string guid, UserEditTagSettingsDto model);
-        Task<bool> UpdateUserSettings(string guid, UserEditGeneralSettingsDto model);
+        Task<bool> UpdateUserSettings(IEnumerable<ClaimsIdentity> identities, string guid, UserEditGeneralSettingsDto model);
         bool CheckSelfProfile(string routeGuid, string userName);
         List<HomeIdeaDto> GetUserIdeas(string guid);
         UserDetailDto GetUserDetail(string guid);

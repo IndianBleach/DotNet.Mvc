@@ -47,7 +47,7 @@ namespace MvcApp.Infrastructure.Data
                 new IdeaStatus(IdeaStatuses.FindMembers, "The idea is looking for participants, tell your friends about it"),
             });
 
-            dbContext.IdeaAvatars.Add(new IdeaAvatarImage("def_idea_avatar.png"));
+            dbContext.IdeaAvatars.Add(new IdeaAvatarImage("def_idea_avatar.jpg"));
 
             dbContext.UserAvatars.Add(new UserAvatarImage("def_user_avatar.jpg"));
 

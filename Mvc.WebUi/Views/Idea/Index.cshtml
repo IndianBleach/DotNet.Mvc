@@ -230,7 +230,7 @@
               <div class="pb-3 ps-4 pe-4">
                 <form enctype="multipart/form-data" asp-action="updateIdeaSettings" asp-controller="idea" asp-antiforgery="true">
                     <input hidden value="@Model.Idea.Guid" name="ideaGuid"/>
-                  <div class="mb-3 mt-2 d-flex justify-content-center col-12">                    
+                  <div class="mb-3 mt-2 col-12">                    
                     <div class="d-flex col-12 p-2 upd-dark border radius-md">
                         <div>
                             <input name="avatar" style="background-image: url('/media/ideaAvatars/@Model.Idea.AvatarImageName');" class="upd-form-avatar-square form-control" type="file" id="formFile">
@@ -243,6 +243,7 @@
                             <span id="avatarPreRenderName" class=" t-md t-medium t-muted">Change avatar</span>
                           </div>
                     </div>
+                     <span class="text-muted t-medium t-sm">Some browsers are not supported</span>
                   </div>
                   <div class="mb-2">
                       <select
@@ -267,7 +268,7 @@
                   <div class="mb-2 mt-3 form-check">
                     <input
                         name="isSecurity"
-                      class="bg-dark form-check-input"
+                      class="bg-darkdeep form-check-input"
                       type="checkbox"
                       value="true"
                       id="flexCheckDefault"

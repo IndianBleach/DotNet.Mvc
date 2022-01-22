@@ -234,7 +234,7 @@ namespace Mvc.Infrastructure.Repositories
                             .FirstOrDefault(y => y.Status.Equals(x.Status)))
                         )
                         .ForMember("Avatar", opt => opt.MapFrom(x => _dbContext.IdeaAvatars
-                            .FirstOrDefault(y => y.ImageName.Equals("idea_def_back.png")))));
+                            .FirstOrDefault(y => y.ImageName.Equals("def_idea_avatar.jpg")))));
 
                     var mapper = new Mapper(config);
 
@@ -768,7 +768,7 @@ namespace Mvc.Infrastructure.Repositories
                         str.Close();
                     }                    
 
-                    if (getIdea.Avatar.ImageName != "def_idea_avatar.png")
+                    if (getIdea.Avatar.ImageName != "def_idea_avatar.jpg")
                     {
                         File.Delete($"wwwroot/media/ideaAvatars/{getIdea.Avatar.ImageName}");
                     }
