@@ -9,12 +9,26 @@ namespace Mvc.WebUi.Controllers
     public class AccountController : Controller
     {
         private readonly CoreInterfaces.IAuthorizationService _authorizationService;
+        private readonly IUserRepository _userRepository;
         private readonly ITagService _tagService;
 
-        public AccountController(CoreInterfaces.IAuthorizationService authServ, ITagService tagService)
+        public AccountController(CoreInterfaces.IAuthorizationService authServ, ITagService tagService, IUserRepository userRepository)
         {
             _authorizationService = authServ;
+            _userRepository = userRepository;
             _tagService = tagService;
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Remove(string confirmPassword)
+        {
+            string name = User.Identity.Name;
+            if (name != null)
+            {
+                string guid = await _userRepository.GetUserGuid(name);
+            }
+
+            return RedirectToAction("Login");
         }
 
 
@@ -29,17 +43,30 @@ namespace Mvc.WebUi.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(UserLoginDto userModel)
         {
-            await _authorizationService.LoginAsync(userModel);
+            if (ModelState.IsValid)
+            {
+                await _authorizationService.LoginAsync(userModel);
 
-            return RedirectToAction("index", "home");
+                return RedirectToAction("index", "home");
+            }
+            else
+                return View(userModel);
         }
 
         [HttpPost]
         public async Task<IActionResult> Register(UserRegisterDto userModel)
         {
-            await _authorizationService.RegisterAsync(userModel);
+            if (ModelState.IsValid)
+            {
+                await _authorizationService.RegisterAsync(userModel);
 
-            return RedirectToAction("index", "home");
+                return RedirectToAction("index", "home");
+            }
+            else
+            {
+                ViewBag.TagList = _tagService.GetAllTags();
+                return View(userModel);
+            }    
         }
 
         [HttpGet]

@@ -12,4 +12,11 @@ namespace Mvc.ApplicationCore.DTOs.Chat
         public string UserName { get; set; }
         public string UserGuid { get; set; }
     }
+
+    public class NewChatDtoExtended
+    { 
+        public List<NewChatDto> NewChatUsers { get; set; }
+        public string AuthorGuid { get; set; }
+    }
+
 }

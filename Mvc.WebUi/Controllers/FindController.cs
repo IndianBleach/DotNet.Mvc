@@ -20,7 +20,7 @@ namespace Mvc.WebUi.Controllers
 
 
         //[HttpGet]
-        public IActionResult Index(string? query, int? page)
+        public async Task<IActionResult> Index(string? query, int? page)
         {
             if (page == null) page = 1;
 
@@ -42,6 +42,7 @@ namespace Mvc.WebUi.Controllers
             indexVm.InterestTags = _tagService.GetUserTags(currentUsername);
             indexVm.SearchTags = _tagService.GetAllTags();            
             indexVm.RecommendUsers = _userRepository.GetRecommendUsers(currentUsername);
+            indexVm.News = await _userRepository.GetNewsAsync();
 
             return View(indexVm);
         }

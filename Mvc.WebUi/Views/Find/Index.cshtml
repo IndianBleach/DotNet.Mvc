@@ -127,7 +127,43 @@
       </div>
       <div class="ps-3 pt-4 col position-relative">
         <div class="position-fixed">
-            <aside>
+          <aside>
+        <div class="mb-4">
+              @foreach(var news in Model.News)
+              {
+                <div class="mt-2 col-12 d-flex align-items-start">
+                  <a class="pt-2">
+                    <img
+                      src="~/media/userAvatars/@news.UserAvatarName"
+                      height="33"
+                      width="33"
+                      class="circle shadow"
+                    />
+                  </a>
+                  <div class="ps-2">
+                    <a asp-action="@news.UserGuid" asp-controller="user" class="t-medium text-white t-sm">@news.UserName</a>
+                    <br />
+                    <div class="text-truncate text-white" style="width: 178px;">
+                     @if (news.IdeaGuid != null)
+                     {
+                         <a asp-action="@news.IdeaGuid" asp-controller="idea" class="t-semi-bold t-sm t-primary">
+                            <span class="t-semi-bold text-muted t-sm">
+                              New idea
+                            </span>
+                            @news.IdeaName
+                          </a>
+                     }
+                     else
+                     {
+                       <span class="t-semi-bold text-muted t-sm">
+                          Welcome to website
+                        </span>
+                     }
+                    </div>
+                  </div>
+                </div>
+              }
+              </div>
           <div class="col-12 pt-2">
             <h3 class="t-md t-semi-bold t-muted">For your ideas</h3>
             <div class="ps-1 col-12 text-break">
@@ -142,7 +178,7 @@
                     class="circle shadow"
                   />                
                     <div class="ps-2">
-                    <span class="t-semi-bold text-white t-md">@recommendUser.UserName</span>
+                    <span class="t-medium text-white t-sm">@recommendUser.UserName</span>
                     </div>
                     </div>
                 </a>

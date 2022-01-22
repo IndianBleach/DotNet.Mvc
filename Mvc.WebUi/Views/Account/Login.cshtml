@@ -20,7 +20,7 @@
                       <span class="t-tag">Beta</span>
                     </div>
                     <div>
-                      <a class="showHideBoxGoals icon-link-btn">Support</a>
+                      <a asp-action="about" asp-controller="home" class="icon-link-btn">Support</a>
                     </div>
                   </div>
                 </div>
@@ -59,26 +59,20 @@
                 </div>
                 <div class="col-6">
                   <div class="ps-1 pt-3 d-flex flex-wrap">
-                    <div class="rotate-idea-card-wrap position-relative">
-                      <a href="./">
-                        <div class="shadow position-absolute rotate-idea-card">
-                          <img src="./testback.jpg" />
+                    <div class="asideRotateIdeaPost-lg">
+                      <div style="background: linear-gradient( 
+                          0deg, rgba(0, 0, 0, 0.16), rgba(0, 0, 0, 0.16) ), url(/media/site/testIdea4.jpg);">                      
                         </div>
-                      </a>
                     </div>
-                    <div class="rotate-idea-card-wrap position-relative">
-                      <a href="./">
-                        <div class="shadow position-absolute rotate-idea-card">
-                          <img src="./testback.jpg" />
+                    <div class="asideRotateIdeaPost-lg">
+                      <div style="background: linear-gradient( 
+                          0deg, rgba(0, 0, 0, 0.16), rgba(0, 0, 0, 0.16) ), url(/media/site/testIdea2.jpg);">                      
                         </div>
-                      </a>
                     </div>
-                    <div class="rotate-idea-card-wrap position-relative">
-                      <a href="./">
-                        <div class="shadow position-absolute rotate-idea-card">
-                          <img src="./testback.jpg" />
+                    <div class="asideRotateIdeaPost-lg">
+                      <div style="background: linear-gradient( 
+                          0deg, rgba(0, 0, 0, 0.16), rgba(0, 0, 0, 0.16) ), url(/media/site/testIdea3.jpg);">                      
                         </div>
-                      </a>
                     </div>
                   </div>
                 </div>
@@ -166,21 +160,23 @@
               </div>
               <div class="pb-3 ps-4 pe-4">
                 <form asp-action="login" asp-antiforgery="true">
-                  <div class="mb-2">
+                  <div class="mb-2 position-relative">
                     <input
                       asp-for="Username"
                       class="upd-form-input form-control me-0 pe-1"
                       placeholder="Username"
                       aria-label="Search"
+                      required
                     />
                   </div>
-                  <div class="mb-2">
+                  <div class="mb-2 position-relative">
                     <input
                       asp-for="Password"
                       type="password"
                       class="upd-form-input form-control me-0 pe-1"
                       placeholder="Password"
                       aria-label="Search"
+                      required
                     />
                   </div>
                   <div class="pt-3 mt-2 col-12 text-center">
@@ -199,8 +195,8 @@
             </div>
           </div>
           <div class="col-12 mt-2">
-            <a class="me-2 t-sm t-bold t-muted">Future updates</a>
-            <a class="me-2 t-sm t-bold t-muted">Support</a>
+            <a asp-action="about" asp-controller="home" class="me-2 t-sm t-bold t-muted">About us</a>
+            <a asp-action="about" asp-controller="home" class="me-2 t-sm t-bold t-muted">Support</a>
           </div>
         </div>
       </div>

@@ -61,9 +61,9 @@ namespace Mvc.WebUi.Controllers
 
 
         [Authorize]
+        [Route("chat/create")]
         public async Task<JsonResult> Create(string toUserGuid, string message)
-        {
-            
+        {            
             string authorGuid = await _userRepository.GetUserGuid(User.Identity.Name);
 
             var res = await _userRepository.CreateChat(authorGuid, message, toUserGuid);            

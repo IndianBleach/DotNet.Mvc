@@ -11,9 +11,6 @@ using System.Threading.Tasks;
 
 namespace MvcApp.Infrastructure.Data
 {
-
-
-
     public static class ApplicationContextSeed
     {
         public static async Task SeedRolesAsync(RoleManager<IdentityRole> roleManager)
@@ -50,9 +47,9 @@ namespace MvcApp.Infrastructure.Data
                 new IdeaStatus(IdeaStatuses.FindMembers, "The idea is looking for participants, tell your friends about it"),
             });
 
-            dbContext.IdeaAvatars.Add(new IdeaAvatarImage("DEFAULT_IDEA_AVATAR.jpg"));
+            dbContext.IdeaAvatars.Add(new IdeaAvatarImage("def_idea_avatar.png"));
 
-            dbContext.UserAvatars.Add(new UserAvatarImage("DEFAULT_USER_AVATAR.jpg"));
+            dbContext.UserAvatars.Add(new UserAvatarImage("def_user_avatar.jpg"));
 
             dbContext.GoalStatuses.AddRange(new BoxGoalStatus[]
             {

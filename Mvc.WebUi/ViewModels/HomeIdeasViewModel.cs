@@ -1,5 +1,6 @@
 ﻿using Mvc.ApplicationCore.DTOs;
 using Mvc.ApplicationCore.DTOs.Idea;
+using Mvc.ApplicationCore.DTOs.News;
 
 namespace Mvc.WebUi.ViewModels
 {
@@ -10,5 +11,6 @@ namespace Mvc.WebUi.ViewModels
         public ICollection<TagDto> SearchTags { get; set; }
         public ICollection<HomeIdeaDto> Ideas { get; set; }
         public ICollection<SideIdeaDto> IdeasNeedMembers { get; set; }
+        public List<NewsDto> News { get; set; }
     }
 }

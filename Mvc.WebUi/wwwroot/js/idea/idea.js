@@ -1,12 +1,27 @@
 ﻿$(document).ready(() => {   
 
+    const clearNotify = () => {
+        $("#notifyMessageText").text("");
+        $("#notifyMessage").removeClass("notifyActiveSuccess");
+        $("#notifyMessage").removeClass("notifyActiveFailed");
+        $("#preNotifyMessage").removeClass("preNotifyActive");
+    };
     const sendNotifyMessage = (text, isSuccess) => {
+        clearNotify();
         if (isSuccess == true) {
             $("#notifyMessageText").text(text);
-            $("#notifyMessage").addClass("notifyActive");
+            $("#notifyMessage").addClass("notifyActiveSuccess");
             $("#preNotifyMessage").addClass("preNotifyActive");
         }
-    };   
+        else {
+            $("#notifyMessageText").text(text);
+            $("#notifyMessage").addClass("notifyActiveFailed");
+            $("#preNotifyMessage").addClass("preNotifyActive");
+        }
+        setTimeout(() => {
+            clearNotify();
+        }, 5000);
+    };
 
     $("#hideBackgroundWrapper").mouseup(function (e) {
         var container = $("#checkOutContainer");
@@ -128,9 +143,15 @@
         let ideaGuid = e.target.dataset.idea;
        
         $.post("/idea/boxes/create", { name, description, ideaGuid, isAuthored }, (resp) => {
-            $("#createBoxWindow").toggleClass("d-none");
-            $("#hideBackgroundWrapper").toggleClass("d-none");
-            $("body").toggleClass("overflow-hidden");
+            if (resp == true) {
+                sendNotifyMessage("Box created! Edit goals", true);
+                $("#createBoxWindow").toggleClass("d-none");
+                $("#hideBackgroundWrapper").toggleClass("d-none");
+                $("body").toggleClass("overflow-hidden");
+            }
+            else {
+                sendNotifyMessage("Incorrect data when entering", false);
+            }
         });
     });
 
@@ -385,9 +406,16 @@
         let description = e.target.getElementsByTagName("textarea")[0].value;
 
         $.post("/idea/createTopic", { title, description, ideaGuid }, response => {
-            $("#settingsCreateTopicWindow").toggleClass("d-none");
-            $("#hideBackgroundWrapper").toggleClass("d-none");
-            $("body").toggleClass("overflow-hidden");
+            if (response == true) {
+
+                sendNotifyMessage("Topic created! Let's discuss about him", true);
+                $("#settingsCreateTopicWindow").toggleClass("d-none");
+                $("#hideBackgroundWrapper").toggleClass("d-none");
+                $("body").toggleClass("overflow-hidden");
+            }
+            else {
+                sendNotifyMessage("Incorrect data when entering", false);
+            }
         });
     });
     $(".showHideCreateTopic").on("click", (e) => {

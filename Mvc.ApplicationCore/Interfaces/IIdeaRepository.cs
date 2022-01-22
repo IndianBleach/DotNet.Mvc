@@ -51,7 +51,7 @@ namespace Mvc.ApplicationCore.Interfaces
         //
         IEnumerable<IdeaRecommendationDto> GetRecommendIdeas(string forUsername);
         IEnumerable<SideIdeaDto> GetSideIdeasByStatusFilter(IdeaStatuses filterStatus);        
-        Guid CreateIdea(CreateIdeaDto item);
+        string? CreateIdea(CreateIdeaDto item);
         List<HomeIdeaDto> GetIdeas(int page);
         List<HomeIdeaDto> GetIdeas(string query, int page);
         int GetCount();

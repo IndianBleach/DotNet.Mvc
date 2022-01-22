@@ -74,7 +74,7 @@
                     style="
                       background: linear-gradient(
                           0deg,
-                          rgba(0, 0, 0, 0.33),
+                          rgba(0, 0, 0, 0.57),
                           rgba(0, 0, 0, 0.33)
                         ),
                         url('media/ideaAvatars/@idea.AvatarImageName');
@@ -88,6 +88,7 @@
                           <span class="h1 t-xbold text-white t-shadow"
                             >@idea.Title</span
                           >
+                           <br />
                           <p
                             class="col-10 t-bold t-muted t-shadow d-inline-block text-truncate"
                           >
@@ -162,54 +163,93 @@
       </div>
       <div class="ps-3 pt-4 col position-relative">
         <div class="position-fixed">
-            <aside>
-          <div class="col-12 pt-2">
-            <h3 class="t-md t-semi-bold t-muted">Recommend</h3>
-            <div class="ps-1 col-12 text-break">
-              @foreach(var recommend in Model.Recommends)
+          <aside>
+              <div class="mb-4">
+              @foreach(var news in Model.News)
               {
-                <div class="mt-2 col-12 d-flex align-items-center">
-                <a asp-action="@recommend.AuthorGuid" asp-controller="user">
-                  <img
-                    src="~/media/userAvatars/@recommend.UserAvatarImageName"
-                    height="33"
-                    width="33"
-                    class="circle shadow"
-                  />
-                </a>
-                <div class="ps-2">
-                  <a class="t-semi-bold text-white t-md">@recommend.AuthorName</a>
-                  <br />
-                  <a asp-action="@recommend.IdeaGuid" asp-controller="idea" class="t-bold t-primary t-md">@recommend.IdeaTitle</a>
-                </div>
-              </div>
-              }              
-            </div>
-          </div>
-          <div class="col-12 pt-2 mt-4">
-            <h3 class="t-md t-semi-bold t-muted">Need members</h3>
-            <div style="max-width: 180px;" class="ps-1 pt-3 d-flex flex-wrap">
-              @foreach(var sideIdea in Model.IdeasNeedMembers)
-              {
-                <div class="rotate-idea-card-wrap position-relative">
-                <a asp-action="@sideIdea.Guid" asp-controller="idea">
-                  <div class="shadow position-absolute rotate-idea-card">
-                    <img src="~/media/ideaAvatars/@sideIdea.AvatarImageName" />
+                <div class="mt-2 col-12 d-flex align-items-start">
+                  <a class="pt-2">
+                    <img
+                      src="~/media/userAvatars/@news.UserAvatarName"
+                      height="33"
+                      width="33"
+                      class="circle shadow"
+                    />
+                  </a>
+                  <div class="ps-2">
+                    <a asp-action="@news.UserGuid" asp-controller="user" class="t-medium text-white t-sm">@news.UserName</a>
+                    <br />
+                    <div class="text-truncate t-primary" style="width: 178px;">
+                     @if (news.IdeaGuid != null)
+                     {
+                         <a asp-action="@news.IdeaGuid" asp-controller="idea" class="t-semi-bold t-sm t-primary">
+                            <span class="t-semi-bold text-muted t-sm">
+                              New idea
+                            </span>
+                            @news.IdeaName
+                          </a>
+                     }
+                     else
+                     {
+                       <span class="t-semi-bold text-muted t-sm">
+                          Welcome to website
+                        </span>
+                     }
+                    </div>
                   </div>
-                </a>
                 </div>
               }
-            </div>
-          </div>
-          @if (!User.Identity.IsAuthenticated)
-          {
-            <div class="col-12 pt-2 mt-4">
-            <h3 class="t-md t-semi-bold t-muted">Join us</h3>
-            <div style="max-width: 180px;" class="ps-1 pt-1 d-flex flex-wrap">
-              <a asp-action="login" asp-controller="account" class="icon-link-btn col-12 text-center">Login Or Register</a>
-            </div>
-          </div>
-          }          
+              </div>
+              @if (User.Identity.IsAuthenticated)
+              {
+                <div class="col-12 pt-2">
+                <h3 class="t-md t-semi-bold t-muted">For you</h3>
+                <div class="ps-1 col-12 text-break">
+                  @foreach(var recommend in Model.Recommends)
+                  {
+                    <div class="mt-2 col-12 d-flex align-items-center">
+                    <a asp-action="@recommend.AuthorGuid" asp-controller="user">
+                      <img
+                        src="~/media/userAvatars/@recommend.UserAvatarImageName"
+                        height="33"
+                        width="33"
+                        class="circle shadow"
+                      />
+                    </a>
+                    <div class="ps-2">
+                      <a class="t-medium text-white t-sm">@recommend.AuthorName</a>
+                      <br />
+                      <a asp-action="@recommend.IdeaGuid" asp-controller="idea" class="t-semi-bold t-primary t-sm">@recommend.IdeaTitle</a>
+                    </div>
+                  </div>
+                  }              
+                </div>
+              </div>
+              }
+              <div class="col-12 pt-2 mt-4">
+                <h3 class="t-md t-semi-bold t-muted">Need members</h3>
+                <div style="max-width: 180px;" class="ps-1 pt-3 d-flex flex-wrap">
+                  @foreach(var sideIdea in Model.IdeasNeedMembers)
+                  {
+                    <div class="asideRotateIdeaPost">
+                      <a asp-action="@sideIdea.Guid" asp-controller="idea">
+                        <div style="background: linear-gradient( 
+                          0deg, rgba(0, 0, 0, 0.33), rgba(0, 0, 0, 0.33) ), url(/media/ideaAvatars/@sideIdea.AvatarImageName);">                      
+                        </div>
+                      </a>
+                    </div>
+                  }
+                </div>
+              </div>
+              @if (!User.Identity.IsAuthenticated)
+              {
+                <div class="col-12 pt-2 mt-4">
+                <h3 class="t-md t-semi-bold t-muted">Join us</h3>
+                <div style="max-width: 180px;" class="ps-1 pt-1 d-flex flex-wrap">
+                  <a asp-action="login" asp-controller="account" class="icon-link-btn col-12 text-center">Login Or Register</a>
+                </div>
+              </div>
+              }          
         </aside>
         </div>
       </div>

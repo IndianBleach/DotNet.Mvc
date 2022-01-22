@@ -18,6 +18,7 @@ namespace Mvc.WebUi.Controllers
         private readonly ITagService _tagService;
         private readonly CoreInterfaces.IAuthorizationService _authorizationService;
         private IIdeaRepository _ideaRepository;
+        private IUserRepository _userRepository;
         private IPageService _pageSerivce;
 
 
@@ -27,10 +28,11 @@ namespace Mvc.WebUi.Controllers
             ITagService tagService,
             CoreInterfaces.IAuthorizationService _authService,
             IIdeaRepository ideaRepo,
-            IPageService pageService)
+            IPageService pageService,
+            IUserRepository userRepository)
         {
             _logger = logger;
-            //_ctx = ctx;
+            _userRepository = userRepository;
             _tagService = tagService;
             _authorizationService = _authService;
             _ideaRepository = ideaRepo;
@@ -66,6 +68,7 @@ namespace Mvc.WebUi.Controllers
             indexVm.Recommends = _ideaRepository.GetRecommendIdeas(currentUsername).ToList();
             indexVm.IdeasNeedMembers = _ideaRepository.GetSideIdeasByStatusFilter(IdeaStatuses.FindMembers).ToList();
             indexVm.SearchTags = _tagService.GetAllTags().Take(5).ToList();
+            indexVm.News = await _userRepository.GetNewsAsync();
 
             return View(indexVm);
         }

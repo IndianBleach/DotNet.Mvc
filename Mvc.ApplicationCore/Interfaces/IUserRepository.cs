@@ -2,6 +2,7 @@
 using Mvc.ApplicationCore.DTOs.Chat;
 using Mvc.ApplicationCore.DTOs.Idea;
 using Mvc.ApplicationCore.DTOs.JsonResult;
+using Mvc.ApplicationCore.DTOs.News;
 using Mvc.ApplicationCore.DTOs.User;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ namespace Mvc.ApplicationCore.Interfaces
 {
     public interface IUserRepository
     {
+        Task<List<NewsDto>> GetNewsAsync();
         Task<List<UserFollowingDto>> GetUserFollowingsAsync(string userGuid);
         Task<List<UserFollowingDto>> GetUserSubscribersAsync(string userGuid);
         Task<bool> SendFastInviteAsync(string ideaGuid, string userGuid, string authorGuid);
@@ -30,7 +32,7 @@ namespace Mvc.ApplicationCore.Interfaces
         Task<List<IdeaToInviteDto>> GetUserIdeasToInvite(string guid);
         Task<CreatedChatDto> CreateChat(string authorGuid, string message, string toUserGuid);
         Task<List<ChatUserDto>> GetUserChats(string userGuid);
-        Task<List<NewChatDto>> GetNewChatUsersAsync(string guid);
+        Task<NewChatDtoExtended> GetNewChatUsersAsync(string guid);
         //
         void Save();
         Task<bool> CheckUserFollowedAsync(string userGuid, string followGuid);

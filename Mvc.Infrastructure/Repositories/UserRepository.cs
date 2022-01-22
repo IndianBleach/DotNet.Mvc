@@ -7,6 +7,7 @@ using Mvc.ApplicationCore.DTOs;
 using Mvc.ApplicationCore.DTOs.Chat;
 using Mvc.ApplicationCore.DTOs.Idea;
 using Mvc.ApplicationCore.DTOs.JsonResult;
+using Mvc.ApplicationCore.DTOs.News;
 using Mvc.ApplicationCore.DTOs.User;
 using Mvc.ApplicationCore.Entities;
 using Mvc.ApplicationCore.Entities.IdeaEntity;
@@ -55,7 +56,7 @@ namespace Mvc.Infrastructure.Repositories
 
             List<ApplicationUser> recommendUsers = new List<ApplicationUser>();
 
-            int countFill = 5 - userTags.Count;
+            int countFill = 4 - userTags.Count;
 
             if (userTags.Count > 0)
             {
@@ -72,7 +73,7 @@ namespace Mvc.Infrastructure.Repositories
                 recommendUsers = _dbContext.Users
                     .Include(x => x.Avatar)
                     .Include(x => x.Tags)
-                    .OrderByDescending(x => x.IdeaMemberRoles.Count()).Take(5).ToList();
+                    .OrderByDescending(x => x.IdeaMemberRoles.Count()).Take(4).ToList();
 
             var config = new MapperConfiguration(cfg =>
             {
@@ -85,10 +86,9 @@ namespace Mvc.Infrastructure.Repositories
 
             var mapper = new Mapper(config);
 
-            var dtos = mapper.Map<List<ApplicationUser>, List<SideUserDto>>(recommendUsers.Take(5).ToList());
+            var dtos = mapper.Map<List<ApplicationUser>, List<SideUserDto>>(recommendUsers.Take(4).ToList());
 
             return dtos;
-
         }
 
         public async Task<bool> InviteUserToIdea(string inviteFromUserGuid, InviteUserDto model)
@@ -112,25 +112,20 @@ namespace Mvc.Infrastructure.Repositories
                 .Include(x => x.Tags)
                 .FirstOrDefault(x => x.UserName.Equals(name));
 
-            if (model.NewTags.Count > 0)
-            {
-                getUser.Tags = _tagService.CreateTagList(model.NewTags);
-            }
+            if (getUser != null)
+                if (model.NewTags != null && model.NewTags.Count > 0)
+                {
+                    getUser.Tags = _tagService.CreateTagList(model.NewTags);
+                    IdentityResult res = await _userManager.UpdateAsync(getUser);
+                    if (res.Succeeded)
+                    {
+                        await _signInManager.SignInAsync(getUser, false);
 
-            IdentityResult res = await _userManager.UpdateAsync(getUser);
-
-            if (res.Succeeded)
-            {
-                await _signInManager.SignInAsync(getUser, false);
-
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-
-
+                        return true;
+                    }
+                }
+            
+            return false;
         }
         
         public async Task<bool> UpdateUserSettings(string name, UserEditGeneralSettingsDto model)
@@ -150,7 +145,7 @@ namespace Mvc.Infrastructure.Repositories
                         str.Close();
                     }
 
-                    if (getUser.Avatar.ImageName != "DEFAULT_USER_AVATAR.jpg")
+                    if (getUser.Avatar.ImageName != "def_user_avatar.jpg")
                     {
                         File.Delete($"wwwroot/media/userAvatars/{getUser.Avatar.ImageName}");
                     }
@@ -180,6 +175,24 @@ namespace Mvc.Infrastructure.Repositories
             return false;            
         }
 
+        private static string GeneratePublishDate(DateTime dateCreated)
+        {
+            var res = DateTime.Now - dateCreated;
+
+            int years = 0;
+            int months = 0;
+            for (int i = 1; i <= res.Days; i++)
+            {
+                if (i > 30) months++;
+                if (i > 364) years++;
+            }
+
+            if (years > 0) return $"{years} year(s) ago";
+            else if (months > 0) return $"{months} month(s) ago";
+            else if (res.Days < 1) return "today";
+            else return $"{res.Days} day(s) ago";
+        }
+
         public UserDetailDto GetUserDetail(string guid)
         {
             ApplicationUser getUser = _dbContext.Users
@@ -197,8 +210,9 @@ namespace Mvc.Infrastructure.Repositories
                 .ForMember("Description", opt => opt.MapFrom(x => x.Description))
                 .ForMember("Tags", opt => opt.MapFrom(x => x.Tags.Select(tag => new TagDto(tag.Name))))
                 .ForMember("AvatarImageName", opt => opt.MapFrom(x => x.Avatar.ImageName))
-                .ForMember("CountFollowing", opt => opt.MapFrom(x => x.Following.Count))
-                .ForMember("CountFollowers", opt => opt.MapFrom(x => x.Followers.Count));
+                .ForMember("CountFollowing", opt => opt.MapFrom(x => x.Followers.Count))
+                .ForMember("CountSubscribers", opt => opt.MapFrom(x => x.Following.Count))
+                .ForMember("DateCreated", opt => opt.MapFrom(x => GeneratePublishDate(x.AccountDateCreated)));
             });
 
             var mapper = new Mapper(config);
@@ -438,7 +452,7 @@ namespace Mvc.Infrastructure.Repositories
             _dbContext.SaveChanges();
         }
         
-        public async Task<List<NewChatDto>> GetNewChatUsersAsync(string guid)
+        public async Task<NewChatDtoExtended> GetNewChatUsersAsync(string guid)
         {
             List<ApplicationUser> getAuthorChatUsers = _dbContext.Chats
                 .Include(x => x.Users)
@@ -468,9 +482,15 @@ namespace Mvc.Infrastructure.Repositories
 
             var mapper = new Mapper(config);
 
-            var resp = mapper.Map<List<ApplicationUser>, List<NewChatDto>>(except);
+            var users = mapper.Map<List<ApplicationUser>, List<NewChatDto>>(except);
 
-            return resp;
+            NewChatDtoExtended result = new()
+            {
+                NewChatUsers = users,
+                AuthorGuid = guid
+            };
+
+            return result;
         }        
 
         public async Task<List<IdeaToInviteDto>> GetUserIdeasToInvite(string guid)
@@ -510,8 +530,7 @@ namespace Mvc.Infrastructure.Repositories
                 .Any(x => x.Users.All(x => x.Id.ToString() == authorGuid &&
                     x.Id.ToString() == toUserGuid));
 
-
-            if (isExist)
+            if (!isExist)
             {
                 Chat createChat = new Chat();
 
@@ -544,6 +563,7 @@ namespace Mvc.Infrastructure.Repositories
                 dto.UserGuid = toUserGuid;
                 dto.UserName = toUser.UserName;
                 dto.AvatarImageName = toUser.Avatar.ImageName;
+                dto.AuthorGuid = authorGuid;
 
                 return dto;
             }
@@ -593,7 +613,7 @@ namespace Mvc.Infrastructure.Repositories
                 .Include(x => x.Messages)
                 .ThenInclude(x => x.Author)
                 .ThenInclude(x => x.Avatar)
-                .FirstOrDefault(x => x.Guid.ToString() == (chatGuid));
+                .FirstOrDefault(x => x.Guid.ToString() == chatGuid);
 
             var config = new MapperConfiguration(cfg =>
             {
@@ -815,6 +835,56 @@ namespace Mvc.Infrastructure.Repositories
             var resp = mapper.Map<List<Follower>, List<UserFollowingDto>>(subs);
 
             return resp;
+        }
+
+        public async Task<List<NewsDto>> GetNewsAsync()
+        {
+            List<NewsDto> news = new();
+
+            List<NewsDto> users = await _dbContext.Users
+                .Include(x => x.Avatar)
+                .OrderByDescending(x => x.AccountDateCreated)
+                .Take(3)
+                .Select(x => new NewsDto()
+                { 
+                    IdeaGuid = null,
+                    UserAvatarName = x.Avatar.ImageName,
+                    UserGuid = x.Id,
+                    Date = x.AccountDateCreated,
+                    UserName = x.UserName,
+                    IdeaName = null
+                })
+                .ToListAsync();
+
+            news.AddRange(users);
+
+            List<NewsDto> ideas = await _dbContext.Ideas
+                .Include(x => x.Members)
+                .ThenInclude(x => x.User)
+                .ThenInclude(x => x.Avatar)
+                .OrderByDescending(x => x.DateCreated)
+                .Take(3)
+                .Select(x => new NewsDto()
+                {
+                    IdeaGuid = x.Guid.ToString(),
+                    UserAvatarName = x.Members.FirstOrDefault(x => x.Role
+                        .Equals(IdeaMemberRoles.Author)).User.Avatar.ImageName,
+                    UserGuid = x.Members.FirstOrDefault(x => x.Role
+                        .Equals(IdeaMemberRoles.Author)).User.Id,
+                    Date = x.DateCreated,
+                    UserName = x.Members.FirstOrDefault(x => x.Role
+                        .Equals(IdeaMemberRoles.Author)).User.UserName,
+                    IdeaName = x.Title
+                })
+                .ToListAsync();
+
+            news.AddRange(ideas);
+
+            var res = news.OrderByDescending(x => x.Date)
+                .Take(4)
+                .ToList();
+
+            return res;
         }
     }
 }

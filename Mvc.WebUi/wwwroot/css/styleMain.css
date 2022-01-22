@@ -217,27 +217,46 @@ a > img {
         color: white;
     }
 
-.rotate-idea-card {
-    border-radius: 6px;
-    transform: rotate(26.23deg);
-    width: 122px;
-    height: 82px;
-}
-
-    .rotate-idea-card img {
-        transition: transform 0.3s ease;
-        border-radius: 6px;
-        height: inherit;
-        width: inherit;
-    }
-
-        .rotate-idea-card img:hover {
-            transform: rotate(4.23deg);
-        }
-
-.rotate-idea-card-wrap {
+.asideRotateIdeaPost {
     padding-right: 60px;
     padding-bottom: 66px;
+    position: relative !important;
+}
+
+    .asideRotateIdeaPost div {
+        transform: rotate(26.23deg);
+        width: 122px;
+        height: 82px;
+        position: absolute !important;
+        background-size: 100% auto !important;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+        border-radius: 6px;
+        transition: transform 0.3s ease;
+    }
+
+        .asideRotateIdeaPost div:hover {
+            transform: rotate(17.23deg);
+        }
+
+.asideRotateIdeaPost-lg {
+    padding-right: 66px;
+    padding-bottom: 66px;
+    position: relative !important;
+}
+
+    .asideRotateIdeaPost-lg div {
+        transform: rotate(26.23deg);
+        width: 134px;
+        height: 100px;
+        position: absolute !important;
+        background-size: 100% auto !important;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+        border-radius: 6px;
+        transition: transform 0.3s ease;
+    }
+
+.asideRotateIdeaPost-lg div:hover {
+    transform: rotate(17.23deg);
 }
 
 #hideBackgroundWrapper {

@@ -116,96 +116,101 @@
       </div>
       <!---->
       <div class="pe-3 pt-4 col position-relative">
-        <div class="position-fixed">
-            <aside>
-          <div class="text-center mt-3">
-            <img
-              src="~/media/userAvatars/@Model.User.AvatarImageName"
-              height="199"
-              width="199"
-              class="circle border box-shadow"
-            />
-          </div>
-          <div class="mt-3 mb-2 text-center">
-            <span class="t-xl t-xlight text-white">@Model.User.Name</span>
-          </div>
-          <div class="d-flex mt-3 align-items-center justify-content-center">
-            @if (Model.IsSelfProfile)
-            {
-                <span class="t-muted t-md"><em>Your profile</em></span>
-            }
-            else
-            {
-                @if (Model.IsFollowed)
-                {
+        <div class="position-fixed" style="width: 214px">
+          <aside>
+              <div class="text-center mt-3">
+                <img
+                  src="~/media/userAvatars/@Model.User.AvatarImageName"
+                  height="199"
+                  width="199"
+                  class="circle border box-shadow"
+                />
+              </div>
+              <div class="mt-3 mb-2 text-center">
+                <span class="t-xl t-xlight text-white">@Model.User.Name</span>
+                <br>
+                <span class="t-sm t-semi-bold text-muted">Joined @Model.User.DateCreated</span>
+              </div>
+              <div class="d-flex align-items-center justify-content-center">
+                  @if (!Model.IsSelfProfile)
+                  {
+                    @if (Model.IsFollowed)
+                    {
+                        <div class="pe-2">
+                          <form id="userFollowForm" data-unfollow="true">
+                              <input hidden class="d-none" value="@Model.User.Guid"/>
+                              <button type="submit"  class="btn  t-semi-bold border-bottom t-muted bg-transparent">Unfollow</button>
+                          </form>
+                        </div>
+                    } 
+                    else
+                    {
+                        <div class="pe-2">
+                          <form id="userFollowForm" data-unfollow="false">
+                              <input hidden class="d-none" value="@Model.User.Guid"/>
+                              <button type="submit" class="btn t-semi-bold t-primary border-bottom bg-transparent">Follow</button>
+                          </form>
+                        </div>                    
+                    }
                     <div>
-                      <form id="userFollowForm" data-unfollow="true">
-                          <input hidden class="d-none" value="@Model.User.Guid"/>
-                          <button type="submit"  class="showHideBoxGoals t-muted icon-link-btn">Unfollow</button>
-                      </form>
+                        <a asp-action="index" asp-controller="chat" class="t-muted">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-chat" viewBox="0 0 16 16">
+                          <path d="M2.678 11.894a1 1 0 0 1 .287.801 10.97 10.97 0 0 1-.398 2c1.395-.323 2.247-.697 2.634-.893a1 1 0 0 1 .71-.074A8.06 8.06 0 0 0 8 14c3.996 0 7-2.807 7-6 0-3.192-3.004-6-7-6S1 4.808 1 8c0 1.468.617 2.83 1.678 3.894zm-.493 3.905a21.682 21.682 0 0 1-.713.129c-.2.032-.352-.176-.273-.362a9.68 9.68 0 0 0 .244-.637l.003-.01c.248-.72.45-1.548.524-2.319C.743 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7-3.582 7-8 7a9.06 9.06 0 0 1-2.347-.306c-.52.263-1.639.742-3.468 1.105z"/>
+                        </svg>
+                      </a>                  
                     </div>
-                } 
-                else
-                {
-                    <div>
-                      <form id="userFollowForm" data-unfollow="false">
-                          <input hidden class="d-none" value="@Model.User.Guid"/>
-                          <button type="submit" class="showHideBoxGoals icon-link-btn">Follow</button>
-                      </form>
-                    </div>                    
-                }
-                <div>
-                  <a asp-controller="chat" asp-action="index" class="btn t-bold t-md t-primary">
-                    Write
-                  </a>
-                </div>
-            }
-
-          </div>
-          <div class="mt-4 text-start text-break">
-              @if (Model.User.Description != null)
-              { 
-                <p class="t-md t-muted">
-                    @Model.User.Description
-                </p>
-                }
-                else
-                {
+                  }           
+              </div>
+              <div class="mt-4 text-start text-break">
+                  @if (Model.User.Description != null)
+                  { 
                     <p class="t-md t-muted">
-                        Roundile beginner
+                        @Model.User.Description
                     </p>
-                }
-
-          </div>
-          <div class="mt-4">
-            <h3 class="t-md t-semi-bold t-muted">Interests</h3>
-            <div class="mt-2 d-flex flex-wrap">
-              @foreach(var tag in Model.User.Tags)
-              {
-                <div class="t-tag me-1">
-                    <a class="t-primary">@tag.Name</a>
+                    }
+                    else
+                    {
+                        <p class="t-md t-muted">
+                            Description is blank
+                        </p>
+                    }
+              </div>
+              <div class="mt-4">
+                <h3 class="t-md t-semi-bold t-muted">Interests</h3>
+                <div class="mt-2 d-flex flex-wrap">
+                  @foreach(var tag in Model.User.Tags)
+                  {
+                    <div class="t-tag me-1 mb-1">
+                        <a class="t-primary">@tag.Name</a>
+                    </div>
+                  }              
                 </div>
-              }              
-            </div>
-            <div class="mt-4 text-center">
-            <form asp-action="logout" asp-controller="account">
-              <button type="submit" class="border col-12 radius-md btn text-danger t-md">
-                Logout
-              </button>
-            </form>
-            </div>
-          </div>
-         @if (!Model.IsSelfProfile)
-         {
+              </div>
+             @if (!Model.IsSelfProfile)
+             {
+                 <div class="mt-4">
+                    <div class="mb-2">
+                      <h3 class="t-md t-semi-bold t-muted">Can user help?</h3>
+                    </div>
+                    <div>
+                      <button class="btn-sm showHideInvite icon-link-btn">Invite</button>
+                    </div>
+                 </div>
+             }  
              <div class="mt-4">
-                <div class="mb-3">
-                  <h3 class="t-lg t-bold t-muted">Can user help?</h3>
-                </div>
-                <div>
-                  <button class="btn-sm showHideInvite icon-link-btn">Invite</button>
-                </div>
-             </div>
-         }  
+                <hr class="t-muted mb-2">
+                <div class="d-flex align-items-center">
+                    @if (Model.IsSelfProfile)
+                    {
+                        <form asp-action="logout" asp-controller="account">
+                          <button type="submit" class="btn p-0 pe-2 btn-sm bg-transparent text-muted t-semi-bold t-sm">
+                            Logout
+                          </button>
+                        </form>
+                    }
+                    <a style="height:16px" asp-action="about" asp-controller="home" class="text-muted t-semi-bold t-sm pe-2">About us</a>
+                    </div>
+              </div>
         </aside>
         </div>
       </div>
@@ -217,11 +222,11 @@
                 <div class="d-flex p-3 pb-0">
                   <a asp-action="@Model.User.Guid" asp-route-section="subscribers" asp-controller="user" class="t-semi-bold t-muted t-md m-2">
                     Subscribers:
-                    <span class="text-white t-lg">42</span>
+                    <span class="text-white t-lg">@Model.User.CountSubscribers</span>
                   </a>
                   <a asp-action="@Model.User.Guid" asp-route-section="followings" asp-controller="user" class="t-semi-bold t-muted t-md m-2">
                     Following:
-                    <span class="text-white t-lg">42</span>
+                    <span class="text-white t-lg">@Model.User.CountFollowing</span>
                   </a>
                 </div>
                 <div class="p-3 d-flex">
@@ -351,7 +356,7 @@
                     style="
                       background: linear-gradient(
                           0deg,
-                          rgba(0, 0, 0, 0.33),
+                          rgba(0, 0, 0,  0.57),
                           rgba(0, 0, 0, 0.33)
                         ),
                         url('../media/ideaAvatars/@idea.AvatarImageName');
@@ -365,6 +370,7 @@
                           <span asp-controller="idea" asp-action="@idea.Guid" asp- class="h1 t-xbold text-white t-shadow"
                             >@idea.Title</span
                           >
+                           <br />
                           <p
                             class="col-10 t-bold t-muted t-shadow d-inline-block text-truncate"
                           >

@@ -138,7 +138,8 @@
 
 
 #notifyMessage {
-    width: 566px;
+    overflow-x:hidden;
+    max-width: 566px;
     display: flex;
     justify-content: space-between;
     opacity: 0;
@@ -152,16 +153,31 @@
     border-radius: 10px;
     background-color: #000000 !important;
 }
-
+    #notifyMessage label {
+        display: none;
+    }
+    #notifyMessage span {
+        display: none;
+    }
 
 .preNotifyActive {
     z-index:1000!important;
 }
-.notifyActive {
+.notifyActiveSuccess {
     opacity: 1 !important;
 }
 
+    .notifyActiveSuccess span {
+        display: initial !important;
+    }
 
+.notifyActiveFailed {
+    opacity: 1 !important;
+}
+
+    .notifyActiveFailed label {
+        display: initial !important;
+    }
 
 .note-participation {
     margin-bottom: .5rem;

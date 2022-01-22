@@ -610,6 +610,7 @@
                   <input hidden value="@Model.Idea.Guid" name="ideaGuid"/>
                 <div class="mb-2">
                   <input
+                  required
                     class="upd-form-input form-control me-0 pe-1"
                     placeholder="Title"
                     name="title"
@@ -617,6 +618,7 @@
                 </div>
                 <div class="mb-2">
                   <textarea
+                  required
                   name="description"
                     style="resize: none; height: 66px;"
                     class="upd-form-textarea form-control me-0 pe-1"
@@ -627,7 +629,7 @@
                 <div class="mb-2 mt-3 form-check">
                     <input
                         name="isAuthored"
-                      class="bg-dark form-check-input"
+                      class="bg-darkdeep form-check-input"
                       type="checkbox"
                       value="true"
                       id="flexCheckDefault"
@@ -650,7 +652,7 @@
                       class="text-white t-md t-semi-bold form-check-label"
                       for="flexCheckDefault"
                     >
-                      Authored box
+                      Authored box (Soon)
                     </label>
                     <br />
                     <span class="t-sm t-medium t-muted">Only you can edit this box</span>
@@ -674,7 +676,7 @@
                     style="
                       background: linear-gradient(
                           0deg,
-                          rgba(0, 0, 0, 0.33),
+                          rgba(0, 0, 0,  0.57),
                           rgba(0, 0, 0, 0.33)
                         ),
                         url(../media/ideaAvatars/@Model.Idea.AvatarImageName);
@@ -1082,10 +1084,10 @@
               <div style="max-width: 180px;" class="ps-1 pt-3 d-flex flex-wrap">
                 @foreach(var simIdea in Model.SimilarIdeas)
                 {
-                    <div class="rotate-idea-card-wrap position-relative">
+                    <div class="asideRotateIdeaPost">
                       <a asp-action="@simIdea.Guid" asp-controller="idea">
-                        <div class="shadow position-absolute rotate-idea-card">
-                          <img src="~/media/ideaAvatars/@simIdea.AvatarImageName" />
+                        <div style="background: linear-gradient( 
+                          0deg, rgba(0, 0, 0, 0.33), rgba(0, 0, 0, 0.33) ), url(/media/ideaAvatars/@simIdea.AvatarImageName);">                      
                         </div>
                       </a>
                     </div>

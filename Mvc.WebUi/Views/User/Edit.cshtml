@@ -20,54 +20,52 @@
       </div>
       <!---->
       <div class="pe-3 pt-4 col position-relative">
-        <div class="position-fixed">
+        <div class="position-fixed" style="width: 214px">
             <aside>
-          <div class="text-center mt-3">
-            <img
-              src="~/media/userAvatars/@Model.User.AvatarImageName"
-              height="199"
-              width="199"
-              class="circle border box-shadow"
-            />
-          </div>
-          <div class="mt-3 mb-2 text-center">
-            <span class="t-xl t-xlight text-white">@Model.User.Name</span>
-          </div>
-          <div class="d-flex mt-3 align-items-center justify-content-center">
-            <span class="t-muted t-md"><em>Your profile</em></span>
-          </div>
-          <div class="mt-4 text-start text-break">
-            @if (Model.User.Description != null)
-              { 
-                <p class="t-md t-muted">
-                    @Model.User.Description
-                </p>
-                }
-                else
-                {
+              <div class="text-center mt-3">
+                <img
+                  src="~/media/userAvatars/@Model.User.AvatarImageName"
+                  height="199"
+                  width="199"
+                  class="circle border box-shadow"
+                />
+              </div>
+              <div class="mt-3 mb-2 text-center">
+                <span class="t-xl t-xlight text-white">@Model.User.Name</span>
+                <br>
+                <span class="t-sm t-semi-bold text-muted">Joined @Model.User.DateCreated</span>
+              </div>
+              <div class="mt-4 text-start text-break">
+                  @if (Model.User.Description != null)
+                  { 
                     <p class="t-md t-muted">
-                        Roundile beginner
+                        @Model.User.Description
                     </p>
-                }
-          </div>
-          <div class="mt-4">
-            <h3 class="t-md t-semi-bold t-muted">Interests</h3>
-            <div class="mt-2 d-flex flex-wrap">
-              @foreach(var tag in Model.User.Tags)
-              {
-                <div class="t-tag me-1">
-                    <a class="t-primary">@tag.Name</a>
+                    }
+                    else
+                    {
+                        <p class="t-md t-muted">
+                            Description is blank
+                        </p>
+                    }
+              </div>
+              <div class="mt-4">
+                <h3 class="t-md t-semi-bold t-muted">Interests</h3>
+                <div class="mt-2 d-flex flex-wrap">
+                  @foreach(var tag in Model.User.Tags)
+                  {
+                    <div class="t-tag me-1 mb-1">
+                        <a class="t-primary">@tag.Name</a>
+                    </div>
+                  }              
                 </div>
-              }              
-            </div>
-            <div class="mt-4 text-center">
-            <form asp-action="logout" asp-controller="account">
-              <button type="submit" class="border col-12 radius-md btn text-danger t-md">
-                Logout
-              </button>
-            </form>
-            </div>
-          </div>
+              </div>
+             <div class="mt-4">
+                <hr class="t-muted mb-2">
+                <div class="d-flex align-items-center">
+                    <a style="height:16px" asp-action="about" asp-controller="home" class="text-muted t-semi-bold t-sm pe-2">About us</a>
+                    </div>
+              </div>
         </aside>
         </div>
       </div>
@@ -79,11 +77,11 @@
                   <div class="d-flex p-3 pb-0">
                   <a asp-action="@Model.User.Guid" asp-route-section="subscribers" asp-controller="user" class="t-semi-bold t-muted t-md m-2">
                     Subscribers:
-                    <span class="text-white t-lg">42</span>
+                    <span class="text-white t-lg">@Model.User.CountSubscribers</span>
                   </a>
                   <a asp-action="@Model.User.Guid" asp-route-section="followings" asp-controller="user" class="t-semi-bold t-muted t-md m-2">
                     Following:
-                    <span class="text-white t-lg">42</span>
+                    <span class="text-white t-lg">@Model.User.CountFollowing</span>
                   </a>
                 </div>
                 <div class="p-3 d-flex">
@@ -296,6 +294,7 @@
                           class="custom-scroll upd-form-select select-multiple form-control me-0 pe-1"
                           aria-label="Default select example"
                           multiple
+                          required
                         >
                           @if (Model.TagList != null)
                           {
@@ -328,23 +327,25 @@
                     >
                       <div>
                         <h3 class="text-danger t-md t-semi-bold">
-                          Remove idea
+                          Remove account
                         </h3>
                         <p class="mb-0 t-muted t-sm">
                           With all progress
                         </p>
                       </div>
                       <div class="col-8">
-                        <form class="form-dark upd-dark form-lg">
+                        <form asp-action="remove" asp-controller="account" class="form-dark upd-dark form-lg">
                           <div class="col">
                             <input
+                                name="confirmPassword"
                               placeholder="Confirm password"
                               type="password"
+                              required
                               class="t-md upd-dark form-control"
                             />
                           </div>
                           <div>
-                            <button class="btn t-bold t-md text-danger">
+                            <button type="submit" class="btn t-bold t-md text-danger">
                               Remove
                             </button>
                           </div>

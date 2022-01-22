@@ -1,11 +1,26 @@
 ﻿$(document).ready(() => {
 
+    const clearNotify = () => {
+        $("#notifyMessageText").text("");
+        $("#notifyMessage").removeClass("notifyActiveSuccess");
+        $("#notifyMessage").removeClass("notifyActiveFailed");
+        $("#preNotifyMessage").removeClass("preNotifyActive");
+    };
     const sendNotifyMessage = (text, isSuccess) => {
+        clearNotify();
         if (isSuccess == true) {
             $("#notifyMessageText").text(text);
-            $("#notifyMessage").addClass("notifyActive");
+            $("#notifyMessage").addClass("notifyActiveSuccess");
             $("#preNotifyMessage").addClass("preNotifyActive");
         }
+        else {
+            $("#notifyMessageText").text(text);
+            $("#notifyMessage").addClass("notifyActiveFailed");
+            $("#preNotifyMessage").addClass("preNotifyActive");
+        }
+        setTimeout(() => {
+            clearNotify();
+        }, 5000);
     };
 
     $("#hideBackgroundWrapper").mouseup(function (e) {
@@ -45,14 +60,17 @@
             InvitedToIdeaName: toIdea
         }
 
-        $.post("/user/invite", { model }, (data) => {
-            if (data == true) {
-                $("#notifyMessageText").text("Invite sended!");
-                $("#notifyMessage").addClass("notifyActive");
+        $.post("/user/invite", { model }, (resp) => {
+            if (resp == true) {
+                sendNotifyMessage("Invite sended!", true);
+                $("#inviteWindow").addClass("d-none");
+                $("#hideBackgroundWrapper").toggleClass("d-none");
+                $("body").toggleClass("overflow-hidden");
             }
-            $("#inviteWindow").addClass("d-none");
-            $("#hideBackgroundWrapper").toggleClass("d-none");
-            $("body").toggleClass("overflow-hidden");
+            else {
+                sendNotifyMessage("Incorrect data when entering!", false);
+            }
+           
         })
     });
 
@@ -65,7 +83,7 @@
         $.post("/user/invite-reject", { inviteGuid }, (resp) => {
             if (resp) {
                 $(`.inviteSection[data-invite="${resp}"]`).remove();
-                sendNotifyMessage("Invite reject!", true);
+                sendNotifyMessage("Invite reject!", false);
             }
         });
     });

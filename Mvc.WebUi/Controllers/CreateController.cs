@@ -13,12 +13,31 @@ namespace Mvc.WebUi.Controllers
             _ideaRepository = ideaRepo;
         }
 
+        [Route("jscreate/idea")]
+        public async Task<JsonResult> JsIdea(CreateIdeaDto idea)
+        {
+            string? resGuid = _ideaRepository.CreateIdea(idea);
+            if (resGuid != null)
+            {
+                _ideaRepository.Save();
+
+                return Json(resGuid);
+            }
+
+            return Json(null);
+        }
+
         public async Task<IActionResult> Idea(CreateIdeaDto idea)
         {
-            var res = _ideaRepository.CreateIdea(idea);
-            _ideaRepository.Save();
+            string? resGuid = _ideaRepository.CreateIdea(idea);
+            if (resGuid != null)
+            {
+                _ideaRepository.Save();
 
-            return RedirectToAction(res.ToString(), "idea");
+                return RedirectToAction(resGuid, "idea");
+            }
+
+            return BadRequest();
         }
     }
 }

@@ -54,7 +54,7 @@ namespace Mvc.Infrastructure.Repositories
 
             List<Idea> recommendIdeas = new List<Idea>();
 
-            int countFill = 5 - userTags.Count;
+            int countFill = 4 - userTags.Count;
 
             if (userTags.Count > 0)
             {
@@ -73,7 +73,7 @@ namespace Mvc.Infrastructure.Repositories
                     .Include(x => x.Members)
                         .ThenInclude(x => x.User)
                         .ThenInclude(x => x.Avatar)
-                    .OrderBy(x => x.Topics.Count()).Take(5).ToList();
+                    .OrderBy(x => x.Topics.Count()).Take(4).ToList();
 
 
             var config = new MapperConfiguration(cfg =>
@@ -84,7 +84,7 @@ namespace Mvc.Infrastructure.Repositories
 
             var mapper = new Mapper(config);
 
-            var dtos = mapper.Map<List<Idea>, List<IdeaRecommendationDto>>(recommendIdeas.Take(5).ToList());
+            var dtos = mapper.Map<List<Idea>, List<IdeaRecommendationDto>>(recommendIdeas.Take(4).ToList());
 
             return dtos;
         }
@@ -208,45 +208,65 @@ namespace Mvc.Infrastructure.Repositories
                     .Count();
         }
         
-        public Guid CreateIdea(CreateIdeaDto item)
+        public string? CreateIdea(CreateIdeaDto item)
         {
-            ApplicationUser author = _dbContext.Users.FirstOrDefault(x => x.UserName.Equals(item.Author));
-
-            List<Tag> ideaTags = BuildTagList(item.Tags);
-
-            var config = new MapperConfiguration(conf => conf.CreateMap<CreateIdeaDto, Idea>()
-                .ForMember("IsSecurity", opt => opt.MapFrom(x => x.IsSecret))
-                .ForMember("Title", opt => opt.MapFrom(x => x.Title))
-                .ForMember("Tags", opt => opt.MapFrom(x => ideaTags))
-                .ForMember("Topics", opt => opt.MapFrom(x => new List<IdeaTopic>()
+            try
+            {
+                if (item.Author != null && item.Title != null && item.Tags != null && item.Description != null)
                 {
+                    ApplicationUser author = _dbContext.Users.FirstOrDefault(x => x.UserName == item.Author);
+
+                    List<Tag> ideaTags = BuildTagList(item.Tags);
+
+                    var config = new MapperConfiguration(conf => conf.CreateMap<CreateIdeaDto, Idea>()
+                        .ForMember("IsSecurity", opt => opt.MapFrom(x => x.IsSecret))
+                        .ForMember("Title", opt => opt.MapFrom(x => x.Title))
+                        .ForMember("Tags", opt => opt.MapFrom(x => ideaTags))
+                        .ForMember("Topics", opt => opt.MapFrom(x => new List<IdeaTopic>()
+                        {
                     new("About this idea", x.Description, author, true)
-                }))
-                .ForMember("Members", opt => opt.MapFrom(x => new List<IdeaMemberRole>()
-                {
+                        }))
+                        .ForMember("Members", opt => opt.MapFrom(x => new List<IdeaMemberRole>()
+                        {
                     new(IdeaMemberRoles.Author, author)
-                }))
-                .ForMember("Status", opt => opt.MapFrom(x => _dbContext.IdeaStatuses
-                    .FirstOrDefault(y => y.Status.Equals(x.Status)))
-                )
-                .ForMember("Avatar", opt => opt.MapFrom(x => _dbContext.IdeaAvatars
-                    .FirstOrDefault(y => y.ImageName.Equals("DEFAULT_IDEA_AVATAR.jpg")))));
+                        }))
+                        .ForMember("Status", opt => opt.MapFrom(x => _dbContext.IdeaStatuses
+                            .FirstOrDefault(y => y.Status.Equals(x.Status)))
+                        )
+                        .ForMember("Avatar", opt => opt.MapFrom(x => _dbContext.IdeaAvatars
+                            .FirstOrDefault(y => y.ImageName.Equals("idea_def_back.png")))));
 
-            var mapper = new Mapper(config);
+                    var mapper = new Mapper(config);
 
-            var idea = mapper.Map<Idea>(item);
+                    var idea = mapper.Map<Idea>(item);
 
-            _dbContext.Ideas.Add(idea);
+                    _dbContext.Ideas.Add(idea);
 
-            return idea.Guid;
+                    return idea.Guid.ToString();
+                }
+            }
+            catch (Exception exp)
+            {
+                return null;
+            }
+
+            return null;
         }
 
         private List<Tag> BuildTagList(ICollection<string> tags)
         {
-            List<Tag> tagList = new List<Tag>();
-            foreach (var item in tags)
-                tagList.Add(_dbContext.Tags
-                    .FirstOrDefault(x => x.Name.Equals(item)));
+            List<Tag> tagList = new();
+            if (tags != null)
+            {
+                foreach (var item in tags)
+                {
+                    Tag? getTag = _dbContext.Tags
+                        .FirstOrDefault(x => x.Name.Equals(item));
+
+                    if (getTag != null)
+                        tagList.Add(getTag);
+                }
+            }
 
             return tagList;
         }
@@ -504,11 +524,21 @@ namespace Mvc.Infrastructure.Repositories
             var getIdea = await _dbContext.Ideas
                 .FirstOrDefaultAsync(x => x.Guid.ToString() == ideaGuid);
 
-            var createBox = new IdeaBox(title, description, isAuthored, authorGuid, getIdea.Id);
+            if (getIdea != null)
+            {
+                if (!string.IsNullOrWhiteSpace(title) &&
+                    !string.IsNullOrWhiteSpace(description) &&
+                    !string.IsNullOrWhiteSpace(authorGuid))
+                {
+                    var createBox = new IdeaBox(title, description, isAuthored, authorGuid, getIdea.Id);
 
-            await _dbContext.IdeaBoxes.AddAsync(createBox);
+                    await _dbContext.IdeaBoxes.AddAsync(createBox);
 
-            return true;
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public async Task<List<IdeaBoxDto>> GetIdeaBoxesAsync(string ideaGuid, string currentUserGuid, int page)
@@ -738,7 +768,7 @@ namespace Mvc.Infrastructure.Repositories
                         str.Close();
                     }                    
 
-                    if (getIdea.Avatar.ImageName != "DEFAULT_IDEA_AVATAR.jpg")
+                    if (getIdea.Avatar.ImageName != "def_idea_avatar.png")
                     {
                         File.Delete($"wwwroot/media/ideaAvatars/{getIdea.Avatar.ImageName}");
                     }
@@ -905,7 +935,7 @@ namespace Mvc.Infrastructure.Repositories
 
             var mapper = new Mapper(config);
 
-            var dtos = mapper.Map<List<Idea>, List<SideIdeaDto>>(similarIdeas);
+            var dtos = mapper.Map<List<Idea>, List<SideIdeaDto>>(similarIdeas.Take(5).ToList());
 
             return dtos;
         }

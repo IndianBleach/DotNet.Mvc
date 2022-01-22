@@ -1,11 +1,26 @@
 ﻿$(document).ready(() => {
 
+    const clearNotify = () => {
+        $("#notifyMessageText").text("");
+        $("#notifyMessage").removeClass("notifyActiveSuccess");
+        $("#notifyMessage").removeClass("notifyActiveFailed");
+        $("#preNotifyMessage").removeClass("preNotifyActive");
+    };
     const sendNotifyMessage = (text, isSuccess) => {
+        clearNotify();
         if (isSuccess == true) {
             $("#notifyMessageText").text(text);
-            $("#notifyMessage").addClass("notifyActive");
+            $("#notifyMessage").addClass("notifyActiveSuccess");
             $("#preNotifyMessage").addClass("preNotifyActive");
         }
+        else {
+            $("#notifyMessageText").text(text);
+            $("#notifyMessage").addClass("notifyActiveFailed");
+            $("#preNotifyMessage").addClass("preNotifyActive");
+        }
+        setTimeout(() => {
+            clearNotify();
+        }, 5000);
     };
 
     $("#hideBackgroundWrapper").mouseup(function (e) {
@@ -60,14 +75,14 @@
         let ideaGuid = e.target.getElementsByTagName("select")[0].value;
         let userGuid = sessionStorage.getItem("chatWith");
         let authorGuid = sessionStorage.getItem("authorGuid");
-        console.log(ideaGuid);
-        console.log(userGuid);
-        console.log(authorGuid);
+
         $.post("/user/fastinvite", { ideaGuid, userGuid, authorGuid }, resp => {
-            if (resp) {
+
+
+            if (resp == true) {
                 sendNotifyMessage("User invited!", true);
             }
-            sendNotifyMessage("Something went wrong!", false);
+            else sendNotifyMessage("Something went wrong!", false);
         })
 
     });
@@ -76,8 +91,10 @@
     // SHOW NEW-CHAT WINDOW
     $(".showNewChatWindow").on("click", (e) => {
         $.post("/chat/newchats", {}, (resp) => {
+
+            sessionStorage.setItem("authorGuid", resp.authorGuid);
             
-            resp.forEach(item => {
+            resp.newChatUsers.forEach(item => {
                 $("#newChatLoad").append(`<form data-user="${item.userGuid}" class="newChatForm"><div class="newChatChoiceSection"><button type="submit" class="btn newChatBtn"><img src="media/userAvatars/${item.avatarImageName}" /><p>${item.userName}</p><span class="t-muted t-sm">Let's chat</span></button></div></form>`)
             })            
 
@@ -223,6 +240,8 @@
 
         if (chatGuid != 0) {
 
+            console.log("Send merssage to exist");
+
             // send message to exist
             $.post("chat/sendMessage", { chatGuid, message }, (resp) => {
 
@@ -237,17 +256,13 @@
                     console.log(resp);
                 }
             })
-
         }
         else {
-
             let toUserGuid = sessionStorage.getItem("chatWith");
-            $.post("chat/create", { toUserGuid, message }, (resp) => {
-
+            $.post("/chat/create", { toUserGuid, message }, (resp) => {
                 setFakeChatToExist(resp.guid, toUserGuid);
                 loadExistChat("media/userAvatars/" + resp.avatarImageName, resp.userName, resp.userGuid, resp.guid, resp.messages);
             })
-
         }
     })
 
