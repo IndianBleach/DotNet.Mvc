@@ -1,5 +1,6 @@
 ﻿
 @{
+    ViewData["Title"] = $"About Us";
     Layout = "_Layout";
 }
 
@@ -293,7 +294,7 @@
                       <input
                         disabled
                         class="upd-form-disinput form-control me-0 pe-1 border-none"
-                        placeholder="nmber card"
+                        placeholder="nmber card #1"
                         aria-label="Search"
                       />
                     </div>
@@ -304,6 +305,7 @@
                         class="upd-form-disinput form-control me-0 pe-1 border-none"
                         placeholder="Username"
                         aria-label="Search"
+                        placeholder="nmber card #2"
                       />
                     </div>
                     <div class="mb-3">
@@ -320,7 +322,7 @@
                       <span class="text-white">Thanks.</span>
                     </p>
                     <div>
-                      <a class="text-center icon-link-btn">Login Or Register</a>
+                      <a asp-action="login" asp-controller="account" class="text-center icon-link-btn">Login Or Register</a>
                     </div>
                   </div>                
                 </div>
